@@ -46,6 +46,10 @@ fieldset {
     justify-content: space-around;
 }
 
+.alinear-center-espacio-doble button {
+    margin: 0 10px;
+}
+
 .alinear-center.right {
     padding-left: 45%;
     padding-right: 5%;
@@ -184,4 +188,28 @@ fieldset {
 .mat-card-custom {
     margin-top: 1rem;
     border-bottom: 2px solid var(--primary);
+}
+
+.titulo {
+    margin: 0 auto;
+    font-weight: bold;
+    font-size: larger;
+}
+
+table th {
+    color: black;
+    font-weight: bold;
+    text-align: center;
+}
+
+table td {
+    text-align: center;
+}
+
+.icon-boton {
+    font-size: 1.75rem !important;
+    height: 1.75rem !important;
+    width: 1.75rem !important;
+    margin: 3px 0 0 0 !important;
+    color: white;
 }

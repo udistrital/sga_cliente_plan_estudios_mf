@@ -17,12 +17,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon'
 import { MatTableModule } from '@angular/material/table'
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { DialogVerObservacionComponent } from './components/dialog-ver-observacion/dialog-ver-observacion.component';
 import { PlanEstudiosService } from './services/plan_estudios.service';
 import { SummaryPlanesEstudioComponent } from './components/summary-planes-estudio/summary-planes-estudio.component';
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
+import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinamic-form-group.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +35,8 @@ import { SafeURL } from './pipes/safeUrl.pipe';
     DialogVerObservacionComponent,
     SummaryPlanesEstudioComponent,
     VisualizarDocumentoPlanComponent,
-    SafeURL
+    SafeURL,
+    DinamicFormGroupComponent
   ],
   imports: [
     BrowserModule,
@@ -47,8 +52,11 @@ import { SafeURL } from './pipes/safeUrl.pipe';
     MatCardModule,
     MatIconModule,
     MatTableModule,
+    MatButtonModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
+    MatExpansionModule,
     TranslateModule.forRoot({
       loader:{
         provide: TranslateLoader,

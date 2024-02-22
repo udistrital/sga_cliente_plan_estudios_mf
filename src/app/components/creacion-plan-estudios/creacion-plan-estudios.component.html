@@ -2,7 +2,7 @@
     nbSpinnerMessage="{{ 'GLOBAL.cargando' | translate }}" [ngSwitch]="vista"> -->
 <mat-card [ngSwitch]="vista">
     <mat-card-header>
-        <div class="row" align="center">
+        <div class="row titulo">
             <!-- <div class="col">
                 {{ 'plan_estudios.crear_editar' | translate }}
             </div> -->
@@ -71,19 +71,19 @@
                     <ng-container matColumnDef="observacion">
                         <th mat-header-cell *matHeaderCellDef> Ver observación </th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                            <button mat-raised-button color="primary"><mat-icon class="icon-boton color-negro">send</mat-icon></button>
                         </td>
                     </ng-container>
 
                     <ng-container matColumnDef="enviar">
                         <th mat-header-cell *matHeaderCellDef> Enviar </th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                            <button mat-raised-button color="primary"><mat-icon class="icon-boton color-negro">send</mat-icon></button>
                         </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsPlanesEstudio"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsPlanesEstudio;"></tr>
                 </table>
 
                 <div class="alinear-center-espacio-doble" [class.generate]="habilitadoGenerarPlan">
@@ -106,7 +106,7 @@
                     <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
                         title="Cancelar" (click)="cancelar()"></i>
                 </legend>
-                <mat-horizontal-stepper #stepper [linear]="true" #stepper>
+                <mat-horizontal-stepper #stepper [linear]="true">
                     <!-- <mat-step [stepControl]="formGroupPlanEstudio" errorMessage="{{ 'GLOBAL.diligenciar_paso' | translate }}"> -->
                     <mat-step [stepControl]="formGroupPlanEstudio" errorMessage="Debe diligenciar este paso">
                         <!-- <ng-template matStepLabel>{{ 'espacios_academicos.select_proyecto' | translate }}</ng-template> -->
@@ -132,9 +132,46 @@
                                 Usuario la tabla muestra todos los espacios académicos relacionados a su proyecto curricular, si no existe algún espacio solicite la inclusión en el sistema.
                             </div>
                         </div>
-                        <ng2-smart-table [settings]="tbEspaciosAcademicos" [source]="dataEspaciosAcademicos"
+                        <!-- <ng2-smart-table [settings]="tbEspaciosAcademicos" [source]="dataEspaciosAcademicos"
                             (custom)="onAction($event)">
-                        </ng2-smart-table>
+                        </ng2-smart-table> -->
+                        <table mat-table [dataSource]="dataEspaciosAcademicos" class="mat-elevation-z5">
+
+                            <ng-container matColumnDef="#">
+                                <th mat-header-cell *matHeaderCellDef> # </th>
+                                <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef> Espacio académico </th>
+                                <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="pre_requisitos">
+                                <th mat-header-cell *matHeaderCellDef> Espacios requeridos (pre requisitos) </th>
+                                <td mat-cell *matCellDef="let element"> {{element.prerequisitos}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="clase">
+                                <th mat-header-cell *matHeaderCellDef> Clase </th>
+                                <td mat-cell *matCellDef="let element"> {{element.clase}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="creditos">
+                                <th mat-header-cell *matHeaderCellDef> Número de créditos </th>
+                                <td mat-cell *matCellDef="let element"> {{element.creditos}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="enviar">
+                                <th mat-header-cell *matHeaderCellDef> Enviar </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                </td>
+                            </ng-container>
+        
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsEspaciosAcademicos"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsEspaciosAcademicos;"></tr>
+                        </table>
                         <div class="alinear-right espacio-doble">
                             <mat-card status="success" class="recuadro">
                                 <mat-card-header class="d-flex justify-content-around align-items-center" style="padding: 5px;">
@@ -143,7 +180,7 @@
                                 </mat-card-header>
                                 <mat-card-content class="d-flex justify-content-around align-items-center"
                                     style="padding: 5px;">
-                                    <label><b>{{ dataEspaciosAcademicos.count() }}</b></label>
+                                    <label><b>{{ dataEspaciosAcademicos.data.length }}</b></label>
                                 </mat-card-content>
                             </mat-card>
                         </div>
@@ -180,14 +217,168 @@
                                 </mat-expansion-panel-header>
                                 <div class="custom-action-tb"
                                     [class.hide]="!this.enEdicionSemestreNuevo && !this.enEdicionSemestreViejo">
-                                    <ng2-smart-table [settings]="tbSemestre" [source]="semestre"
+                                    <!-- <ng2-smart-table [settings]="tbSemestre" [source]="semestre"
                                         (custom)="onAction($event)">
-                                    </ng2-smart-table>
+                                    </ng2-smart-table> -->
+                                    <table mat-table [dataSource]="semestre" class="mat-elevation-z5">
+
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Espacio académico </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="creditos">
+                                            <th mat-header-cell *matHeaderCellDef> Créditos </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.creditos}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="htd">
+                                            <th mat-header-cell *matHeaderCellDef> HTD </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.htd}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="htc">
+                                            <th mat-header-cell *matHeaderCellDef> HTC </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.htc}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hta">
+                                            <th mat-header-cell *matHeaderCellDef> HTA </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="OB">
+                                            <th mat-header-cell *matHeaderCellDef> OB </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.OB}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="OC">
+                                            <th mat-header-cell *matHeaderCellDef> OC </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.OC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="EI">
+                                            <th mat-header-cell *matHeaderCellDef> EI </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.EI}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="EE">
+                                            <th mat-header-cell *matHeaderCellDef> EE </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.EE}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="CP">
+                                            <th mat-header-cell *matHeaderCellDef> CP </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.CP}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="ENFQ_TEO">
+                                            <th mat-header-cell *matHeaderCellDef> T </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEO}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="ENFQ_PRAC">
+                                            <th mat-header-cell *matHeaderCellDef> P </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_PRAC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="ENFQ_TEOPRAC">
+                                            <th mat-header-cell *matHeaderCellDef> T/P </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEOPRAC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="acciones">
+                                            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                            </td>
+                                        </ng-container>
+                    
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestre"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestre;"></tr>
+                                    </table>
                                 </div>
 
                                 <div class="resumenTabla">
-                                    <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotal[numero]">
-                                    </ng2-smart-table>
+                                    <!-- <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotal[numero]">
+                                    </ng2-smart-table> -->
+                                    <table mat-table [dataSource]="dataSemestreTotal[numero]" class="mat-elevation-z5">
+
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Espacio académico </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="creditos">
+                                            <th mat-header-cell *matHeaderCellDef> Créditos </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.creditos}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="htd">
+                                            <th mat-header-cell *matHeaderCellDef> HTD </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.htd}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="htc">
+                                            <th mat-header-cell *matHeaderCellDef> HTC </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.htc}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hta">
+                                            <th mat-header-cell *matHeaderCellDef> HTA </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="OB">
+                                            <th mat-header-cell *matHeaderCellDef> OB </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.OB}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="OC">
+                                            <th mat-header-cell *matHeaderCellDef> OC </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.OC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="EI">
+                                            <th mat-header-cell *matHeaderCellDef> EI </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.EI}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="EE">
+                                            <th mat-header-cell *matHeaderCellDef> EE </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.EE}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="CP">
+                                            <th mat-header-cell *matHeaderCellDef> CP </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.CP}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="ENFQ_TEO">
+                                            <th mat-header-cell *matHeaderCellDef> T </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEO}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="ENFQ_PRAC">
+                                            <th mat-header-cell *matHeaderCellDef> P </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_PRAC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="ENFQ_TEOPRAC">
+                                            <th mat-header-cell *matHeaderCellDef> T/P </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEOPRAC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="acciones">
+                                            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                            </td>
+                                        </ng-container>
+                    
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestre"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestre;"></tr>
+                                    </table>
                                 </div>
                                 <mat-action-row>
                                     <!-- <button mat-raised-button type="button" (click)="limpiarSemestre(semestre)"
@@ -225,8 +416,85 @@
                             </mat-card-header>
                             <mat-card-content style="padding: 1px;">
                                 <div class="resumenTotal">
-                                    <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotalTotal">
-                                    </ng2-smart-table>
+                                    <!-- <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotalTotal">
+                                    </ng2-smart-table> -->
+                                    <table mat-table [dataSource]="dataSemestreTotalTotal" class="mat-elevation-z5">
+
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Espacio académico </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="creditos">
+                                            <th mat-header-cell *matHeaderCellDef> Créditos </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.creditos}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="htd">
+                                            <th mat-header-cell *matHeaderCellDef> HTD </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.htd}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="htc">
+                                            <th mat-header-cell *matHeaderCellDef> HTC </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.htc}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hta">
+                                            <th mat-header-cell *matHeaderCellDef> HTA </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="OB">
+                                            <th mat-header-cell *matHeaderCellDef> OB </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.OB}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="OC">
+                                            <th mat-header-cell *matHeaderCellDef> OC </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.OC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="EI">
+                                            <th mat-header-cell *matHeaderCellDef> EI </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.EI}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="EE">
+                                            <th mat-header-cell *matHeaderCellDef> EE </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.EE}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="CP">
+                                            <th mat-header-cell *matHeaderCellDef> CP </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.CP}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="ENFQ_TEO">
+                                            <th mat-header-cell *matHeaderCellDef> T </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEO}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="ENFQ_PRAC">
+                                            <th mat-header-cell *matHeaderCellDef> P </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_PRAC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="ENFQ_TEOPRAC">
+                                            <th mat-header-cell *matHeaderCellDef> T/P </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEOPRAC}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="acciones">
+                                            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                            </td>
+                                        </ng-container>
+                    
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestre"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestre;"></tr>
+                                    </table>
                                 </div>
                             </mat-card-content>
                         </mat-card>
@@ -244,7 +512,7 @@
                     <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
                             title=Cancelar (click)="cancelar()"></i>
                 </legend>
-                <mat-horizontal-stepper #stepper [linear]="true" #stepper>
+                <mat-horizontal-stepper #stepper [linear]="true">
 
                     <mat-step>
                         <!-- <ng-template matStepLabel>{{ 'espacios_academicos.select_proyecto' | translate }}</ng-template> -->
@@ -281,9 +549,51 @@
                                 Usuario en el orden que agregue los planes de estudio será el mismo orden con el que se organiza el plan por ciclos.
                             </div>
                         </div>
-                        <ng2-smart-table [settings]="tbSimpleStudyPlans" [source]="dataSimpleStudyPlans"
+                        <!-- <ng2-smart-table [settings]="tbSimpleStudyPlans" [source]="dataSimpleStudyPlans"
                             (custom)="onAction($event)">
-                        </ng2-smart-table>
+                        </ng2-smart-table> -->
+                        <table mat-table [dataSource]="dataSimpleStudyPlans" class="mat-elevation-z5">
+
+                            <ng-container matColumnDef="plan_estudio">
+                                <th mat-header-cell *matHeaderCellDef> Plan de estudios </th>
+                                <td mat-cell *matCellDef="let element"> {{element.plan_estudio}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="proyectoCurricular">
+                                <th mat-header-cell *matHeaderCellDef> Proyecto curricular </th>
+                                <td mat-cell *matCellDef="let element"> {{element.proyectoCurricular}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="resolucion">
+                                <th mat-header-cell *matHeaderCellDef> Resolución </th>
+                                <td mat-cell *matCellDef="let element"> {{element.resolucion}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="estado">
+                                <th mat-header-cell *matHeaderCellDef> Estado </th>
+                                <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="totalCreditos">
+                                <th mat-header-cell *matHeaderCellDef> Total de créditos </th>
+                                <td mat-cell *matCellDef="let element"> {{element.totalCreditos}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="planPorCiclos">
+                                <th mat-header-cell *matHeaderCellDef> Plan por ciclos </th>
+                                <td mat-cell *matCellDef="let element"> {{element.planPorCiclos}} </td>
+                            </ng-container>
+ 
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                </td>
+                            </ng-container>
+        
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsStudy"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsStudy;"></tr>
+                        </table>
                         <br>
                         <mat-card class="alinear-center espacio-doble mat-card-custom">
                             <mat-card-header>
@@ -293,9 +603,51 @@
                                 </mat-card-title>
                             </mat-card-header>
                         </mat-card>
-                        <ng2-smart-table [settings]="tbOrganizedStudyPlans" [source]="dataOrganizedStudyPlans"
+                        <!-- <ng2-smart-table [settings]="tbOrganizedStudyPlans" [source]="dataOrganizedStudyPlans"
                             (custom)="onAction($event)">
-                        </ng2-smart-table>
+                        </ng2-smart-table> -->
+                        <table mat-table [dataSource]="dataOrganizedStudyPlans" class="mat-elevation-z5">
+
+                            <ng-container matColumnDef="plan_estudio">
+                                <th mat-header-cell *matHeaderCellDef> Plan de estudios </th>
+                                <td mat-cell *matCellDef="let element"> {{element.plan_estudio}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="proyectoCurricular">
+                                <th mat-header-cell *matHeaderCellDef> Proyecto curricular </th>
+                                <td mat-cell *matCellDef="let element"> {{element.proyectoCurricular}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="resolucion">
+                                <th mat-header-cell *matHeaderCellDef> Resolución </th>
+                                <td mat-cell *matCellDef="let element"> {{element.resolucion}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="estado">
+                                <th mat-header-cell *matHeaderCellDef> Estado </th>
+                                <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="totalCreditos">
+                                <th mat-header-cell *matHeaderCellDef> Total de créditos </th>
+                                <td mat-cell *matCellDef="let element"> {{element.totalCreditos}} </td>
+                            </ng-container>
+        
+                            <ng-container matColumnDef="planPorCiclos">
+                                <th mat-header-cell *matHeaderCellDef> Plan por ciclos </th>
+                                <td mat-cell *matCellDef="let element"> {{element.planPorCiclos}} </td>
+                            </ng-container>
+ 
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                </td>
+                            </ng-container>
+        
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsStudy"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsStudy;"></tr>
+                        </table>
                         <br>
                         <div class="alinear-center espacio-doble">
                             <!-- <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">{{
