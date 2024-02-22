@@ -171,6 +171,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           });
           //this.dataPlanesEstudio.load(this.planesEstudio);
           this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
+          console.log(this.planesEstudio)
           this.loading = false;
         }).catch(err => {
           this.loading = false;
@@ -282,6 +283,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.vista = VIEWS.FORM;
     // this.dataEspaciosAcademicos.load([]);
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
+    console.log(this.formPlanEstudio, this.formGroupPlanEstudio, this.dataEspaciosAcademicos)
   }
 
   guardar(stepper: MatStepper) {

@@ -451,6 +451,7 @@ export abstract class PlanEstudioBaseComponent {
 
   totalTotal() {
     let total = <any>UtilidadesService.hardCopy(this.formatototal);
+    console.log(total, this.dataSemestre);
     this.dataSemestre.forEach((semestre) => {
       semestre.getAll().then((data: any) => {
         if (data.length > 0) {
@@ -1167,15 +1168,6 @@ export abstract class PlanEstudioBaseComponent {
 
   //--------------AQUIIIIII----------------//
   /*
-  crearFormulario(formPlanEstudio: FormParams) {
-    this.planEstudioPadreAsignado2Form = false;
-    this.formPlanEstudio = <FormParams>(
-      UtilidadesService.hardCopy(formPlanEstudio)
-    );
-    this.formPlanEstudio['nivel'].opciones = this.niveles.filter(
-      (nivel) => nivel.NivelFormacionPadreId == undefined
-    );
-  }
 
   habilitarGenerarPlan() {
     if (this.dataPlanesEstudio.data.length > 0) {
@@ -1695,36 +1687,6 @@ export abstract class PlanEstudioBaseComponent {
   // * Reaccionar a cambios o creación de formularios
   //#region
 
-  asignarForm(event: any) {
-    this.formGroupPlanEstudio = event;
-    // Carga de datos en la acción de visualizar o editar
-    if ((this.mainAction === ACTIONS.VIEW || this.mainAction === ACTIONS.EDIT) && this.planEstudioBody != undefined){
-      this.cargarFormularioPlanEstudios().then((res) => {
-        if (res) {
-          if (this.esPlanEstudioPadre) {
-            this.cargarPlanesOrdenados(this.mainAction === ACTIONS.EDIT);
-          } else {
-            this.cargarParametrizacionSemestres(this.mainAction === ACTIONS.EDIT);
-            this.enEdicionSemestreNuevo = false;
-            this.enEdicionSemestreViejo = false;
-
-          }
-        }
-      }, (error) => {
-        this.popUpManager.showPopUpGeneric(
-          this.translate.instant('ERROR.titulo_generico'),
-          this.translate.instant('plan_estudios.error_cargando_datos_formulario') + '</b>.<br><br>' +
-          this.translate.instant('ERROR.persiste_error_comunique_OAS'),
-          MODALS.ERROR, false).then(() => {
-            this.loading = false;
-            this.planEstudioPadreAsignado2Form = false;
-            this.formGroupPlanEstudio.reset();
-            this.dataSemestre = [];
-            this.vista = VIEWS.LIST;
-            this.loadSelects();
-          });
-      });
-    }
 
     // Asignación del tipo de plan al formulario
     if (!this.planEstudioPadreAsignado2Form) {
