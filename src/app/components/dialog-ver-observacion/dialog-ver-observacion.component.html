@@ -1,0 +1,75 @@
+<!-- <div class="dinamic-form" [nbSpinner]="loading"> -->
+<div class="dinamic-form">
+  <ng-container>
+    <mat-card>
+      <mat-card-content>
+        <form novalidate [formGroup]="revisionForm" #fform="ngForm" class="form-horizontal">
+          <fieldset [ngClass]="{'fieldseter': true}">
+            <!-- <legend><small>&nbsp; {{ 'plan_estudios.evaluar' | translate }}</small></legend> -->
+            <legend><small>&nbsp; Evaluar plan de estudio</small></legend>
+
+            <div class="row">
+              <div class="column">
+                <!-- <p class="bold">{{ 'plan_estudios.evaluacion' | translate }}: </p> -->
+                <p class="bold">Evaluación: </p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="column">
+                <ng-container>
+                  <mat-form-field style="width: 100%;">
+                    <!-- <mat-label>{{ 'plan_estudios.estado_evaluacion' | translate }}</mat-label> -->
+                    <mat-label>Estado de Evaluación</mat-label>
+                    <input matInput type="text" formControlName="estadoSeleccionado" [disabled]="true" readonly>
+                  </mat-form-field>
+                </ng-container>
+              </div>
+
+              <div class="column">
+                <mat-form-field style="width: 100%;" floatLabel="always">
+                  <!-- <mat-label>{{ 'GLOBAL.observaciones' | translate }}</mat-label> -->
+                  <mat-label>Observaciones</mat-label>
+                  <textarea matInput rows="5" formControlName="observaciones" [disabled]="true"
+                    readonly></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="column">
+                <!-- <p class="bold">{{ 'plan_estudios.quien_da_respuesta' | translate }}: </p> -->
+                <p class="bold">Evaluado por: </p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="column">
+                <ng-container>
+                  <mat-form-field style="width: 100%;">
+                    <!-- <mat-label>{{ 'GLOBAL.rol' | translate }}</mat-label> -->
+                    <mat-label>Rol</mat-label>
+                    <input matInput type="text" formControlName="rolSeleccionado" [disabled]="true" readonly>
+                  </mat-form-field>
+                </ng-container>
+              </div>
+              <div class="column">
+                <mat-form-field style="width: 100%;">
+                  <!-- <mat-label for="nombreEvaluador">{{ 'plan_estudios.nombre_evaluador' | translate }}</mat-label> -->
+                  <mat-label for="nombreEvaluador">Nombre del coordinador respectivo</mat-label>
+                  <input matInput type="text" formControlName="nombreEvaluador" [disabled]="true"
+                    readonly>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- <button mat-raised-button color="primary" (click)="salirObservacion()">{{ 'GLOBAL.salir' | translate }}</button> -->
+              <button mat-raised-button color="primary" (click)="salirObservacion()">Salir</button>
+            </div>
+          </fieldset>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+</div>
