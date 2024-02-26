@@ -27,7 +27,7 @@ export class SgaMidService {
   constructor(private requestManager: RequestManager, private http: HttpClient) {
     this.requestManager.setPath('SGA_MID_SERVICE');
   }
-  get(endpoint: any):any {
+  get(endpoint: any) {
     this.requestManager.setPath('SGA_MID_SERVICE');
     return this.requestManager.get(endpoint);
   }

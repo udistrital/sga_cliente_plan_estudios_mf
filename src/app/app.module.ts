@@ -21,8 +21,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { DialogVerObservacionComponent } from './components/dialog-ver-observacion/dialog-ver-observacion.component';
 import { PlanEstudiosService } from './services/plan_estudios.service';
+import { EspaciosAcademicosService } from './services/espacios_academicos.service';
 import { SummaryPlanesEstudioComponent } from './components/summary-planes-estudio/summary-planes-estudio.component';
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
@@ -57,6 +59,7 @@ import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinam
     MatProgressSpinnerModule,
     MatSelectModule,
     MatExpansionModule,
+    MatPaginatorModule,
     TranslateModule.forRoot({
       loader:{
         provide: TranslateLoader,
@@ -66,7 +69,8 @@ import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinam
     }),
   ],
   providers: [
-    PlanEstudiosService
+    PlanEstudiosService,
+    EspaciosAcademicosService
   ],
   bootstrap: [AppComponent]
 })

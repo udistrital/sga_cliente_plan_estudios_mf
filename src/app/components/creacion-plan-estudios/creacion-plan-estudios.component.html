@@ -3,11 +3,8 @@
 <mat-card [ngSwitch]="vista">
     <mat-card-header>
         <div class="row titulo">
-            <!-- <div class="col">
-                {{ 'plan_estudios.crear_editar' | translate }}
-            </div> -->
             <div class="col">
-                Crear/Editar Plan de Estudios
+                {{ 'plan_estudios.crear_editar' | translate }}
             </div>
         </div>
     </mat-card-header>
@@ -17,9 +14,7 @@
                 <legend><small>&nbsp; {{ 'plan_estudios.planes_estudio_creados' | translate }} </small></legend>
                 <!-- <legend><small>&nbsp; Planes de estudio creados </small></legend> -->
                 <div class="alinear-center">
-                    <!-- <div class="advertencia">{{ 'plan_estudios.mensaje_soporte_multiple_proyecto' | translate }}</div> -->
-                    <div class="advertencia">La tabla muestra el/los planes de estudios relacionados en la creación, el
-                        sistema soporta la creación de planes de estudio de más de un proyecto curricular.</div>
+                    <div class="advertencia">{{ 'plan_estudios.mensaje_soporte_multiple_proyecto' | translate }}</div>
                 </div>
                 <!-- <ng2-smart-table [settings]="tbPlanesEstudio" [source]="dataPlanesEstudio">
                 </ng2-smart-table> -->
@@ -58,10 +53,10 @@
                     <ng-container matColumnDef="ver_editar">
                         <th mat-header-cell *matHeaderCellDef> Ver/Editar </th>
                         <td mat-cell *matCellDef="let element">
-                            <button *ngIf="element.ver.type == 'ver'" mat-raised-button color="primary" [disabled]="element.ver.disabled">
+                            <button *ngIf="element.ver.type == 'ver'" mat-raised-button color="primary" [disabled]="element.ver.disabled" (click)="viewStudyPlan(element.Id)">
                                 <mat-icon class="icon-boton">search</mat-icon>
                             </button>
-                            <button *ngIf="element.ver.type == 'editar'" mat-raised-button color="primary" [disabled]="element.ver.disabled">
+                            <button *ngIf="element.ver.type == 'editar'" mat-raised-button color="primary" [disabled]="element.ver.disabled" (click)="prepareFormUpdateStudyPlan(element.Id)">
                                 <mat-icon class="icon-boton">edit</mat-icon>
                             </button>
                         </td>
@@ -70,7 +65,7 @@
                     <ng-container matColumnDef="observacion">
                         <th mat-header-cell *matHeaderCellDef> Ver observación </th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button color="primary" *ngIf="!element.ver_ob.disabled" [disabled]="element.ver_ob.disabled">
+                            <button mat-raised-button color="primary" *ngIf="!element.ver_ob.disabled" [disabled]="element.ver_ob.disabled" (click)="viewObservation(element.Id)">
                                 <mat-icon class="icon-boton color-negro">search</mat-icon>
                             </button>
                         </td>
@@ -79,19 +74,17 @@
                     <ng-container matColumnDef="enviar">
                         <th mat-header-cell *matHeaderCellDef> Enviar </th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button color="primary" *ngIf="!element.enviar.disabled" [disabled]="element.enviar.disabled"><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                            <button mat-raised-button color="primary" *ngIf="!element.enviar.disabled" [disabled]="element.enviar.disabled" (click)="send2ReviewStudyPlan(element.Id)"><mat-icon class="icon-boton color-negro">send</mat-icon></button>
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsPlanesEstudio"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumnsPlanesEstudio;"></tr>
                 </table>
+                <mat-paginator class="paginacion" [pageSize]="10">
+                </mat-paginator>
 
                 <div class="alinear-center-espacio-doble" [class.generate]="habilitadoGenerarPlan">
-                    <!-- <button mat-raised-button color="primary" (click)="nuevoPlanEstudio()">{{ 'plan_estudios.crear' |
-                        translate }}</button>
-                    <button mat-raised-button color="primary" (click)="organizarPlanEstudioCompuesto()">{{
-                        'plan_estudios.organizar' | translate }}</button> -->
                     <button mat-raised-button color="primary" (click)="nuevoPlanEstudio()">{{ 'plan_estudios.crear' | translate }}</button>
                     <button mat-raised-button color="primary" (click)="organizarPlanEstudioCompuesto()">{{ 'plan_estudios.organizar' | translate }}</button>
                 </div>
@@ -100,37 +93,27 @@
         <ng-container *ngSwitchCase="VIEWS.FORM">
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
-                    <!-- <small>&nbsp; {{ 'plan_estudios.crear_editar' | translate }} </small>
+                    <small>&nbsp; {{ 'plan_estudios.crear_editar' | translate }} </small>
                     <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="{{'GLOBAL.cancelar' | translate}}" (click)="cancelar()"></i> -->
-                    <small>&nbsp; Crear/Editar Plan de Estudios </small>
-                    <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="Cancelar" (click)="cancelar()"></i>
+                        title="{{'GLOBAL.cancelar' | translate}}" (click)="cancelar()"></i>
                 </legend>
                 <mat-horizontal-stepper #stepper [linear]="true">
-                    <!-- <mat-step [stepControl]="formGroupPlanEstudio" errorMessage="{{ 'GLOBAL.diligenciar_paso' | translate }}"> -->
-                    <mat-step [stepControl]="formGroupPlanEstudio" errorMessage="Debe diligenciar este paso">
-                        <!-- <ng-template matStepLabel>{{ 'espacios_academicos.select_proyecto' | translate }}</ng-template> -->
-                        <ng-template matStepLabel>Seleccionar Proyecto Curricular</ng-template>
+                    <mat-step [stepControl]="formGroupPlanEstudio" errorMessage="{{ 'GLOBAL.diligenciar_paso' | translate }}">
+                        <ng-template matStepLabel>{{ 'espacios_academicos.select_proyecto' | translate }}</ng-template>
                         <dinamic-form-group [defineForm]="formPlanEstudio" (subsChanges)="cambioEn($event)"
                             (createdForm)="asignarForm($event)"
                             (updatedForm)="actualizarForm($event)"></dinamic-form-group>
                         <div class="alinear-center" [class.right]="!enEdicionPlanEstudio">
-                            <!-- <button mat-raised-button (click)="limpiar()" [hidden]="!enEdicionPlanEstudio || !modoCreacion">{{ 'GLOBAL.limpiar' | translate}}</button> -->
-                            <button mat-raised-button (click)="limpiar()" [hidden]="!enEdicionPlanEstudio || !modoCreacion">Limpiar</button>
-                            <!-- <button mat-raised-button [color]="formGroupPlanEstudio.valid ? 'primary' : ''" (click)="guardar(stepper)" [disabled]="!formGroupPlanEstudio.valid" [hidden]="!enEdicionPlanEstudio">{{ 'GLOBAL.guardar_continuar' | translate }}</button> -->
-                            <button mat-raised-button [color]="formGroupPlanEstudio.valid ? 'primary' : ''" (click)="guardar(stepper)" [disabled]="!formGroupPlanEstudio.valid" [hidden]="!enEdicionPlanEstudio">Guardar y continuar</button>
-                            <!-- <button mat-raised-button matStepperNext [hidden]="enEdicionPlanEstudio">{{'GLOBAL.siguiente' | translate }}</button> -->
-                            <button mat-raised-button matStepperNext [hidden]="enEdicionPlanEstudio">Siguiente</button>
+                            <button mat-raised-button (click)="limpiar()" [hidden]="!enEdicionPlanEstudio || !modoCreacion">{{ 'GLOBAL.limpiar' | translate}}</button>
+                            <button mat-raised-button [color]="formGroupPlanEstudio.valid ? 'primary' : ''" (click)="guardar(stepper)" [disabled]="!formGroupPlanEstudio.valid" [hidden]="!enEdicionPlanEstudio">{{ 'GLOBAL.guardar_continuar' | translate }}</button>
+                            <button mat-raised-button matStepperNext [hidden]="enEdicionPlanEstudio">{{'GLOBAL.siguiente' | translate }}</button>
                         </div>
                     </mat-step>
                     <mat-step>
-                        <!-- <ng-template matStepLabel>{{ 'plan_estudios.parametrizacion_semestral' | translate}}</ng-template> -->
-                        <ng-template matStepLabel>Parametrización por semestre</ng-template>
+                        <ng-template matStepLabel>{{ 'plan_estudios.parametrizacion_semestral' | translate}}</ng-template>
                         <div class="alinear-center">
                             <div class="advertencia">
-                                <!-- {{'plan_estudios.mensaje_tabla_espacios_si_vacio_solicite_inclusion' | translate }} -->
-                                Usuario la tabla muestra todos los espacios académicos relacionados a su proyecto curricular, si no existe algún espacio solicite la inclusión en el sistema.
+                                {{'plan_estudios.mensaje_tabla_espacios_si_vacio_solicite_inclusion' | translate }}
                             </div>
                         </div>
                         <!-- <ng2-smart-table [settings]="tbEspaciosAcademicos" [source]="dataEspaciosAcademicos"
@@ -150,7 +133,7 @@
         
                             <ng-container matColumnDef="pre_requisitos">
                                 <th mat-header-cell *matHeaderCellDef> Espacios requeridos (pre requisitos) </th>
-                                <td mat-cell *matCellDef="let element"> {{element.prerequisitos}} </td>
+                                <td mat-cell *matCellDef="let element"> {{element.prerequisitos_str}} </td>
                             </ng-container>
         
                             <ng-container matColumnDef="clase">
@@ -166,18 +149,19 @@
                             <ng-container matColumnDef="acciones">
                                 <th mat-header-cell *matHeaderCellDef> Acciones </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                    <button mat-raised-button (click)="aniadirASemestre(element._id)" class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo)">+</button>
                                 </td>
                             </ng-container>
         
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsEspaciosAcademicos"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsEspaciosAcademicos;"></tr>
                         </table>
+                        <mat-paginator class="paginacion" [pageSize]="10">
+                        </mat-paginator>
                         <div class="alinear-right espacio-doble">
                             <mat-card status="success" class="recuadro">
                                 <mat-card-header class="d-flex justify-content-around align-items-center" style="padding: 5px;">
-                                    <!-- {{ 'plan_estudios.total_espacios_asignar' | translate }} -->
-                                    Total de espacios por asignar
+                                    {{ 'plan_estudios.total_espacios_asignar' | translate }}
                                 </mat-card-header>
                                 <mat-card-content class="d-flex justify-content-around align-items-center"
                                     style="padding: 5px;">
@@ -186,34 +170,25 @@
                             </mat-card>
                         </div>
                         <div class="alinear-center espacio">
-                            <!-- <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">{{
-                                'GLOBAL.regresar' | translate }}</button> -->
-                            <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">Regresar</button>
-                            <!-- <button mat-raised-button color="primary" (click)="agregarSemestre()"
-                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo"
-                                [hidden]="!enEdicionPlanEstudio || numSemestresCompletado">{{
-                                'plan_estudios.agregar_semestre' | translate }}</button> -->
+                            <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">{{
+                                'GLOBAL.regresar' | translate }}</button>
                             <button mat-raised-button color="primary" (click)="agregarSemestre()"
                                 [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo"
-                                [hidden]="!enEdicionPlanEstudio || numSemestresCompletado">Agregar semestre</button>
-                            <!-- <button mat-raised-button color="primary" (click)="generarPlanEstudio()"
-                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo">{{
-                                'plan_estudios.generar_plan' | translate }}</button> -->
+                                [hidden]="!enEdicionPlanEstudio || numSemestresCompletado">{{
+                                'plan_estudios.agregar_semestre' | translate }}</button>
                             <button mat-raised-button color="primary" (click)="generarPlanEstudio()"
-                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo">Generar Plan de Estudios</button>
-                            <!-- <button mat-raised-button (click)="salirEdicionFormulario()"
-                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo">{{ 'GLOBAL.salir' |
-                                translate }}</button> -->
+                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo">{{
+                                'plan_estudios.generar_plan' | translate }}</button>
                             <button mat-raised-button (click)="salirEdicionFormulario()"
-                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo">Salir</button>
+                                [disabled]="enEdicionSemestreNuevo || enEdicionSemestreViejo">{{ 'GLOBAL.salir' |
+                                translate }}</button>
                         </div>
                         <mat-accordion>
-                            <mat-expansion-panel hideToggle *ngFor="let semestre of dataSemestre; let numero = index"
+                            <mat-expansion-panel hideToggle *ngFor="let semestre of dataSemestre.data; let numero = index"
                                 [expanded]="(numero) === punteroSemestrePlan">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        <!-- {{ 'plan_estudios.semestre' | translate }} # {{ numero + 1 }} -->
-                                        Semestre # {{ numero + 1 }}
+                                        {{ 'plan_estudios.semestre' | translate }} # {{ numero + 1 }}
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div class="custom-action-tb"
@@ -223,197 +198,188 @@
                                     </ng2-smart-table> -->
                                     <table mat-table [dataSource]="semestre" class="mat-elevation-z5">
 
+                                        <div>{{semestre}}</div>
                                         <ng-container matColumnDef="nombre">
                                             <th mat-header-cell *matHeaderCellDef> Espacio académico </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.nombre }} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="creditos">
                                             <th mat-header-cell *matHeaderCellDef> Créditos </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.creditos}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.creditos }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="htd">
                                             <th mat-header-cell *matHeaderCellDef> HTD </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.htd}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.htd }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="htc">
                                             <th mat-header-cell *matHeaderCellDef> HTC </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.htc}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.htc }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hta">
                                             <th mat-header-cell *matHeaderCellDef> HTA </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.hta}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.hta }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="OB">
                                             <th mat-header-cell *matHeaderCellDef> OB </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.OB}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.OB }} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="OC">
                                             <th mat-header-cell *matHeaderCellDef> OC </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.OC}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.OC }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="EI">
                                             <th mat-header-cell *matHeaderCellDef> EI </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.EI}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.EI }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="EE">
                                             <th mat-header-cell *matHeaderCellDef> EE </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.EE}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.EE }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="CP">
                                             <th mat-header-cell *matHeaderCellDef> CP </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.CP}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.CP }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="ENFQ_TEO">
                                             <th mat-header-cell *matHeaderCellDef> T </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEO}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.ENFQ_TEO }} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="ENFQ_PRAC">
                                             <th mat-header-cell *matHeaderCellDef> P </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_PRAC}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.ENFQ_PRAC }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="ENFQ_TEOPRAC">
                                             <th mat-header-cell *matHeaderCellDef> T/P </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEOPRAC}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{ element.ENFQ_TEOPRAC }} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="acciones">
                                             <th mat-header-cell *matHeaderCellDef> Acciones </th>
                                             <td mat-cell *matCellDef="let element">
-                                                <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                                <button mat-raised-button (click)="removeFromSemester(element)" class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo) || (semestre.length == 0) || !(numero === punteroSemestrePlan)">-</button>
                                             </td>
                                         </ng-container>
                     
                                         <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestre"></tr>
                                         <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestre;"></tr>
                                     </table>
-                                </div>
+                                </div> 
 
                                 <div class="resumenTabla">
                                     <!-- <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotal[numero]">
                                     </ng2-smart-table> -->
-                                    <table mat-table [dataSource]="dataSemestreTotal[numero]" class="mat-elevation-z5">
+                                    
+                                    <table mat-table [dataSource]="dataSemestreTotal[numero]" class="mat-elevation-z5 tabla-total">
 
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Espacio académico </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> Espacio académico </th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="creditos">
-                                            <th mat-header-cell *matHeaderCellDef> Créditos </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> Créditos </th>
                                             <td mat-cell *matCellDef="let element"> {{element.creditos}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="htd">
-                                            <th mat-header-cell *matHeaderCellDef> HTD </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> HTD </th>
                                             <td mat-cell *matCellDef="let element"> {{element.htd}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="htc">
-                                            <th mat-header-cell *matHeaderCellDef> HTC </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> HTC </th>
                                             <td mat-cell *matCellDef="let element"> {{element.htc}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hta">
-                                            <th mat-header-cell *matHeaderCellDef> HTA </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> HTA </th>
                                             <td mat-cell *matCellDef="let element"> {{element.hta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="OB">
-                                            <th mat-header-cell *matHeaderCellDef> OB </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> OB </th>
                                             <td mat-cell *matCellDef="let element"> {{element.OB}} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="OC">
-                                            <th mat-header-cell *matHeaderCellDef> OC </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> OC </th>
                                             <td mat-cell *matCellDef="let element"> {{element.OC}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="EI">
-                                            <th mat-header-cell *matHeaderCellDef> EI </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> EI </th>
                                             <td mat-cell *matCellDef="let element"> {{element.EI}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="EE">
-                                            <th mat-header-cell *matHeaderCellDef> EE </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> EE </th>
                                             <td mat-cell *matCellDef="let element"> {{element.EE}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="CP">
-                                            <th mat-header-cell *matHeaderCellDef> CP </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> CP </th>
                                             <td mat-cell *matCellDef="let element"> {{element.CP}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="ENFQ_TEO">
-                                            <th mat-header-cell *matHeaderCellDef> T </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> T </th>
                                             <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEO}} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="ENFQ_PRAC">
-                                            <th mat-header-cell *matHeaderCellDef> P </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> P </th>
                                             <td mat-cell *matCellDef="let element"> {{element.ENFQ_PRAC}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="ENFQ_TEOPRAC">
-                                            <th mat-header-cell *matHeaderCellDef> T/P </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> T/P </th>
                                             <td mat-cell *matCellDef="let element"> {{element.ENFQ_TEOPRAC}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="acciones">
-                                            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                            <th mat-header-cell *matHeaderCellDef class="none"> Acciones </th>
                                             <td mat-cell *matCellDef="let element">
-                                                <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                                <button mat-raised-button (click)="removeFromSemester(element)" class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo) || (semestre.length == 0) || !(numero === punteroSemestrePlan)">-</button>
                                             </td>
                                         </ng-container>
                     
-                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestre"></tr>
-                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestre;"></tr>
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestreTotal"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestreTotal;"></tr>
                                     </table>
                                 </div>
                                 <mat-action-row>
-                                    <!-- <button mat-raised-button type="button" (click)="limpiarSemestre(semestre)"
-                                        [disabled]="!enEdicionSemestreNuevo"
-                                        [hidden]="!enEdicionPlanEstudio || (numero+1) !== dataSemestre.length">{{
-                                        'GLOBAL.limpiar' | translate }}</button> -->
                                     <button mat-raised-button type="button" (click)="limpiarSemestre(semestre)"
                                         [disabled]="!enEdicionSemestreNuevo"
-                                        [hidden]="!enEdicionPlanEstudio || (numero+1) !== dataSemestre.length">Limpiar</button>
-                                    <!-- <button mat-raised-button type="button" color="primary"
+                                        [hidden]="!enEdicionPlanEstudio || (numero+1) !== dataSemestre.data.length">{{
+                                        'GLOBAL.limpiar' | translate }}</button>
+                                    <button mat-raised-button type="button" color="primary"
                                         (click)="editarSemestre(numero)" [disabled]="enEdicionSemestreNuevo"
                                         [hidden]="!enEdicionPlanEstudio || (numero === punteroSemestrePlan && (enEdicionSemestreNuevo || enEdicionSemestreViejo))">{{
-                                        'plan_estudios.editar_semestre' | translate }}</button> -->
+                                        'plan_estudios.editar_semestre' | translate }}</button>        
                                     <button mat-raised-button type="button" color="primary"
-                                        (click)="editarSemestre(numero)" [disabled]="enEdicionSemestreNuevo"
-                                        [hidden]="!enEdicionPlanEstudio || (numero === punteroSemestrePlan && (enEdicionSemestreNuevo || enEdicionSemestreViejo))">Editar semestre</button>        
-                                    <!-- <button mat-raised-button type="button" color="primary"
                                         (click)="finalizarSemestre()"
-                                        [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo) || (semestre.count() == 0) || !(numero === punteroSemestrePlan)"
+                                        [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo) || (semestre.length == 0) || !(numero === punteroSemestrePlan)"
                                         [hidden]="!enEdicionPlanEstudio">{{ 'plan_estudios.finalizar_semestre' |
-                                        translate }}</button> -->
-                                    <button mat-raised-button type="button" color="primary"
-                                        (click)="finalizarSemestre()"
-                                        [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo) || (semestre.count() == 0) || !(numero === punteroSemestrePlan)"
-                                        [hidden]="!enEdicionPlanEstudio">Finalizar semestre</button>
+                                        translate }}</button>
                                 </mat-action-row>
                             </mat-expansion-panel>
                         </mat-accordion>
                         <mat-card status="success" class="recuadro" style="margin: 2rem 0px 1rem 0px;"
-                            *ngIf="dataSemestre.length > 0">
+                            *ngIf="dataSemestre.data.length > 0">
                             <mat-card-header class="d-flex justify-content-around align-items-center"
                                 style="padding: 5px;">
-                                <!-- {{ 'plan_estudios.resumen_general' | translate }} -->
-                                Total Plan de estudio
+                                {{ 'plan_estudios.resumen_general' | translate }}
                             </mat-card-header>
                             <mat-card-content style="padding: 1px;">
                                 <div class="resumenTotal">
@@ -489,12 +455,12 @@
                                         <ng-container matColumnDef="acciones">
                                             <th mat-header-cell *matHeaderCellDef> Acciones </th>
                                             <td mat-cell *matCellDef="let element">
-                                                <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                                <button mat-raised-button (click)="removeFromSemester(element)" class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo)">-</button>
                                             </td>
                                         </ng-container>
                     
-                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestre"></tr>
-                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestre;"></tr>
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsSemestreTotalTotal"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsSemestreTotalTotal;"></tr>
                                     </table>
                                 </div>
                             </mat-card-content>
@@ -506,48 +472,34 @@
         <ng-container *ngSwitchCase="VIEWS.SECONDARY_FORM">
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
-                    <!-- <small>&nbsp; {{ 'plan_estudios.crear_editar' | translate }} </small>
+                    <small>&nbsp; {{ 'plan_estudios.crear_editar' | translate }} </small>
                     <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="{{'GLOBAL.cancelar' | translate}}" (click)="cancelar()"></i> -->
-                    <small>&nbsp; Crear/Editar Plan de Estudios </small>
-                    <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                            title=Cancelar (click)="cancelar()"></i>
+                        title="{{'GLOBAL.cancelar' | translate}}" (click)="cancelar()"></i>
                 </legend>
                 <mat-horizontal-stepper #stepper [linear]="true">
 
                     <mat-step>
-                        <!-- <ng-template matStepLabel>{{ 'espacios_academicos.select_proyecto' | translate }}</ng-template> -->
-                        <ng-template matStepLabel>Seleccionar Proyecto Curricular</ng-template>
+                        <ng-template matStepLabel>{{ 'espacios_academicos.select_proyecto' | translate }}</ng-template>
                         <dinamic-form-group [defineForm]="formPlanEstudio" (subsChanges)="cambioEn($event)"
                             (createdForm)="asignarForm($event)"
                             (updatedForm)="actualizarForm($event)"></dinamic-form-group>
                         <div class="alinear-center" [class.right]="!enEdicionPlanEstudio">
-                            <!-- <button mat-raised-button (click)="limpiar()"
-                                [hidden]="!enEdicionPlanEstudio || !modoCreacion">{{ 'GLOBAL.limpiar' | translate}}</button> -->
                             <button mat-raised-button (click)="limpiar()"
-                                [hidden]="!enEdicionPlanEstudio || !modoCreacion">Limpiar</button>
-                            <!-- <button mat-raised-button [color]="formGroupPlanEstudio.valid ? 'primary' : ''"
-                                (click)="guardar(stepper)" [disabled]="!formGroupPlanEstudio.valid"
-                                [hidden]="!enEdicionPlanEstudio">{{ 'GLOBAL.guardar_continuar' | translate }}</button> -->
+                                [hidden]="!enEdicionPlanEstudio || !modoCreacion">{{ 'GLOBAL.limpiar' | translate}}</button>
                             <button mat-raised-button [color]="formGroupPlanEstudio.valid ? 'primary' : ''"
                                 (click)="guardar(stepper)" [disabled]="!formGroupPlanEstudio.valid"
-                                [hidden]="!enEdicionPlanEstudio">Guardar y continuar</button>
-                            <!-- <button mat-raised-button matStepperNext [hidden]="enEdicionPlanEstudio">{{
-                                'GLOBAL.siguiente' | translate }}</button> -->
-                            <button mat-raised-button matStepperNext [hidden]="enEdicionPlanEstudio">Siguiente</button>
+                                [hidden]="!enEdicionPlanEstudio">{{ 'GLOBAL.guardar_continuar' | translate }}</button>
+                            <button mat-raised-button matStepperNext [hidden]="enEdicionPlanEstudio">{{
+                                'GLOBAL.siguiente' | translate }}</button>
                         </div>
                     </mat-step>
                     <mat-step>
-                        <!-- <ng-template matStepLabel>{{ 'plan_estudios.parametrizacion_plan_ciclos' | translate
-                            }}</ng-template> -->
-                        <ng-template matStepLabel>Organizar planes de estudio</ng-template>
+                        <ng-template matStepLabel>{{ 'plan_estudios.parametrizacion_plan_ciclos' | translate
+                            }}</ng-template>
                         <div class="alinear-center">
-                            <!-- <div class="advertencia">
+                            <div class="advertencia">
                                 {{ 'plan_estudios.mensaje_tabla_planes_por_ciclos_indice_orden' |
                                 translate }}
-                            </div> -->
-                            <div class="advertencia">
-                                Usuario en el orden que agregue los planes de estudio será el mismo orden con el que se organiza el plan por ciclos.
                             </div>
                         </div>
                         <!-- <ng2-smart-table [settings]="tbSimpleStudyPlans" [source]="dataSimpleStudyPlans"
@@ -588,7 +540,7 @@
                             <ng-container matColumnDef="acciones">
                                 <th mat-header-cell *matHeaderCellDef> Acciones </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                    <button mat-raised-button (click)="addPlan(element._id)" class="btn-accion" color="primary">+</button>
                                 </td>
                             </ng-container>
         
@@ -599,8 +551,7 @@
                         <mat-card class="alinear-center espacio-doble mat-card-custom">
                             <mat-card-header>
                                 <mat-card-title>
-                                    <!-- {{ 'plan_estudios.planes_estudio_asignados' | translate}} -->
-                                    Planes de estudio asignados
+                                    {{ 'plan_estudios.planes_estudio_asignados' | translate}}
                                 </mat-card-title>
                             </mat-card-header>
                         </mat-card>
@@ -638,36 +589,34 @@
                                 <th mat-header-cell *matHeaderCellDef> Plan por ciclos </th>
                                 <td mat-cell *matCellDef="let element"> {{element.planPorCiclos}} </td>
                             </ng-container>
+
+                            <ng-container matColumnDef="orden">
+                                <th mat-header-cell *matHeaderCellDef> Orden </th>
+                                <td mat-cell *matCellDef="let element"> {{element.planPorCiclos}} </td>
+                            </ng-container>
  
                             <ng-container matColumnDef="acciones">
                                 <th mat-header-cell *matHeaderCellDef> Acciones </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <button mat-raised-button><mat-icon class="icon-boton color-negro">send</mat-icon></button>
+                                    <button mat-raised-button (click)="removePlan(element._id)" class="btn-accion" color="primary">-</button>
                                 </td>
                             </ng-container>
         
-                            <tr mat-header-row *matHeaderRowDef="displayedColumnsStudy"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumnsStudy;"></tr>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsOrganizedStudy"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsOrganizedStudy;"></tr>
                         </table>
                         <br>
                         <div class="alinear-center espacio-doble">
-                            <!-- <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">{{
-                                'GLOBAL.regresar' | translate }}</button> -->
-                            <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">Regresar</button>
-                            <!-- <button mat-raised-button color="primary" (click)="registrarPlanOrdenado()"
-                                [disabled]="dataOrganizedStudyPlans == undefined || dataOrganizedStudyPlans.count() == 0"
-                                [hidden]="!enEdicionPlanEstudio">{{ 'GLOBAL.guardar' | translate }}</button> -->
+                            <button mat-raised-button matStepperPrevious [hidden]="enEdicionPlanEstudio">{{
+                                'GLOBAL.regresar' | translate }}</button>
                             <button mat-raised-button color="primary" (click)="registrarPlanOrdenado()"
-                                [disabled]="dataOrganizedStudyPlans == undefined || dataOrganizedStudyPlans.count() == 0"
-                                [hidden]="!enEdicionPlanEstudio">Guardar</button>
-                            <!-- <button mat-raised-button color="primary" (click)="generarPlanEstudio()"
-                                [disabled]="dataOrganizedStudyPlans == undefined || dataOrganizedStudyPlans.count() == 0">{{
-                                'plan_estudios.generar_plan' | translate }}</button> -->
+                                [disabled]="!dataOrganizedStudyPlans || dataOrganizedStudyPlans.data.length == 0"
+                                [hidden]="!enEdicionPlanEstudio">{{ 'GLOBAL.guardar' | translate }}</button>
                             <button mat-raised-button color="primary" (click)="generarPlanEstudio()"
-                                [disabled]="dataOrganizedStudyPlans == undefined || dataOrganizedStudyPlans.count() == 0">Generar Plan de Estudios</button>
-                            <!-- <button mat-raised-button (click)="salirEdicionFormulario()">{{ 'GLOBAL.salir' | translate
-                                }}</button> -->
-                            <button mat-raised-button (click)="salirEdicionFormulario()">Salir</button>
+                                [disabled]="!dataOrganizedStudyPlans || dataOrganizedStudyPlans.data.length == 0">{{
+                                'plan_estudios.generar_plan' | translate }}</button>
+                            <button mat-raised-button (click)="salirEdicionFormulario()">{{ 'GLOBAL.salir' | translate
+                                }}</button>
                         </div>
                     </mat-step>
                 </mat-horizontal-stepper>
@@ -676,12 +625,9 @@
         <ng-container *ngSwitchCase="VIEWS.SUMMARY">
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
-                    <!-- <small>&nbsp; {{ 'plan_estudios.resumen' | translate }} </small>
+                    <small>&nbsp; {{ 'plan_estudios.resumen' | translate }} </small>
                     <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="{{'GLOBAL.cancelar' | translate}}" (click)="vista=VIEWS.LIST;"></i> -->
-                    <small>&nbsp; Consolidado del Plan de Estudio </small>
-                        <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                            title="Cancelar" (click)="vista=VIEWS.LIST;"></i>
+                        title="{{'GLOBAL.cancelar' | translate}}" (click)="vista=VIEWS.LIST;"></i>>
                 </legend>
                 <summary-planes-estudio [dataPlanes]="dataPlanes"></summary-planes-estudio>
             </fieldset>

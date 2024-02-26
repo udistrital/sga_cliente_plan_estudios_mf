@@ -46,8 +46,11 @@ export class DialogVerObservacionComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("dialog 1")
     this.loadTerceroData().then((terceroData) => {
+      console.log("dialog 2")
       this.revisionForm.get('nombreEvaluador')!.setValue(terceroData.NombreCompleto);
+      console.log("dialog 3")
     });
 
     this.getPlanEstudioById(this.data.planEstudioId).then((planEstudio) => {
@@ -81,7 +84,7 @@ export class DialogVerObservacionComponent implements OnInit {
     this.loading = false;
   }
 
-  private loadTerceroData(): Promise<any> {
+  private async loadTerceroData(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.terceroService.get(`tercero/${this.data.tercero_id}`).subscribe(
         response => {

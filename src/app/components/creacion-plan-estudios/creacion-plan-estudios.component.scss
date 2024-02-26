@@ -213,3 +213,24 @@ table td {
     margin: 3px 0 0 0 !important;
     color: white;
 }
+
+.none {
+    display: none;
+}
+
+.tabla-total ::ng-deep .mat-mdc-header-row {
+    display: none;
+}
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0 0;
+}
+
+.btn-accion {
+    border-radius: 50%;
+    min-width: 25px;
+    height: 25px;
+    padding: 0;
+}
