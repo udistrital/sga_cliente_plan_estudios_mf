@@ -4,13 +4,41 @@ import { RouterModule, Routes, provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { CreacionPlanEstudiosComponent } from './components/creacion-plan-estudios/creacion-plan-estudios.component';
+import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
+import { AuthGuard } from './_guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'crear',
     component: CreacionPlanEstudiosComponent
-  }
+  },
+  {
+    path: 'evaluar',
+    component: EvaluarPlanEstudiosComponent,
+    //canActivate: [AuthGuard]
+  },
 ];
+
+// const routes: Routes = [{
+//   path: '',
+//   component: PlanEstudiosComponent,
+//   children: [{
+//     path: 'crear',
+//     component: CreacionPlanEstudiosComponent,
+//     canActivate: [AuthGuard]
+//   },
+//   {
+//     path: 'evaluar',
+//     component: EvaluarPlanEstudiosComponent,
+//     canActivate: [AuthGuard]
+//   },
+//   {
+//     path: 'revisar',
+//     component: RevisarPlanesEstudioComponent,
+//     canActivate: [AuthGuard]
+//   }
+//   ]
+// }];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
@@ -19,6 +47,6 @@ const routes: Routes = [
     provideRouter(routes),
     { provide: APP_BASE_HREF, useValue: '/plan-estudio/' },
     getSingleSpaExtraProviders(),
-    provideHttpClient(withFetch()) ]
+    provideHttpClient(withFetch())]
 })
 export class AppRoutingModule { }

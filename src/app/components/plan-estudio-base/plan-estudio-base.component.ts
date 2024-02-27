@@ -674,6 +674,7 @@ export abstract class PlanEstudioBaseComponent {
 
         this.numSemestresCompletado = this.dataSemestre.data.length === this.planEstudioBody.NumeroSemestres;
         this.formPlanEstudio['numeroSemestres'].minimo = this.dataSemestre.data.length;
+        this.loading = false;
       }, (error) => {
         this.loading = false;
         this.popUpManager.showPopUpGeneric(
@@ -1111,6 +1112,7 @@ export abstract class PlanEstudioBaseComponent {
         this.vista = VIEWS.FORM;
       }
       this.mainAction = ACTIONS.VIEW;
+      this.loading = false;
     }, (error) => {
       this.loading = false;
       this.vista = VIEWS.LIST;
@@ -1311,6 +1313,7 @@ export abstract class PlanEstudioBaseComponent {
           resolve(false);
         }
       }).catch((error) => {
+        console.log(error);
         this.loading = false;
         this.popUpManager.showErrorAlert(
           this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
@@ -1340,24 +1343,39 @@ export abstract class PlanEstudioBaseComponent {
 
   async formatearEspaciosPlanEstudio(): Promise<any> {
     try {
-      console.log(this.planEstudioBody.EspaciosSemestreDistribucion, this.planEstudioBody)
+      console.log(this.planEstudioBody.EspaciosSemestreDistribucion)
+      console.log(this.planEstudioBody)
       let espaciosSemestre = await this.str2JsonValidated(this.planEstudioBody.EspaciosSemestreDistribucion);
+      console.log(espaciosSemestre)
 
       return new Promise((resolve, reject) => {
-        this.organizarEspaciosSemestreActual().then((semestreRes) => {
-          if (Object.keys(semestreRes).length > 0) {
-            const semestreEt = Object.keys(semestreRes)[0];
-            if (Object.keys(espaciosSemestre).length > 0) {
-              espaciosSemestre[semestreEt] = semestreRes[semestreEt];
-            } else {
-              espaciosSemestre = semestreRes;
-            }
-            this.planEstudioBody.EspaciosSemestreDistribucion = JSON.stringify(espaciosSemestre);
-            resolve(true);
+        let semestreRes = this.organizarEspaciosSemestreActual();
+        if (Object.keys(semestreRes).length > 0) {
+          const semestreEt = Object.keys(semestreRes)[0];
+          if (Object.keys(espaciosSemestre).length > 0) {
+            espaciosSemestre[semestreEt] = semestreRes[semestreEt];
           } else {
-            reject(false);
+            espaciosSemestre = semestreRes;
           }
-        });
+          this.planEstudioBody.EspaciosSemestreDistribucion = JSON.stringify(espaciosSemestre);
+          resolve(true);
+        } else {
+          reject(false);
+        }
+        // this.organizarEspaciosSemestreActual().then((semestreRes) => {
+        //   if (Object.keys(semestreRes).length > 0) {
+        //     const semestreEt = Object.keys(semestreRes)[0];
+        //     if (Object.keys(espaciosSemestre).length > 0) {
+        //       espaciosSemestre[semestreEt] = semestreRes[semestreEt];
+        //     } else {
+        //       espaciosSemestre = semestreRes;
+        //     }
+        //     this.planEstudioBody.EspaciosSemestreDistribucion = JSON.stringify(espaciosSemestre);
+        //     resolve(true);
+        //   } else {
+        //     reject(false);
+        //   }
+        // });
       });
     } catch (error) {
       this.loading = false;
@@ -1373,12 +1391,13 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
   // * Procesamiento almacenamiento de semestre con espacios académicos 
   //#region
-  organizarEspaciosSemestreActual(): Promise<any> {
+  organizarEspaciosSemestreActual() {
     let numSemestre = this.punteroSemestrePlan + 1;
     let etiquetaSemestre = "semestre_".concat(numSemestre.toString());
     let semestre: any = {};
     let espaciosAcademicosOrdenados: any = [];
     let espacios = this.dataSemestre.data[this.punteroSemestrePlan].data
+    console.log(espacios)
 
     if (espacios.length == 0) {
       semestre[etiquetaSemestre] = {
@@ -1747,10 +1766,10 @@ export abstract class PlanEstudioBaseComponent {
         this.planEstudioOrdenadoBody = updatedOrderedPlan;
         resolve(true);
       },
-      (err) => {
-        this.loading = false;
-        resolve(false);
-      });
+        (err) => {
+          this.loading = false;
+          resolve(false);
+        });
     });
   }
 
@@ -1816,9 +1835,11 @@ export abstract class PlanEstudioBaseComponent {
         if (res) {
           this.dataEspaciosAcademicos.data.push(element);
           //this.dataEspaciosAcademicos.refresh();
+          console.log(this.dataSemestre.data[this.punteroSemestrePlan].data);
           const totalSemestre = this.filaTotal(this.dataSemestre.data[this.punteroSemestrePlan].data);
-          this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
-          this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
+          // this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
+          this.dataSemestreTotal[this.punteroSemestrePlan] = new MatTableDataSource<any>(totalSemestre);
+          //this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
         } else {
           this.addtoSemester(element._id);
         }

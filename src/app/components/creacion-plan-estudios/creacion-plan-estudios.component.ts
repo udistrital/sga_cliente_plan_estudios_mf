@@ -611,7 +611,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * Visualización de ventana aprobación
   // #region
 
-  viewObservation(id: any) {
+  viewObservation(planEstudioBody: any) {
     let persona_id = Number(localStorage.getItem('persona_id'));
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
@@ -619,9 +619,9 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     dialogConfig.data = {
       "tercero_id": persona_id,
       "estadosAprobacion": this.estadosAprobacion,
-      "planEstudioId": id
+      "planEstudioId": planEstudioBody.Id
     };
-    console.log(persona_id, dialogConfig.data);
+    console.log(dialogConfig, persona_id, planEstudioBody);
     this.dialog.open(DialogVerObservacionComponent, dialogConfig);
   }
   //#endregion
@@ -681,6 +681,33 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   }
   //#endregion
   // * ----------
+
+  aplicarFiltroPlanesEstudio(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataPlanesEstudio.paginator) {
+      this.dataPlanesEstudio.paginator.firstPage();
+    }
+  }
+
+  aplicarFiltroSimpleStudyPlans(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSimpleStudyPlans.paginator) {
+      this.dataSimpleStudyPlans.paginator.firstPage();
+    }
+  }
+
+  aplicarFiltroEspaciosAcademicos(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataEspaciosAcademicos.paginator) {
+      this.dataEspaciosAcademicos.paginator.firstPage();
+    }
+  }
 
   //--------------- AQUIIII -----------------//
   /*

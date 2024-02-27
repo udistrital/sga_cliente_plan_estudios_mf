@@ -29,6 +29,7 @@ import { SummaryPlanesEstudioComponent } from './components/summary-planes-estud
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
 import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinamic-form-group.component';
+import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinam
     SummaryPlanesEstudioComponent,
     VisualizarDocumentoPlanComponent,
     SafeURL,
-    DinamicFormGroupComponent
+    DinamicFormGroupComponent,
+    EvaluarPlanEstudiosComponent
   ],
   imports: [
     BrowserModule,
