@@ -95,7 +95,6 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     this.dataSemestre = new MatTableDataSource<any>([])
     this.dataSemestreTotal = [];
     this.dataSemestreTotalTotal = new MatTableDataSource<any>([])
-    this.dataPlanesEstudio.paginator = this.paginator
     // this.loadSelects().then(() => {
     //   this.loadStudyPlanTable();
     // });
@@ -157,6 +156,7 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
           });
           //this.dataPlanesEstudio.load(this.planesEstudio);
           this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
+          this.dataPlanesEstudio.paginator = this.paginator
           this.loading = false;
         }).catch(err => {
           this.loading = false;
@@ -175,6 +175,7 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
             });
             //this.dataPlanesEstudio.load(this.planesEstudio);
             this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
+            this.dataPlanesEstudio.paginator = this.paginator
             this.loading = false;
           } else {
             this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.plan_estudios_sin_vinculacion_error'));
@@ -193,6 +194,7 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
             });
             //this.dataPlanesEstudio.load(this.planesEstudio);
             this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
+            this.dataPlanesEstudio.paginator = this.paginator
             this.loading = false;
           } else {
             this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.plan_estudios_sin_vinculacion_error'));
