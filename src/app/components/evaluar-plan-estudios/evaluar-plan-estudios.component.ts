@@ -21,7 +21,7 @@ import { PlanEstudioBaseComponent } from '../plan-estudio-base/plan-estudio-base
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ImplicitAutenticationService } from 'src/app/services/implicit_autentication.service';
 import { PlanEstudioSummary } from 'src/app/models/plan_estudio_summary'; 
-import { DialogoEvaluarComponent } from './dialogo-evaluar/dialogo-evaluar.component';
+import { DialogoEvaluarComponent } from '../dialogo-evaluar/dialogo-evaluar.component';
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
 
 import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
@@ -55,6 +55,9 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
   override dataPlanes?: PlanEstudioSummary = undefined;
   role!: Array<String>
   @ViewChild(MatPaginator) paginator!: MatPaginator
+  
+  displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
+  override displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver', 'observacion', 'evaluar'];
 
   constructor(
     public dialog: MatDialog,
@@ -235,6 +238,7 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
       });
       //this.dataPlanesEstudio.load(this.planesEstudio);
       this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
+      this.dataPlanesEstudio.paginator = this.paginator
       this.loading = false;
     }).catch(err => {
       this.loading = false;

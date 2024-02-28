@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { MenuService } from '../data/menu.service';
-import { PopUpManager } from '../../managers/popUpManager';
+import { MenuService } from '../services/menu.service'; 
+import { PopUpManager } from '../managers/popUpManager'; 
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
@@ -19,8 +19,8 @@ export class AuthGuard implements CanActivate {
 
     if (!!this.menu.getRoute(state.url)) {
       return true;
-    } else if (route.params && route.params.id) {
-      const route_ = state.url.replace(route.params.id, ':id');
+    } else if (route.params && route.params['id']) {
+      const route_ = state.url.replace(route.params['id'], ':id');
       if (!!this.menu.getRoute(route_)) {
         return true;
       }

@@ -48,15 +48,11 @@ import { MatPaginator } from '@angular/material/paginator';
     },
   ]
 })
-export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit {
-  displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
-  displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
-  displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsSemestreTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
+export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit { 
   displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
-  displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
-  @ViewChild(MatPaginator) paginator!: MatPaginator
+  @ViewChild(MatPaginator) paginatorPe!: MatPaginator
+  @ViewChild(MatPaginator) paginatorEa!: MatPaginator
+  @ViewChild(MatPaginator) paginatorSp!: MatPaginator
 
   constructor(
     translate: TranslateService,
@@ -96,6 +92,9 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     //this.dataSemestre = [];
     this.dataSemestre = new MatTableDataSource<any>([])
     this.dataSemestreTotal = [];
+    // this.dataPlanesEstudio.paginator = this.paginator
+    //this.dataEspaciosAcademicos.paginator = this.paginatorEa
+    this.dataSimpleStudyPlans.paginator = this.paginatorSp
     // this.loadSelects().then(async () => {
     //   await this.loadStudyPlanTable();
     // });
@@ -186,7 +185,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           //this.dataPlanesEstudio.load(this.planesEstudio);
           console.log(this.dataPlanesEstudio)
           this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-          this.dataPlanesEstudio.paginator = this.paginator
+          this.dataPlanesEstudio.paginator = this.paginatorPe
           console.log(this.dataPlanesEstudio, this.planesEstudio)
           this.loading = false;
         } catch (error) {
@@ -205,7 +204,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             });
             //this.dataPlanesEstudio.load(this.planesEstudio);
             this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-
+            this.dataPlanesEstudio.paginator = this.paginatorPe
             this.loading = false;
           } else {
             this.hideButtons = true;
@@ -299,6 +298,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.vista = VIEWS.FORM;
     // this.dataEspaciosAcademicos.load([]);
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
+    this.dataEspaciosAcademicos.paginator = this.paginatorEa
     console.log(this.formPlanEstudio, this.formGroupPlanEstudio, this.dataEspaciosAcademicos)
   }
 
@@ -363,6 +363,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           this.ListEspacios = result;
           //this.dataEspaciosAcademicos.load(this.ListEspacios);
           this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
+          this.dataEspaciosAcademicos.paginator = this.paginatorEa
           this.planEstudioPadreAsignado2Form = false;
           console.log(this.dataEspaciosAcademicos, this.ListEspacios)
           stepper.next();
@@ -547,6 +548,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.mainAction = ACTIONS.EDIT;
     this.enEdicionPlanEstudio = true;
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
+    this.dataEspaciosAcademicos.paginator = this.paginatorEa
 
     try {
       console.log(this.planEstudioBody);
@@ -681,33 +683,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   }
   //#endregion
   // * ----------
-
-  aplicarFiltroPlanesEstudio(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataPlanesEstudio.paginator) {
-      this.dataPlanesEstudio.paginator.firstPage();
-    }
-  }
-
-  aplicarFiltroSimpleStudyPlans(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSimpleStudyPlans.paginator) {
-      this.dataSimpleStudyPlans.paginator.firstPage();
-    }
-  }
-
-  aplicarFiltroEspaciosAcademicos(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataEspaciosAcademicos.paginator) {
-      this.dataEspaciosAcademicos.paginator.firstPage();
-    }
-  }
 
   //--------------- AQUIIII -----------------//
   /*

@@ -26,6 +26,13 @@ import { PlanEstudioSummary } from "src/app/models/plan_estudio_summary";
   template: "",
 })*/
 export abstract class PlanEstudioBaseComponent {
+  displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
+  displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
+  displayedColumnsSemestreTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
+  displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
+  displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
+  displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
+
   loading!: boolean;
 
   readonly VIEWS = VIEWS;
@@ -1845,6 +1852,33 @@ export abstract class PlanEstudioBaseComponent {
         }
       });
 
+    }
+  }
+
+  aplicarFiltroPlanesEstudio(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataPlanesEstudio.paginator) {
+      this.dataPlanesEstudio.paginator.firstPage();
+    }
+  }
+
+  aplicarFiltroSimpleStudyPlans(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSimpleStudyPlans.paginator) {
+      this.dataSimpleStudyPlans.paginator.firstPage();
+    }
+  }
+
+  aplicarFiltroEspaciosAcademicos(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataEspaciosAcademicos.paginator) {
+      this.dataEspaciosAcademicos.paginator.firstPage();
     }
   }
 

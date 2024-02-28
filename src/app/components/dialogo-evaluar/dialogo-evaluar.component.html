@@ -1,6 +1,10 @@
-<div class="dinamic-form" [nbSpinner]="loading">
+<!-- <div class="dinamic-form" [nbSpinner]="loading"> -->
+<div class="dinamic-form">
+    <div [class.loader-div]="loading">
+        <mat-spinner *ngIf="loading" diameter="100" color="primary"></mat-spinner>
+    </div>
     <ng-container>
-        <nb-card-body>
+        <mat-card>
             <form novalidate [formGroup]="aprobacionForm" #fform="ngForm" class="form-horizontal">
                 <fieldset [ngClass]="{'fieldseter': true}">
                     <legend><small>&nbsp; {{ 'plan_estudios.evaluar' | translate }}</small></legend>
@@ -27,7 +31,7 @@
                                     </ng-container>
                                 </mat-select>
                                 <mat-error
-                                    *ngIf="aprobacionForm.get('estadoSeleccionado').hasError('required') && aprobacionForm.get('estadoSeleccionado').touched">
+                                    *ngIf="aprobacionForm.get('estadoSeleccionado')?.hasError('required') && aprobacionForm.get('estadoSeleccionado')?.touched">
                                     {{ 'ptd.error_grupo' | translate }}
                                 </mat-error>
                             </mat-form-field>
@@ -36,7 +40,7 @@
                         <div class="column">
                             <mat-form-field style="width: 100%;" floatLabel="always">
                                 <mat-label>{{ 'GLOBAL.observaciones' | translate }}</mat-label>
-                                <textarea matInput rows="5" [formControl]="aprobacionForm.get('observaciones')"></textarea>
+                                <textarea matInput rows="5" formControlName="observaciones"></textarea>
                             </mat-form-field>
                         </div>
                     </div>
@@ -66,7 +70,7 @@
                                         </ng-container>
                                     </mat-select>
                                     <mat-error
-                                        *ngIf="aprobacionForm.get('rolSeleccionado').hasError('required') && aprobacionForm.get('rolSeleccionado').touched">
+                                        *ngIf="aprobacionForm.get('rolSeleccionado')?.hasError('required') && aprobacionForm.get('rolSeleccionado')?.touched">
                                         {{ 'ptd.error_grupo' | translate }}
                                     </mat-error>
                                 </mat-form-field>
@@ -75,18 +79,18 @@
                     <div class="column">
                         <mat-form-field style="width: 100%;">
                         <mat-label for="nombreEvaluador">{{ 'plan_estudios.nombre_evaluador' | translate }}</mat-label>
-                        <input matInput type="text" [formControl]="aprobacionForm.get('nombreEvaluador')">
+                        <input matInput type="text" formControlName="nombreEvaluador">
                         </mat-form-field>
                     </div>
                     </div>
 
                     <div class="row">
                         <button mat-raised-button color="primary" (click)="sendEvaluation()">{{ 'plan_estudios.dar_respuesta' |
-                        translate}}</button>
+                        translate }}</button>
                         <button mat-raised-button color="primary" (click)="salirObservacion()">{{ 'GLOBAL.salir' | translate }}</button>
                     </div>
                 </fieldset>
             </form>
-        </nb-card-body>
+        </mat-card>
     </ng-container>
 </div>

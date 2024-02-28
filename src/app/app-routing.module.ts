@@ -6,6 +6,7 @@ import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { CreacionPlanEstudiosComponent } from './components/creacion-plan-estudios/creacion-plan-estudios.component';
 import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,11 @@ const routes: Routes = [
     component: EvaluarPlanEstudiosComponent,
     //canActivate: [AuthGuard]
   },
+  {
+    path: 'revisar',
+    component: RevisarPlanesEstudioComponent,
+    //canActivate: [AuthGuard]
+  }
 ];
 
 // const routes: Routes = [{
