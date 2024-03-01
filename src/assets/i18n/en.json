@@ -2500,7 +2500,8 @@
         "prerequisitos": "Prerequisites",
         "convenciones": "CONVENTIONS",
         "clasificacion": "Classification",
-        "descargar_documento": "Download Study Plan"
+        "descargar_documento": "Download Study Plan",
+        "semestre_total": "Total in the semester"
     },
     "gestion_horarios": {
         "encabezado": "Module for the Availability of quotas",

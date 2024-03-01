@@ -394,7 +394,7 @@ export abstract class PlanEstudioBaseComponent {
       newPlanCicloOrdenado.OrdenPlan = JSON.stringify(ordenPlanes);
     });
     return new Promise((resolve) => {
-      if (this.planEstudioOrdenadoBody != undefined && Object.keys(this.planEstudioOrdenadoBody).length) {
+      if (this.planEstudioOrdenadoBody != undefined && Object.keys(this.planEstudioOrdenadoBody).length > 0) {
         this.planEstudioOrdenadoBody.OrdenPlan = newPlanCicloOrdenado.OrdenPlan;
         this.planEstudiosService.put('plan_estudio_proyecto_academico', this.planEstudioOrdenadoBody)
           .subscribe((res: any) => {
@@ -445,7 +445,6 @@ export abstract class PlanEstudioBaseComponent {
   async formatearOrdenPlanesCiclos() {
     let ordenPlanes: any = {};
     let planes = this.dataOrganizedStudyPlans.data
-    console.log(planes, this.dataOrganizedStudyPlans, this.dataOrganizedStudyPlans.data)
     planes.forEach((plan: any, index: any) => {
       ordenPlanes['plan_'.concat((index + 1).toString())] = {
         "Id": plan.Id,
@@ -502,7 +501,6 @@ export abstract class PlanEstudioBaseComponent {
   // }
   totalTotal() {
     let total = <any>UtilidadesService.hardCopy(this.formatototal);
-    console.log(total, this.dataSemestre);
     // Recorrer directamente los datos en cada array interno
     this.dataSemestre.data.forEach((semestre) => {
       semestre.data.forEach((dataind: any) => {
@@ -559,9 +557,7 @@ export abstract class PlanEstudioBaseComponent {
         let soporteDocumental = this.str2JsonValidated(this.planEstudioBody.SoporteDocumental);
         if (Object.keys(soporteDocumental).length) {
           const listaSoportes = soporteDocumental['SoporteDocumental'] ? soporteDocumental['SoporteDocumental'] : [];
-          console.log("Carga form 1")
           this.descargarArchivos(listaSoportes).then(() => {
-            console.log("Carga form 1")
             listaSoportes.forEach((idSoporte: number) => {
               this.gestorDocumentalService.getByIdLocal(idSoporte).subscribe(supportFile => {
                 this.formPlanEstudio['soportes'].archivosLinea!.push(supportFile);
@@ -647,10 +643,8 @@ export abstract class PlanEstudioBaseComponent {
                 idEspacio = espacioSemestre['espacio_'.concat((idx + 1).toString())].Id;
                 espacio = this.ListEspacios.find(espacio => espacio._id == idEspacio);
                 if (espacio) {
-                  console.log(this.dataSemestre);
                   //this.dataSemestre[this.punteroSemestrePlan].add(espacio);
                   this.dataSemestre.data[this.punteroSemestrePlan].data.push(espacio);
-                  console.log(this.dataSemestre);
                   indexEspacio = this.ListEspacios.findIndex(espacio => espacio._id == idEspacio);
                   this.ListEspacios.splice(indexEspacio, 1);
                 }
@@ -708,10 +702,8 @@ export abstract class PlanEstudioBaseComponent {
   async descargarArchivos(idArchivos: any[]): Promise<any> {
     this.loading = true;
     return new Promise<any>((resolve, reject) => {
-      console.log("descarga 1")
       this.checkIfAlreadyDownloaded(idArchivos).then(
         faltantes => {
-          console.log("descarga 2")
           const limitQuery = faltantes.length;
           let idsForQuery = "";
           faltantes.forEach((id, i) => {
@@ -760,10 +752,12 @@ export abstract class PlanEstudioBaseComponent {
                 idOrdenPlan = ordenPlanes[oPlan].Id;
                 plan2add = this.simpleStudyPlans.find(plan => plan.Id == idOrdenPlan);
                 if (plan2add) {
-                  console.log(plan2add, this.dataOrganizedStudyPlans);
                   //this.dataOrganizedStudyPlans.addData(plan2add);
                   this.dataOrganizedStudyPlans.data.push(plan2add);
-                  console.log(this.dataOrganizedStudyPlans, this.simpleStudyPlans);
+                  let dataPlans = this.dataOrganizedStudyPlans.data
+                  dataPlans.forEach((plan: any, index: any) => {
+                    plan["orden"] = index + 1;
+                  });
                   indexPlan = this.simpleStudyPlans.findIndex(plan => plan.Id == idOrdenPlan);
                   this.simpleStudyPlans.splice(indexPlan, 1);
                 }
@@ -773,9 +767,8 @@ export abstract class PlanEstudioBaseComponent {
             }
             //this.dataOrganizedStudyPlans.refresh();
             //this.dataSimpleStudyPlans.load(this.simpleStudyPlans);
-            console.log(this.dataSimpleStudyPlans, this.simpleStudyPlans);
+            this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
             this.dataSimpleStudyPlans = new MatTableDataSource<any>(this.simpleStudyPlans);
-            console.log(this.dataSimpleStudyPlans);
             this.loading = false;
           }
         }, (error) => {
@@ -844,33 +837,20 @@ export abstract class PlanEstudioBaseComponent {
   //   })
   // }
   async consultarEspaciosAcademicos(id_proyecto: number): Promise<any> {
-    console.log("Consultar 1");
     let espaciosA = await this.recuperarEspaciosAcademicos(id_proyecto);
-    console.log("Consultar 2");
     //let espaciosAll = await this.getLineaEspacioAcademico();
-    //console.log("Consultar 3", espaciosAll);
     let clases = await this.recuperarClase();
-    console.log("Consultar 3");
     let enfoques = await this.recuperarEnfoque();
-    console.log("Consultar 4");
-    console.log(espaciosA, clases, enfoques);
     let EspaciosAcademicos: any[] = [];
     // espaciosA.forEach(async (espacio: any) => {
     for (const espacio of espaciosA) {
-      console.log(espacio);
       let nombres_espacios: any[] = [];
       let nombres_espacios_str: any = ""
       for (const requerido of espacio.espacios_requeridos) {
-        console.log(requerido);
         await this.getLineaEspacioAcademico(requerido)
-        //console.log("Consultar 4.0");
         //let aux = await this.getLineaEspacioAcademico();
-        console.log("Consultar 4.1");
         let nombreEspacio: string = this.getLocalEspacioAcademico(requerido, espaciosA);
-        console.log("Consultar 4.2");
         if (nombreEspacio == "") {
-          console.log("Consultar 4.3");
-          //console.log(espaciosAll);
           nombreEspacio = await this.getLineaEspacioAcademico(requerido)
           //const espacioAux = espaciosAll.find((espacioItem: any) => espacioItem._id == requerido)
           // if (espacioAux) {
@@ -881,7 +861,6 @@ export abstract class PlanEstudioBaseComponent {
           //   nombreEspacio = "No encontrado..."
           // }
         }
-        console.log(nombreEspacio);
         nombres_espacios.push({
           "_id": requerido,
           "nombre": nombreEspacio
@@ -949,7 +928,6 @@ export abstract class PlanEstudioBaseComponent {
         formatoEspacio[code] = value;
       });
       EspaciosAcademicos.push(formatoEspacio)
-      console.log(EspaciosAcademicos, formatoEspacio)
     }
 
     return EspaciosAcademicos;
@@ -961,7 +939,6 @@ export abstract class PlanEstudioBaseComponent {
   async recuperarEspaciosAcademicos(id_proyecto: number): Promise<any> {
     return new Promise((resolve, reject) => {
       this.espaciosAcademicosService.get('espacio-academico?query=activo:true,proyecto_academico_id:' + id_proyecto + ',espacio_academico_padre&limit=0').subscribe((resp: any) => {
-        console.log(resp, resp.Data);
         resolve(resp.Data);
       }, (err: any) => {
         reject(err);
@@ -970,14 +947,10 @@ export abstract class PlanEstudioBaseComponent {
   }
 
   async recuperarEspacioAcademicosAll(id: any): Promise<any> {
-    console.log("recup 1");
     return new Promise((resolve, reject) => {
       this.espaciosAcademicosService.get('espacio-academico/' + id).subscribe((resp: any) => {
-        console.log("recup 2");
-        console.log(resp, resp.Data);
         resolve(resp.Data);
       }, (err: any) => {
-        console.log("error", err);
         reject(err);
       })
     })
@@ -986,7 +959,6 @@ export abstract class PlanEstudioBaseComponent {
   async recuperarClase(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.parametrosService.get('parametro?query=TipoParametroId:51&limit=0&fields=Id,Nombre,CodigoAbreviacion').subscribe((resp: any) => {
-        console.log(resp, resp.Data);
         resolve(resp.Data);
       }, (err: any) => {
         reject(err);
@@ -997,7 +969,6 @@ export abstract class PlanEstudioBaseComponent {
   async recuperarEnfoque(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.parametrosService.get('parametro?query=TipoParametroId:68&limit=0&fields=Id,CodigoAbreviacion').subscribe((resp: any) => {
-        console.log(resp, resp.Data);
         resolve(resp.Data);
       }, (err: any) => {
         reject(err);
@@ -1015,10 +986,7 @@ export abstract class PlanEstudioBaseComponent {
   }
 
   async getLineaEspacioAcademico(id: any) {
-    console.log("Linea 1");
     let nombreEspacio = await this.recuperarEspacioAcademicosAll(id);
-    console.log("Linea 2");
-    console.log(nombreEspacio.nombre);
     if (nombreEspacio.nombre) {
       return nombreEspacio.nombre;
     } else {
@@ -1095,9 +1063,7 @@ export abstract class PlanEstudioBaseComponent {
   viewStudyPlan(id: any) {
     const idPlan = id;
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
-    console.log("View 1")
     this.consultarPlanEstudio(idPlan).then((res) => {
-      console.log("View 2", res)
       this.enEdicionPlanEstudio = false;
       this.enEdicionSemestreNuevo = false;
       this.enEdicionSemestreViejo = false;
@@ -1110,7 +1076,6 @@ export abstract class PlanEstudioBaseComponent {
         // this.createTableOrganizedStudyPlan(false);
         //this.dataOrganizedStudyPlans = new LocalDataSource();
         this.dataOrganizedStudyPlans = new MatTableDataSource<any>([]);
-        console.log(this.dataOrganizedStudyPlans);
         this.vista = VIEWS.SECONDARY_FORM;
       } else {
         // this.createTableEspaciosAcademicos(false);
@@ -1320,7 +1285,6 @@ export abstract class PlanEstudioBaseComponent {
           resolve(false);
         }
       }).catch((error) => {
-        console.log(error);
         this.loading = false;
         this.popUpManager.showErrorAlert(
           this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
@@ -1350,10 +1314,7 @@ export abstract class PlanEstudioBaseComponent {
 
   async formatearEspaciosPlanEstudio(): Promise<any> {
     try {
-      console.log(this.planEstudioBody.EspaciosSemestreDistribucion)
-      console.log(this.planEstudioBody)
       let espaciosSemestre = await this.str2JsonValidated(this.planEstudioBody.EspaciosSemestreDistribucion);
-      console.log(espaciosSemestre)
 
       return new Promise((resolve, reject) => {
         let semestreRes = this.organizarEspaciosSemestreActual();
@@ -1404,7 +1365,6 @@ export abstract class PlanEstudioBaseComponent {
     let semestre: any = {};
     let espaciosAcademicosOrdenados: any = [];
     let espacios = this.dataSemestre.data[this.punteroSemestrePlan].data
-    console.log(espacios)
 
     if (espacios.length == 0) {
       semestre[etiquetaSemestre] = {
@@ -1506,7 +1466,6 @@ export abstract class PlanEstudioBaseComponent {
 
   agregarSemestre() {
     const semestresMax = Number(this.formGroupPlanEstudio.get('numeroSemestres')!.value);
-    console.log(semestresMax, this.dataSemestre, this.dataSemestre.data.length, this.dataSemestreTotal);
     if (semestresMax && this.dataSemestre.data.length < semestresMax) {
       this.enEdicionSemestreNuevo = true;
       this.enEdicionSemestreViejo = false;
@@ -1520,12 +1479,10 @@ export abstract class PlanEstudioBaseComponent {
       //this.createTableSemestreTotal();
       this.numSemestresCompletado = this.dataSemestre.data.length === semestresMax;
     }
-    console.log(semestresMax, this.dataSemestre, this.dataSemestre.data.length, this.dataSemestreTotal, this.dataSemestreTotal[0]);
   }
 
   aniadirASemestre(id: any) {
     // ToDo mostrar mensaje de confirmación cuando no sea el último semestre
-    console.log(id, this.dataEspaciosAcademicos, this.ListEspacios);
     this.runValidations2SpacesAdding(id)
       .then((result: any) => {
         if (result["valid"]) {
@@ -1689,7 +1646,6 @@ export abstract class PlanEstudioBaseComponent {
 
   addtoSemester(id: any) {
     if (this.dataSemestre.data.length >= 1 && (this.enEdicionSemestreNuevo || this.enEdicionSemestreViejo)) {
-      console.log(id, this.dataSemestre, this.dataEspaciosAcademicos, this.dataSemestreTotal);
       //this.dataSemestre[this.punteroSemestrePlan].add(event.data);
       let espacio = this.ListEspacios.find(espacio => espacio._id == id);
       this.dataSemestre.data[this.punteroSemestrePlan].data.push(espacio);
@@ -1780,11 +1736,16 @@ export abstract class PlanEstudioBaseComponent {
     });
   }
 
-  async removePlan(id: any) {
-    console.log(this.dataOrganizedStudyPlans)
-    let element = this.dataOrganizedStudyPlans.data.find((element: any) => element._id === id)
+  async removePlan(element: any) {
+    // let element = this.dataOrganizedStudyPlans.data.find((element: any) => {
+    //   console.log(element, element._id, element.Id, id)
+    //   element.Id === id
+    // })
     //await this.dataOrganizedStudyPlans.remove(element);
-    this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data.filter((element: any) => element._id !== id);
+    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data)
+    this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data.filter((item: any) => item.Id !== element.Id);
+    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data, this.planEstudioOrdenadoBody)
+
     if (this.planEstudioOrdenadoBody) {
       this.prepareUpdateOrderedPlan().then((res) => {
         if (res) {
@@ -1821,28 +1782,31 @@ export abstract class PlanEstudioBaseComponent {
     }
   }
 
-  addPlan(id: any) {
-    console.log(this.dataSimpleStudyPlans)
-    let element = this.dataSimpleStudyPlans.data.find((plan: any) => plan.id === id)
-    //let newPlan = event.data;
-    element["orden"] = this.dataOrganizedStudyPlans.data.length + 1;
-    this.dataOrganizedStudyPlans.data.push(element);
+  addPlan(element: any) {
+    //et planPrueba = this.dataSimpleStudyPlans.data.find((plan: any) => plan._id === element.Id)
+    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data)
+    let newPlan = element;
+    newPlan["orden"] = this.dataOrganizedStudyPlans.data.length + 1;
+    this.dataOrganizedStudyPlans.data.push(newPlan);
     //this.dataOrganizedStudyPlans.refresh();
     //this.dataSimpleStudyPlans.remove(event.data);
-    this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data.filter((element: any) => element._id !== id);
+    this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
+    this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data.filter((item: any) => item.Id !== element.Id);
+
+    //this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data
+
+    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data)
   }
 
   async removeFromSemester(element: any) {
     if (this.enEdicionSemestreNuevo || this.enEdicionSemestreViejo) {
       //let element = this.dataSimpleStudyPlans.data.find((plan: any) => plan.id === id)
       //await this.dataSemestre[this.punteroSemestrePlan].remove(event.data);
-      console.log(element, this.dataSemestre.data[this.punteroSemestrePlan].data, this.dataSemestre.data);
       this.dataSemestre.data[this.punteroSemestrePlan].data = this.dataSemestre.data[this.punteroSemestrePlan].data.filter((item: any) => item._id !== element._id);
       await this.prepareUpdateBySemester().then((res) => {
         if (res) {
           this.dataEspaciosAcademicos.data.push(element);
           //this.dataEspaciosAcademicos.refresh();
-          console.log(this.dataSemestre.data[this.punteroSemestrePlan].data);
           const totalSemestre = this.filaTotal(this.dataSemestre.data[this.punteroSemestrePlan].data);
           // this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
           this.dataSemestreTotal[this.punteroSemestrePlan] = new MatTableDataSource<any>(totalSemestre);
@@ -1855,32 +1819,62 @@ export abstract class PlanEstudioBaseComponent {
     }
   }
 
-  aplicarFiltroPlanesEstudio(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
+  aplicarFiltro(event: Event, tipo: string) {
+    let filterValue: any;
+    switch (tipo) {
+      case "planes estudio":
+        filterValue = (event.target as HTMLInputElement).value;
+        this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataPlanesEstudio.paginator) {
-      this.dataPlanesEstudio.paginator.firstPage();
+        if (this.dataPlanesEstudio.paginator) {
+          this.dataPlanesEstudio.paginator.firstPage();
+        }
+        break;
+      case "simple study plans":
+        filterValue = (event.target as HTMLInputElement).value;
+        this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
+
+        if (this.dataSimpleStudyPlans.paginator) {
+          this.dataSimpleStudyPlans.paginator.firstPage();
+        }
+        break;
+      case "espacios academicos":
+        filterValue = (event.target as HTMLInputElement).value;
+        this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
+
+        if (this.dataEspaciosAcademicos.paginator) {
+          this.dataEspaciosAcademicos.paginator.firstPage();
+        }
+        break;
     }
   }
 
-  aplicarFiltroSimpleStudyPlans(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
+  // aplicarFiltroPlanesEstudio(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSimpleStudyPlans.paginator) {
-      this.dataSimpleStudyPlans.paginator.firstPage();
-    }
-  }
+  //   if (this.dataPlanesEstudio.paginator) {
+  //     this.dataPlanesEstudio.paginator.firstPage();
+  //   }
+  // }
 
-  aplicarFiltroEspaciosAcademicos(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
+  // aplicarFiltroSimpleStudyPlans(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataEspaciosAcademicos.paginator) {
-      this.dataEspaciosAcademicos.paginator.firstPage();
-    }
-  }
+  //   if (this.dataSimpleStudyPlans.paginator) {
+  //     this.dataSimpleStudyPlans.paginator.firstPage();
+  //   }
+  // }
+
+  // aplicarFiltroEspaciosAcademicos(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
+
+  //   if (this.dataEspaciosAcademicos.paginator) {
+  //     this.dataEspaciosAcademicos.paginator.firstPage();
+  //   }
+  // }
 
   //--------------AQUIIIIII----------------//
   /*

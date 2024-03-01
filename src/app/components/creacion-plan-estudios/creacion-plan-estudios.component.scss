@@ -218,9 +218,19 @@ table td {
     display: none;
 }
 
-// .tabla-total ::ng-deep .mat-mdc-header-row {
-//     display: none;
-// }
+.tabla-total ::ng-deep .mat-mdc-header-row {
+    //display: none;
+    min-height: 1px;
+    max-height: 1px;
+    height: 1px;
+}
+
+.tabla-total ::ng-deep .mat-mdc-header-row .mat-mdc-header-cell {
+    //display: none;
+    min-height: 0px;
+    max-height: 0px;
+    height: 1px;
+}
 
 .paginacion {
     display: flex;
@@ -247,4 +257,24 @@ table td {
     background-color: rgba(117, 115, 115, 0.5);
     /* Fondo semitransparente rojo */
     z-index: 1;
+}
+
+.tiutlo-semestre-total {
+    text-align: center;
+    margin: 15px 0;
+    font-weight: bold;
+    font-size: large;
+}
+
+.titulo-totaltotal {
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.filtro {
+    width: 100%;
+}
+
+i.cancel mat-icon {
+    color: red;
 }

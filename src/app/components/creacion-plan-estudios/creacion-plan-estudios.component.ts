@@ -50,9 +50,9 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit { 
   displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
-  @ViewChild(MatPaginator) paginatorPe!: MatPaginator
-  @ViewChild(MatPaginator) paginatorEa!: MatPaginator
-  @ViewChild(MatPaginator) paginatorSp!: MatPaginator
+  @ViewChild(MatPaginator) paginator!: MatPaginator
+  // @ViewChild(MatPaginator) paginatorEa!: MatPaginator
+  // @ViewChild(MatPaginator) paginatorSp!: MatPaginator
 
   constructor(
     translate: TranslateService,
@@ -80,9 +80,10 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
 
   async ngOnInit() {
     this.personaId = await Number(window.localStorage.getItem('persona_id'));
+    console.log(this.personaId)
     await this.setRoles();
     this.loading = false;
-    this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
+    //this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
     this.dataPlanesEstudio = new MatTableDataSource<any>([])
     this.dataSimpleStudyPlans = new MatTableDataSource<any>([])
     this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
@@ -94,7 +95,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.dataSemestreTotal = [];
     // this.dataPlanesEstudio.paginator = this.paginator
     //this.dataEspaciosAcademicos.paginator = this.paginatorEa
-    this.dataSimpleStudyPlans.paginator = this.paginatorSp
+    this.dataSimpleStudyPlans.paginator = this.paginator
     // this.loadSelects().then(async () => {
     //   await this.loadStudyPlanTable();
     // });
@@ -183,10 +184,8 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             this.organizarDatosTablaPlanEstudio(plan);
           });
           //this.dataPlanesEstudio.load(this.planesEstudio);
-          console.log(this.dataPlanesEstudio)
           this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-          this.dataPlanesEstudio.paginator = this.paginatorPe
-          console.log(this.dataPlanesEstudio, this.planesEstudio)
+          this.dataPlanesEstudio.paginator = this.paginator
           this.loading = false;
         } catch (error) {
           this.loading = false;
@@ -204,7 +203,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             });
             //this.dataPlanesEstudio.load(this.planesEstudio);
             this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-            this.dataPlanesEstudio.paginator = this.paginatorPe
+            this.dataPlanesEstudio.paginator = this.paginator
             this.loading = false;
           } else {
             this.hideButtons = true;
@@ -281,9 +280,14 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     }
   }
 
+  override async cancelar() {
+    await super.cancelar();
+    this.loadStudyPlanTable();
+  }
+
   override async salirEdicionFormulario() {
     await super.cancelar();
-    await this.loadStudyPlanTable();
+    this.loadStudyPlanTable();
   }
 
   nuevoPlanEstudio() {
@@ -298,8 +302,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.vista = VIEWS.FORM;
     // this.dataEspaciosAcademicos.load([]);
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
-    this.dataEspaciosAcademicos.paginator = this.paginatorEa
-    console.log(this.formPlanEstudio, this.formGroupPlanEstudio, this.dataEspaciosAcademicos)
+    this.dataEspaciosAcademicos.paginator = this.paginator
   }
 
   guardar(stepper: MatStepper) {
@@ -341,31 +344,24 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     }
     newPlanEstudio.SoporteDocumental = this.prepareIds2Stringify(idsArchivos, "SoporteDocumental");
     this.loading = false;
-    console.log(newPlanEstudio);
-    console.log('prepareCreate 1');
 
     let res = await this.createStudyPlan(newPlanEstudio)
-    console.log('prepareCreate 2');
     this.planEstudioBody = res;
       if (this.esPlanEstudioPadre) {
-        console.log('prepareCreate 3');
         this.modoCreacion = false;
         this.planEstudioPadreAsignado2Form = false;
         //this.dataOrganizedStudyPlans = new LocalDataSource();
+        this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
         stepper.next();
-        console.log('prepareCreate 4');
       } else {
         this.modoCreacion = false;
         try {
-          console.log('prepareCreate 3', this.proyecto_id);
           let result = await this.consultarEspaciosAcademicos(this.proyecto_id);
-          console.log('prepareCreate 4');
           this.ListEspacios = result;
           //this.dataEspaciosAcademicos.load(this.ListEspacios);
           this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
-          this.dataEspaciosAcademicos.paginator = this.paginatorEa
+          this.dataEspaciosAcademicos.paginator = this.paginator
           this.planEstudioPadreAsignado2Form = false;
-          console.log(this.dataEspaciosAcademicos, this.ListEspacios)
           stepper.next();
         } catch (error: any) {
           this.ListEspacios = [];
@@ -394,7 +390,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
         //     MODALS.ERROR, false);
         // });
       }
-      console.log('prepareCreate 5');
 
     // await this.createStudyPlan(newPlanEstudio).then((res: any) => {
     //   this.planEstudioBody = res;
@@ -548,20 +543,24 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.mainAction = ACTIONS.EDIT;
     this.enEdicionPlanEstudio = true;
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
-    this.dataEspaciosAcademicos.paginator = this.paginatorEa
+    this.dataEspaciosAcademicos.paginator = this.paginator
 
     try {
-      console.log(this.planEstudioBody);
       this.planEstudioBody = await this.consultarPlanEstudio(idPlan);
-      console.log(this.planEstudioBody);
+      console.log(this.planEstudioBody)
       this.esPlanEstudioPadre = this.planEstudioBody.EsPlanEstudioPadre ? true : false;
+      console.log(this.planEstudioBody, this.dataOrganizedStudyPlans)
       this.proyecto_id = this.planEstudioBody.ProyectoAcademicoId;
       this.crearFormulario(FORM_PLAN_ESTUDIO_EDICION);
       if (this.esPlanEstudioPadre) {
         //this.createSimpleTableStudyPlan();
         //this.createTableOrganizedStudyPlan();
         //this.dataOrganizedStudyPlans = new LocalDataSource();
+        this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
         this.vista = VIEWS.SECONDARY_FORM;
+        // console.log(this.dataSimpleStudyPlans.data[0], this.dataSimpleStudyPlans.data)
+        // this.addPlan(this.dataSimpleStudyPlans.data[0])
+        //this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
       } else {
         //this.createTableEspaciosAcademicos();
         //this.createTableSemestreTotal();
@@ -615,6 +614,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
 
   viewObservation(planEstudioBody: any) {
     let persona_id = Number(localStorage.getItem('persona_id'));
+    console.log(persona_id, localStorage)
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
     dialogConfig.height = '510px';
@@ -623,7 +623,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
       "estadosAprobacion": this.estadosAprobacion,
       "planEstudioId": planEstudioBody.Id
     };
-    console.log(dialogConfig, persona_id, planEstudioBody);
     this.dialog.open(DialogVerObservacionComponent, dialogConfig);
   }
   //#endregion
@@ -633,7 +632,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * Enviar plan de estudios a revision
   //#region
   async send2ReviewStudyPlan(id: any) {
-    console.log(this.planesEstudio)
     this.popUpManager.showPopUpGeneric(
       this.translate.instant('plan_estudios.plan_estudios'),
       this.translate.instant('plan_estudios.enviar_revision_pregunta'), MODALS.INFO, true).
@@ -692,10 +690,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * ----------
   // * Acciones botones 
   //#region
-  override async cancelar() {
-    await super.cancelar();
-    this.loadStudyPlanTable();
-  }
   override async salirEdicionFormulario() {
     await super.cancelar();
     this.loadStudyPlanTable();

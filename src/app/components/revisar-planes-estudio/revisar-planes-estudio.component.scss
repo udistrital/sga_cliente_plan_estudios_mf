@@ -10,11 +10,13 @@ fieldset {
 .modo-ventana {
     display: flex;
     justify-content: space-between;
+
     .button {
         cursor: pointer;
         border: 2px solid var(--primary);
         border-radius: 0.3rem;
     }
+
     .cancel {
         color: darkred;
     }
@@ -94,13 +96,15 @@ fieldset {
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover,
 .mat-expansion-panel-header.mat-expanded.cdk-focused {
-  background-color: var(--primary);
-  mat-panel-title {
-    color: floralwhite !important;
-  }
-  mat-panel-description {
-    color: floralwhite !important;
-  }
+    background-color: var(--primary);
+
+    mat-panel-title {
+        color: floralwhite !important;
+    }
+
+    mat-panel-description {
+        color: floralwhite !important;
+    }
 }
 
 ::ng-deep {
@@ -116,7 +120,7 @@ fieldset {
     padding-right: 25%;
     place-content: space-around;
 }
-  
+
 ::ng-deep {
     ng2-st-tbody-edit-delete {
         display: none;
@@ -137,14 +141,17 @@ fieldset {
     ::ng-deep .resumenTabla .ng2-smart-titles {
         background-color: var(--primary);
     }
+
     ::ng-deep .resumenTabla .ng2-smart-title {
         height: 1px;
         overflow: hidden;
     }
+
     ::ng-deep .resumenTotal .nombre .ng2-smart-title {
         height: 1px;
         overflow: hidden;
     }
+
     ::ng-deep .resumenTotal .ng2-smart-actions .ng2-smart-title {
         height: 1px;
         overflow: hidden;
@@ -160,7 +167,7 @@ fieldset {
         ng2-st-tbody-custom {
             display: flex;
             text-align: center;
-    
+
             a.ng2-smart-action.ng2-smart-action-custom-custom:hover {
                 color: darkred;
             }
@@ -173,7 +180,7 @@ fieldset {
         ng2-st-tbody-custom {
             display: flex;
             text-align: center;
-    
+
             a.ng2-smart-action.ng2-smart-action-custom-custom {
                 display: none;
             }
@@ -198,28 +205,42 @@ fieldset {
     background-color: rgba(117, 115, 115, 0.5);
     /* Fondo semitransparente rojo */
     z-index: 1;
-  }
-  
-  .paginacion {
+}
+
+.paginacion {
     display: flex;
     justify-content: center;
     margin: 15px 0 0;
-  }
-  
-  table th {
+}
+
+table th {
     color: black;
     font-weight: bold;
     text-align: center;
-  }
-  
-  table td {
+}
+
+table td {
     text-align: center;
-  }
-  
-  .icon-boton {
+}
+
+.icon-boton {
     font-size: 1.75rem !important;
     height: 1.75rem !important;
     width: 1.75rem !important;
     margin: 3px 0 0 0 !important;
     color: white;
-  }
+}
+
+.titulo {
+    margin: 0 auto;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.filtro {
+    width: 100%;
+}
+
+i.cancel mat-icon {
+    color: red;
+}

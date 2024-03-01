@@ -2584,7 +2584,8 @@
         "prerequisitos": "Prerrequisitos",
         "convenciones": "CONVENCIONES",
         "clasificacion": "Clasificación",
-        "descargar_documento": "Descargar Plan de Estudio"
+        "descargar_documento": "Descargar Plan de Estudio",
+        "semestre_total": "Total en el semestre"
     },
     "gestion_horarios": {
         "encabezado": "Módulo para la Disponibilidad de cupos",
