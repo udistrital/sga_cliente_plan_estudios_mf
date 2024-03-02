@@ -21,6 +21,7 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ImplicitAutenticationService } from 'src/app/services/implicit_autentication.service'; 
 import { PlanEstudioSummary } from 'src/app/models/plan_estudio_summary';
 import { MatTableDataSource } from '@angular/material/table';
+import { UserService } from "src/app/services/users.service";
 
 import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
 import { ParametrosService } from "src/app/services/parametros.service";
@@ -61,13 +62,14 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     domSanitizer: DomSanitizer,
     planEstudiosService: PlanEstudiosService,
     gestorDocumentalService: NewNuxeoService,
+    userService: UserService,
     autenticationService: ImplicitAutenticationService,
     espaciosAcademicosService: EspaciosAcademicosService,
     parametrosService: ParametrosService
   ) {
     super(translate, popUpManager, projectService, 
       sgaMidService, domSanitizer, planEstudiosService, 
-      gestorDocumentalService, autenticationService, espaciosAcademicosService, parametrosService);
+      gestorDocumentalService, userService, autenticationService, espaciosAcademicosService, parametrosService);
     // this.dataPlanesEstudio = new LocalDataSource();
     // this.dataSimpleStudyPlans = new LocalDataSource();
     // this.dataOrganizedStudyPlans = new LocalDataSource();

@@ -25,6 +25,7 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ImplicitAutenticationService } from 'src/app/services/implicit_autentication.service';
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
 import { MatPaginator } from '@angular/material/paginator';
+import { UserService } from "src/app/services/users.service";
 
 @Component({
   selector: 'creacion-plan-estudios',
@@ -62,6 +63,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     domSanitizer: DomSanitizer,
     planEstudiosService: PlanEstudiosService,
     gestorDocumentalService: NewNuxeoService,
+    userService: UserService,
     autenticationService: ImplicitAutenticationService,
     espaciosAcademicosService: EspaciosAcademicosService,
     parametrosService: ParametrosService,
@@ -69,7 +71,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   ) {
     super(translate, popUpManager, projectService,
       sgaMidService, domSanitizer, planEstudiosService,
-      gestorDocumentalService, autenticationService, espaciosAcademicosService, parametrosService);
+      gestorDocumentalService, userService, autenticationService, espaciosAcademicosService, parametrosService);
     this.translate.onLangChange.subscribe(() => {
       //this.createTablePlanesEstudio();
       //this.createTableEspaciosAcademicos();

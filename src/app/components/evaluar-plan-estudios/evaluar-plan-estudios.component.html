@@ -612,7 +612,7 @@
                                 <th mat-header-cell *matHeaderCellDef> {{ 'GLOBAL.acciones' | translate }} </th>
                                 <td mat-cell *matCellDef="let element">
                                     <button mat-raised-button (click)="addPlan(element)" class="btn-accion"
-                                        color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo)">+</button>
+                                        color="primary" [disabled]="true">+</button>
                                 </td>
                             </ng-container>
 
@@ -677,7 +677,7 @@
                                     translate }} </th>
                                 <td mat-cell *matCellDef="let element">
                                     <button mat-raised-button (click)="removePlan(element)" class="btn-accion"
-                                        color="primary">-</button>
+                                        color="primary" [disabled]="true">-</button>
                                 </td>
                             </ng-container>
 

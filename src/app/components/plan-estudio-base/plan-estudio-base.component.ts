@@ -17,6 +17,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { HttpErrorResponse } from "@angular/common/http";
 import { PlanEstudio, EspacioEspaciosSemestreDistribucion, PlanCiclosOrdenado } from "src/app/models/plan_estudio";
 import { NewNuxeoService } from "src/app/services/new_nuxeo.service";
+import { UserService } from "src/app/services/users.service";
 import { EstadoAprobacion } from "src/app/models/estado_aprobacion";
 import { ImplicitAutenticationService } from "src/app/services/implicit_autentication.service";
 import { PlanEstudioSummary } from "src/app/models/plan_estudio_summary";
@@ -159,16 +160,24 @@ export abstract class PlanEstudioBaseComponent {
     protected domSanitizer: DomSanitizer,
     protected planEstudiosService: PlanEstudiosService,
     protected gestorDocumentalService: NewNuxeoService,
+    protected userService: UserService,
     protected autenticationService: ImplicitAutenticationService,
     protected espaciosAcademicosService: EspaciosAcademicosService,
     protected parametrosService: ParametrosService
   ) { }
 
-
   setRoles() {
     this.autenticationService.getRole().then((rol: any) => {
       this.personaRoles = rol;
+      console.log(localStorage)
     })
+    // this.autenticationService.getMail().then((email: any) => {
+    //   console.log(email);
+    //   this.userService.findByUserEmail(email).then((res: any) => {
+    //     console.log(res);
+    //     console.log(localStorage)
+    //   })
+    // })
   }
 
   // * ----------
@@ -362,6 +371,7 @@ export abstract class PlanEstudioBaseComponent {
   //#region
   generarPlanEstudio() {
     this.loading = true;
+    console.log(this.planEstudioBody, this.planEstudioBody.Id)
     this.sgaMidService.get('plan_estudios/study_plan_visualization/' + this.planEstudioBody.Id).subscribe((resp: any) => {
       this.loading = false;
       if (resp !== null && resp.Status == "200") {
@@ -1627,20 +1637,34 @@ export abstract class PlanEstudioBaseComponent {
   async validarPrerrequisitoSemestreActual(prerrequisito: any): Promise<any> {
     return new Promise((resolve) => {
       // Valida que no se encuentre en el semestre actual
-      this.dataSemestre.data[this.dataSemestre.data.length - 1].data.then((data: any) => {
-        if (data.length > 0) {
-          for (const element of data) {
-            if (element._id === prerrequisito._id) {
-              resolve(false);
-              break;
-            }
+      console.log(this.dataSemestre.data, this.dataSemestre.data[this.dataSemestre.data.length - 1].data)
+      const data = this.dataSemestre.data[this.dataSemestre.data.length - 1].data
+      console.log(data)
+      if (data.length > 0) {
+        for (const element of data) {
+          if (element._id === prerrequisito._id) {
+            resolve(false);
+            break;
           }
-
-          resolve(true);
-        } else {
-          resolve(true);
         }
-      });
+        resolve(true);
+      } else {
+        resolve(true);
+      }
+      // this.dataSemestre.data[this.dataSemestre.data.length - 1].data.then((data: any) => {
+      //   if (data.length > 0) {
+      //     for (const element of data) {
+      //       if (element._id === prerrequisito._id) {
+      //         resolve(false);
+      //         break;
+      //       }
+      //     }
+
+      //     resolve(true);
+      //   } else {
+      //     resolve(true);
+      //   }
+      // });
     });
   }
 

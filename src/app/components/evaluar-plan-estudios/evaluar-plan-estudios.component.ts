@@ -23,6 +23,7 @@ import { ImplicitAutenticationService } from 'src/app/services/implicit_autentic
 import { PlanEstudioSummary } from 'src/app/models/plan_estudio_summary'; 
 import { DialogoEvaluarComponent } from '../dialogo-evaluar/dialogo-evaluar.component';
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
+import { UserService } from "src/app/services/users.service";
 
 import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
 import { ParametrosService } from "src/app/services/parametros.service";
@@ -68,13 +69,14 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
     domSanitizer: DomSanitizer,
     planEstudiosService: PlanEstudiosService,
     gestorDocumentalService: NewNuxeoService,
+    userService: UserService,
     autenticationService: ImplicitAutenticationService,
     espaciosAcademicosService: EspaciosAcademicosService,
     parametrosService: ParametrosService
   ) {
     super(translate, popUpManager, projectService,
       sgaMidService, domSanitizer, planEstudiosService,
-      gestorDocumentalService, autenticationService, espaciosAcademicosService, parametrosService);
+      gestorDocumentalService, userService, autenticationService, espaciosAcademicosService, parametrosService);
 
     // this.dataPlanesEstudio = new LocalDataSource();
     // this.dataSimpleStudyPlans = new LocalDataSource();

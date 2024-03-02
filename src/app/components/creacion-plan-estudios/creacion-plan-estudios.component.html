@@ -724,7 +724,7 @@
                                     translate }} </th>
                                 <td mat-cell *matCellDef="let element">
                                     <button mat-raised-button (click)="removePlan(element)" class="btn-accion"
-                                        color="primary">-</button>
+                                        color="primary" [disabled]="!enEdicionPlanEstudio">-</button>
                                 </td>
                             </ng-container>
 

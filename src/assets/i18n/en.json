@@ -718,7 +718,8 @@
         "direccion_entidad": "Entity Address",
         "placeholder_direccion_entidad": "E.g.: Cra 8 # 40-78 Piso 1",
         "item": "Item",
-        "evaluar": "Evaluate"
+        "evaluar": "Evaluate",
+        "rol": "Rol"
     },
     "ERROR": {
         "general": "The request could not be satisfied",
@@ -2437,6 +2438,7 @@
         "planes_estudio_creados": "Created study plans",
         "planes_estudio_asignados": "Assigned study plans",
         "planes_estudio_evaluados": "Evaluated study plans",
+        "planes_estudio_reportados": "Reported study plans",
         "nombre_plan_estudios": "Study plan name",
         "nombre_plan_estudios_general": "General study plan name",
         "select_proyecto":"Selection of the Curricular Project",
