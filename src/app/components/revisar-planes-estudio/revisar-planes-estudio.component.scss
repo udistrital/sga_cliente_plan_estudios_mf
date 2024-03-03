@@ -138,6 +138,8 @@ fieldset {
 }
 
 :host {
+    width: 100%;
+
     ::ng-deep .resumenTabla .ng2-smart-titles {
         background-color: var(--primary);
     }
