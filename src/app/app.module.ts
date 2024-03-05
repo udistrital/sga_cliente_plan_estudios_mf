@@ -24,7 +24,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DialogVerObservacionComponent } from './components/dialog-ver-observacion/dialog-ver-observacion.component';
 import { PlanEstudiosService } from './services/plan_estudios.service';
-import { EspaciosAcademicosService } from './services/espacios_academicos.service';
 import { SummaryPlanesEstudioComponent } from './components/summary-planes-estudio/summary-planes-estudio.component';
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
@@ -75,8 +74,7 @@ import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-ev
     }),
   ],
   providers: [
-    PlanEstudiosService,
-    EspaciosAcademicosService
+    PlanEstudiosService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,3 @@
-<!-- <nb-card [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="xxlarge"
-nbSpinnerMessage="{{ 'GLOBAL.cargando' | translate }}" [ngSwitch]="vista">     -->
 <mat-card [ngSwitch]="vista">
     <div [class.loader-div]="loading">
         <mat-spinner *ngIf="loading" diameter="100" color="primary"></mat-spinner>
@@ -18,8 +16,6 @@ nbSpinnerMessage="{{ 'GLOBAL.cargando' | translate }}" [ngSwitch]="vista">     -
                 <div class="alinear-center">
                     <div class="advertencia">{{ 'plan_estudios.mensaje_tabla_reporte_plan_estudio' | translate }}</div>
                 </div>
-                <!-- <ng2-smart-table [settings]="tbPlanesEstudio" [source]="dataPlanesEstudio">
-                </ng2-smart-table> -->
                 <mat-form-field class="filtro">
                     <input matInput (keyup)="aplicarFiltro($event, 'planes estudio')" placeholder="{{ 'GLOBAL.buscar' | translate }}" #input>
                 </mat-form-field>
@@ -80,7 +76,6 @@ nbSpinnerMessage="{{ 'GLOBAL.cargando' | translate }}" [ngSwitch]="vista">     -
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
                     <small>&nbsp; {{ 'plan_estudios.resumen' | translate }} </small>
-                    <!-- <i class="fa fa-times fa-2xs button cancel" aria-hidden="true" title="{{'GLOBAL.cancelar' | translate}}" (click)="vista=VIEWS.LIST;"></i> -->
                     <i class="button cancel" aria-hidden="true" title="{{'GLOBAL.cancelar' | translate}}"
                         (click)="vista=VIEWS.LIST;">
                         <mat-icon class="icon-boton">close</mat-icon>

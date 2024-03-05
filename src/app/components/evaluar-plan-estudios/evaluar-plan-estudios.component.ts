@@ -4,8 +4,6 @@ import { PopUpManager } from 'src/app/managers/popUpManager';
 import { UtilidadesService } from 'src/app/services/utilidades.service'; 
 import { FORM_PLAN_ESTUDIO } from 'src/app/form-plan_estudio'; 
 import { ProyectoAcademicoService } from 'src/app/services/proyecto_academico.service';
-//import { LocalDataSource } from 'ng2-smart-table';
-//import { Ng2StButtonComponent } from '../../../@theme/components';
 import { ACTIONS, MODALS, ROLES, VIEWS } from 'src/app/models/diccionario'; 
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SgaMidService } from 'src/app/services/sga_mid.service'; 
@@ -24,9 +22,6 @@ import { PlanEstudioSummary } from 'src/app/models/plan_estudio_summary';
 import { DialogoEvaluarComponent } from '../dialogo-evaluar/dialogo-evaluar.component';
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
 import { UserService } from "src/app/services/users.service";
-
-import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
-import { ParametrosService } from "src/app/services/parametros.service";
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
@@ -70,28 +65,11 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
     planEstudiosService: PlanEstudiosService,
     gestorDocumentalService: NewNuxeoService,
     userService: UserService,
-    autenticationService: ImplicitAutenticationService,
-    espaciosAcademicosService: EspaciosAcademicosService,
-    parametrosService: ParametrosService
+    autenticationService: ImplicitAutenticationService
   ) {
     super(translate, popUpManager, projectService,
       sgaMidService, domSanitizer, planEstudiosService,
-      gestorDocumentalService, userService, autenticationService, espaciosAcademicosService, parametrosService);
-
-    // this.dataPlanesEstudio = new LocalDataSource();
-    // this.dataSimpleStudyPlans = new LocalDataSource();
-    // this.dataOrganizedStudyPlans = new LocalDataSource();
-    // this.dataEspaciosAcademicos = new LocalDataSource();
-    // this.dataSemestre = [];
-    // this.dataSemestreTotal = [];
-    // this.dataSemestreTotalTotal = new LocalDataSource();
-
-    // this.translate.onLangChange.subscribe(() => {
-    //   this.createTablePlanesEstudio();
-    //   this.createTableEspaciosAcademicos();
-    //   this.createTableSemestre();
-    //   this.createTableSemestreTotal();
-    // })
+      gestorDocumentalService, userService, autenticationService);
    }
 
   async ngOnInit() {
@@ -104,12 +82,8 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
     this.dataSemestre = new MatTableDataSource<any>([])
     this.dataSemestreTotal = [];
     this.dataSemestreTotalTotal = new MatTableDataSource<any>([])
-    // this.loadSelects().then(() => {
-    //   this.loadStudyPlanTable();
-    // });
     await this.loadSelects();
     await this.loadStudyPlanTable();
-    //this.createTablePlanesEstudio();
     this.gestorDocumentalService.clearLocalFiles();
     this.habilitarGenerarPlan();
   }
@@ -132,61 +106,6 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
   }
 
   // * ----------
-  // * Crear tabla de lista planes estudio
-  //#region
-  // createTablePlanesEstudio() {
-  //   let tableColumns = <any>UtilidadesService.hardCopy(this.studyPlanTableColumns);
-  //   tableColumns['ver'] = {
-  //     title: this.translate.instant('GLOBAL.ver'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance) => {
-  //       instance.valueChanged.subscribe((out) => {
-  //         this.viewStudyPlan(out.rowData);
-  //       })
-  //     }
-  //   };
-  //   tableColumns['ver_ob'] = {
-  //     title: this.translate.instant('GLOBAL.ver_ob'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance) => {
-  //       instance.valueChanged.subscribe((out) => {
-  //         this.viewObservation(out.rowData);
-  //       })
-  //     }
-  //   };
-  //   tableColumns['evaluar'] = {
-  //     title: this.translate.instant('GLOBAL.evaluar'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance) => {
-  //       instance.valueChanged.subscribe((out) => {
-  //         this.approve2StudyPlan(out.rowData);
-  //       })
-  //     }
-  //   }
-  //   this.tbPlanesEstudio = {
-  //     columns: tableColumns,
-  //     hideSubHeader: false,
-  //     mode: 'external',
-  //     actions: false,
-  //     noDataMessage: this.translate.instant('GLOBAL.table_no_data_found')
-  //   };
-  // }
-  //#endregion
-  // * ----------
-
-  // * ----------
   // * Cargar datos plan de estudio tabla
   //#region
   async loadStudyPlanTable() {
@@ -196,7 +115,6 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
       this.planesEstudio.forEach(plan => {
         this.organizarDatosTablaPlanEstudio(plan);
       });
-      //this.dataPlanesEstudio.load(this.planesEstudio);
       this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
       this.dataPlanesEstudio.paginator = this.paginator
       this.loading = false;
@@ -238,7 +156,6 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
       this.planesEstudio.forEach(plan => {
         this.organizarDatosTablaPlanEstudio(plan);
       });
-      //this.dataPlanesEstudio.load(this.planesEstudio);
       this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
       this.dataPlanesEstudio.paginator = this.paginator
       this.loading = false;
