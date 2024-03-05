@@ -6,12 +6,9 @@ import { FORM_PLAN_ESTUDIO, FORM_PLAN_ESTUDIO_VISUALIZACION } from "src/app/form
 import { FormParams } from "src/app/models/define-form-fields";
 import { FormGroup } from "@angular/forms";
 import { ProyectoAcademicoService } from "src/app/services/proyecto_academico.service";
-//import { LocalDataSource } from "ng2-smart-table";
 import { MatTableDataSource } from '@angular/material/table';
 import { ACTIONS, MODALS, VIEWS } from "src/app/models/diccionario";
 import { SgaMidService } from "src/app/services/sga_mid.service";
-import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
-import { ParametrosService } from "src/app/services/parametros.service";
 import { PlanEstudiosService } from "src/app/services/plan_estudios.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -22,10 +19,6 @@ import { EstadoAprobacion } from "src/app/models/estado_aprobacion";
 import { ImplicitAutenticationService } from "src/app/services/implicit_autentication.service";
 import { PlanEstudioSummary } from "src/app/models/plan_estudio_summary";
 
-/*@Component({
-  selector: "plan-estudio-base",
-  template: "",
-})*/
 export abstract class PlanEstudioBaseComponent {
   displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
   displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
@@ -51,7 +44,6 @@ export abstract class PlanEstudioBaseComponent {
   dataEspaciosAcademicos!: MatTableDataSource<any>;
 
   tbSemestre!: any;
-  //dataSemestre!: any[];
   dataSemestre!: MatTableDataSource<any>;
 
   tbSemestreTotal!: any;
@@ -103,7 +95,6 @@ export abstract class PlanEstudioBaseComponent {
     ENFQ_TEOPRAC: 0,
   };
 
-  //dataPlanes = undefined as unknown as PlanEstudioSummary
   dataPlanes?: PlanEstudioSummary = undefined;
   personaId!: number;
   personaRoles!: String[];
@@ -161,23 +152,13 @@ export abstract class PlanEstudioBaseComponent {
     protected planEstudiosService: PlanEstudiosService,
     protected gestorDocumentalService: NewNuxeoService,
     protected userService: UserService,
-    protected autenticationService: ImplicitAutenticationService,
-    protected espaciosAcademicosService: EspaciosAcademicosService,
-    protected parametrosService: ParametrosService
+    protected autenticationService: ImplicitAutenticationService
   ) { }
 
   setRoles() {
     this.autenticationService.getRole().then((rol: any) => {
       this.personaRoles = rol;
-      console.log(localStorage)
     })
-    // this.autenticationService.getMail().then((email: any) => {
-    //   console.log(email);
-    //   this.userService.findByUserEmail(email).then((res: any) => {
-    //     console.log(res);
-    //     console.log(localStorage)
-    //   })
-    // })
   }
 
   // * ----------
@@ -318,9 +299,7 @@ export abstract class PlanEstudioBaseComponent {
           if (action.value) {
             this.planEstudioPadreAsignado2Form = false;
             this.formGroupPlanEstudio.reset();
-            //this.dataSemestre = [];
             this.dataSemestre = new MatTableDataSource<any>([])
-            //this.dataOrganizedStudyPlans = undefined;
             this.dataOrganizedStudyPlans.data = [];
             this.planEstudioBody = undefined;
             this.planEstudioOrdenadoBody = undefined;
@@ -350,10 +329,8 @@ export abstract class PlanEstudioBaseComponent {
           if (action.value) {
             this.planEstudioPadreAsignado2Form = false;
             this.formGroupPlanEstudio.reset();
-            //this.dataSemestre = [];
             this.dataSemestre = new MatTableDataSource<any>([])
             this.simpleStudyPlans = [];
-            //this.dataOrganizedStudyPlans = undefined;
             this.dataOrganizedStudyPlans.data = [];
             this.planEstudioBody = undefined;
             this.planEstudioOrdenadoBody = undefined;
@@ -371,7 +348,6 @@ export abstract class PlanEstudioBaseComponent {
   //#region
   generarPlanEstudio() {
     this.loading = true;
-    console.log(this.planEstudioBody, this.planEstudioBody.Id)
     this.sgaMidService.get('plan_estudios/study_plan_visualization/' + this.planEstudioBody.Id).subscribe((resp: any) => {
       this.loading = false;
       if (resp !== null && resp.Status == "200") {
@@ -461,14 +437,6 @@ export abstract class PlanEstudioBaseComponent {
         "Orden": plan.orden,
       };
     });
-    // await this.dataOrganizedStudyPlans.getAll().then((planes: any) => {
-    //   planes.forEach((plan: any, index: any) => {
-    //     ordenPlanes['plan_'.concat((index + 1).toString())] = {
-    //       "Id": plan.Id,
-    //       "Orden": plan.orden,
-    //     };
-    //   });
-    // });
     return ordenPlanes;
   }
 
@@ -482,33 +450,6 @@ export abstract class PlanEstudioBaseComponent {
     );
   }
 
-  // totalTotal() {
-  //   let total = <any>UtilidadesService.hardCopy(this.formatototal);
-  //   console.log(total, this.dataSemestre);
-  //   this.dataSemestre.forEach((semestre) => {
-  //     semestre.getAll().then((data: any) => {
-  //       if (data.length > 0) {
-  //         data.forEach((dataind: any) => {
-  //           total.creditos += dataind.creditos;
-  //           total.htd += dataind.htd;
-  //           total.htc += dataind.htc;
-  //           total.hta += dataind.hta;
-  //           total.OB += dataind.OB;
-  //           total.OC += dataind.OC;
-  //           total.EI += dataind.EI;
-  //           total.EE += dataind.EE;
-  //           total.CP += dataind.CP;
-  //           total.ENFQ_TEO += dataind.ENFQ_TEO;
-  //           total.ENFQ_PRAC += dataind.ENFQ_PRAC;
-  //           total.ENFQ_TEOPRAC += dataind.ENFQ_TEOPRAC;
-  //         });
-  //       }
-  //     });
-  //   });
-  //   //this.dataSemestreTotalTotal.load([total]);
-  //   this.dataSemestreTotalTotal = new MatTableDataSource<any>([total])
-  //   //this.dataSemestreTotalTotal.refresh();
-  // }
   totalTotal() {
     let total = <any>UtilidadesService.hardCopy(this.formatototal);
     // Recorrer directamente los datos en cada array interno
@@ -530,8 +471,7 @@ export abstract class PlanEstudioBaseComponent {
     });
 
     this.dataSemestreTotalTotal = new MatTableDataSource<any>([total]);
-    // this.dataSemestreTotalTotal.load([total]);
-    // this.dataSemestreTotalTotal.refresh();
+    this.dataSemestreTotalTotal = this.dataSemestreTotalTotal
   }
   //#endregion
   // * ----------
@@ -614,7 +554,6 @@ export abstract class PlanEstudioBaseComponent {
             this.loading = false;
             this.planEstudioPadreAsignado2Form = false;
             this.formGroupPlanEstudio.reset();
-            //this.dataSemestre = [];
             this.dataSemestre = new MatTableDataSource<any>([])
             this.vista = VIEWS.LIST;
             await this.loadSelects();
@@ -643,7 +582,6 @@ export abstract class PlanEstudioBaseComponent {
           let espacio;
           let indexEspacio;
           for (const semestreKey in semestreDistribucion) {
-            //this.dataSemestre.push(new LocalDataSource());
             this.dataSemestre.data.push(new MatTableDataSource<any>([]));
             this.punteroSemestrePlan = this.dataSemestre.data.length - 1;
             let espaciosSemestre = semestreDistribucion[semestreKey].espacios_academicos;
@@ -653,33 +591,18 @@ export abstract class PlanEstudioBaseComponent {
                 idEspacio = espacioSemestre['espacio_'.concat((idx + 1).toString())].Id;
                 espacio = this.ListEspacios.find(espacio => espacio._id == idEspacio);
                 if (espacio) {
-                  //this.dataSemestre[this.punteroSemestrePlan].add(espacio);
                   this.dataSemestre.data[this.punteroSemestrePlan].data.push(espacio);
                   indexEspacio = this.ListEspacios.findIndex(espacio => espacio._id == idEspacio);
                   this.ListEspacios.splice(indexEspacio, 1);
                 }
               });
             }
-
-            //let total = <any>UtilidadesService.hardCopy(this.formatototal);
-            //this.dataSemestreTotal.push(new LocalDataSource([total]));
             this.dataSemestreTotal.push(UtilidadesService.hardCopy(this.formatototal));
-
-
-            //const totalSemestre = this.filaTotal(this.dataSemestre[this.punteroSemestrePlan]);
-            //this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
-            //this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
-            //MODIFICAR FUNCIÓN FILA TOTAAAAL
-
             const totalSemestre = this.filaTotal(this.dataSemestre.data[this.punteroSemestrePlan].data);
             this.dataSemestreTotal.splice(this.punteroSemestrePlan, 1, totalSemestre);
           }
-
-          //this.createTableSemestre(withActions);
-          //this.createTableSemestreTotal(withActions);
         }
         this.planEstudioPadreAsignado2Form = false;
-        //this.dataEspaciosAcademicos.load(this.ListEspacios);
         this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
 
 
@@ -762,7 +685,6 @@ export abstract class PlanEstudioBaseComponent {
                 idOrdenPlan = ordenPlanes[oPlan].Id;
                 plan2add = this.simpleStudyPlans.find(plan => plan.Id == idOrdenPlan);
                 if (plan2add) {
-                  //this.dataOrganizedStudyPlans.addData(plan2add);
                   this.dataOrganizedStudyPlans.data.push(plan2add);
                   let dataPlans = this.dataOrganizedStudyPlans.data
                   dataPlans.forEach((plan: any, index: any) => {
@@ -775,8 +697,6 @@ export abstract class PlanEstudioBaseComponent {
             } else {
               this.planEstudioOrdenadoBody = undefined;
             }
-            //this.dataOrganizedStudyPlans.refresh();
-            //this.dataSimpleStudyPlans.load(this.simpleStudyPlans);
             this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
             this.dataSimpleStudyPlans = new MatTableDataSource<any>(this.simpleStudyPlans);
             this.loading = false;
@@ -831,221 +751,24 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
   // * Cargar informacion particular 
   //#region
-  // async consultarEspaciosAcademicos(id_proyecto: number): Promise<any> {
-  //   this.loading = true;
-  //   console.log('Consulta espacios 1');
-  //   return new Promise((resolve, reject) => {
-  //     this.sgaMidService.get('espacios_academicos/byProject/' + id_proyecto).subscribe((resp: any) => {
-  //       this.loading = false;
-  //       console.log('Consulta espacios 2o');
-  //       resolve(resp.Data);
-  //     }, (err: any) => {
-  //       this.loading = false;
-  //       console.log('Consulta espacios 2e');
-  //       reject({ "espacios": err });
-  //     })
-  //   })
-  // }
   async consultarEspaciosAcademicos(id_proyecto: number): Promise<any> {
-    let espaciosA = await this.recuperarEspaciosAcademicos(id_proyecto);
-    //let espaciosAll = await this.getLineaEspacioAcademico();
-    let clases = await this.recuperarClase();
-    let enfoques = await this.recuperarEnfoque();
-    let EspaciosAcademicos: any[] = [];
-    // espaciosA.forEach(async (espacio: any) => {
-    for (const espacio of espaciosA) {
-      let nombres_espacios: any[] = [];
-      let nombres_espacios_str: any = ""
-      for (const requerido of espacio.espacios_requeridos) {
-        await this.getLineaEspacioAcademico(requerido)
-        //let aux = await this.getLineaEspacioAcademico();
-        let nombreEspacio: string = this.getLocalEspacioAcademico(requerido, espaciosA);
-        if (nombreEspacio == "") {
-          nombreEspacio = await this.getLineaEspacioAcademico(requerido)
-          //const espacioAux = espaciosAll.find((espacioItem: any) => espacioItem._id == requerido)
-          // if (espacioAux) {
-          //   nombreEspacio = await this.getLineaEspacioAcademico()
-          //   nombreEspacio = espacioAux.nombre
-          //   console.log("Consultar 4.4");
-          // } else {
-          //   nombreEspacio = "No encontrado..."
-          // }
-        }
-        nombres_espacios.push({
-          "_id": requerido,
-          "nombre": nombreEspacio
-        });
-        nombres_espacios_str += nombreEspacio + ", "
-      }
-      // espacio.espacios_requeridos.forEach(async (requerido: any) => {
-      //   console.log(requerido);
-      //   await this.getLineaEspacioAcademico(requerido)
-      //   //console.log("Consultar 4.0");
-      //   //let aux = await this.getLineaEspacioAcademico();
-      //   console.log("Consultar 4.1");
-      //   let nombreEspacio: string = this.getLocalEspacioAcademico(requerido, espaciosA);
-      //   console.log("Consultar 4.2");
-      //   if (nombreEspacio == "") {
-      //     console.log("Consultar 4.3");
-      //     //console.log(espaciosAll);
-      //     nombreEspacio = await this.getLineaEspacioAcademico(requerido)
-      //     //const espacioAux = espaciosAll.find((espacioItem: any) => espacioItem._id == requerido)
-      //     // if (espacioAux) {
-      //     //   nombreEspacio = await this.getLineaEspacioAcademico()
-      //     //   nombreEspacio = espacioAux.nombre
-      //     //   console.log("Consultar 4.4");
-      //     // } else {
-      //     //   nombreEspacio = "No encontrado..."
-      //     // }
-      //   }
-      //   console.log(nombreEspacio);
-      //   nombres_espacios.push({
-      //     "_id": requerido,
-      //     "nombre": nombreEspacio
-      //   });
-      //   nombres_espacios_str += nombreEspacio + ", "
-      // });
-      let nombreClase: any = this.getClase(espacio.clasificacion_espacio_id, clases);
-      if (!nombreClase) {
-        nombreClase = "No encontrado..."
-      }
-      let formatoEspacio: any = {
-        "_id": espacio._id,
-        "nombre": espacio.nombre,
-        "prerequisitos": nombres_espacios,
-        "prerequisitos_str": nombres_espacios_str,
-        "clase": nombreClase,
-        "creditos": espacio.creditos,
-        "htd": espacio.distribucion_horas.HTD,
-        "htc": espacio.distribucion_horas.HTC,
-        "hta": espacio.distribucion_horas.HTA
-      }
-      clases.forEach((clase: any) => {
-        let code = clase.CodigoAbreviacion;
-        let value = 0;
-        if (clase.Id == espacio.clasificacion_espacio_id) {
-          value = 1;
-        }
-        formatoEspacio[code] = value;
-      });
-      enfoques.forEach((enfoque: any) => {
-        let code = enfoque.CodigoAbreviacion;
-        code = code.replace(/-/g, "_");
-        let value = 0
-        if (enfoque.Id == espacio.enfoque_id) {
-          value = 1;
-        }
-        formatoEspacio[code] = value;
-      });
-      EspaciosAcademicos.push(formatoEspacio)
-    }
-
-    return EspaciosAcademicos;
-  }
-
-  //*******************************************************//
-  //***************** FUNCIONES DE AYUDA ******************//
-
-  async recuperarEspaciosAcademicos(id_proyecto: number): Promise<any> {
+    this.loading = true;
+    console.log('Consulta espacios 1');
     return new Promise((resolve, reject) => {
-      this.espaciosAcademicosService.get('espacio-academico?query=activo:true,proyecto_academico_id:' + id_proyecto + ',espacio_academico_padre&limit=0').subscribe((resp: any) => {
+      this.sgaMidService.get('espacios_academicos/byProject/' + id_proyecto).subscribe((resp: any) => {
+        this.loading = false;
+        console.log('Consulta espacios 2o');
         resolve(resp.Data);
       }, (err: any) => {
-        reject(err);
+        this.loading = false;
+        console.log('Consulta espacios 2e');
+        reject({ "espacios": err });
       })
     })
   }
-
-  async recuperarEspacioAcademicosAll(id: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.espaciosAcademicosService.get('espacio-academico/' + id).subscribe((resp: any) => {
-        resolve(resp.Data);
-      }, (err: any) => {
-        reject(err);
-      })
-    })
-  }
-
-  async recuperarClase(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.parametrosService.get('parametro?query=TipoParametroId:51&limit=0&fields=Id,Nombre,CodigoAbreviacion').subscribe((resp: any) => {
-        resolve(resp.Data);
-      }, (err: any) => {
-        reject(err);
-      })
-    })
-  }
-
-  async recuperarEnfoque(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.parametrosService.get('parametro?query=TipoParametroId:68&limit=0&fields=Id,CodigoAbreviacion').subscribe((resp: any) => {
-        resolve(resp.Data);
-      }, (err: any) => {
-        reject(err);
-      })
-    })
-  }
-
-  getLocalEspacioAcademico(id: string, espacios: any[]) {
-    espacios.forEach((espacio: any) => {
-      if (id == espacio._id) {
-        return espacio.nombre
-      }
-    });
-    return "";
-  }
-
-  async getLineaEspacioAcademico(id: any) {
-    let nombreEspacio = await this.recuperarEspacioAcademicosAll(id);
-    if (nombreEspacio.nombre) {
-      return nombreEspacio.nombre;
-    } else {
-      return "";
-    }
-  }
-
-  getClase(id: number, clases: any[]): string | null {
-    let claseEncontrada: string | null = null;
-
-    clases.forEach((clase: any) => {
-      if (id == clase.Id) {
-        claseEncontrada = clase.Nombre;
-        return;
-      }
-    });
-
-    return claseEncontrada;
-  }
-
-  //*******************************************************//
-  //*******************************************************//
 
   //#endregion
   // * ----------
-
-  // filaTotal(semestre: any): any {
-  //   let total = <any>UtilidadesService.hardCopy(this.formatototal);
-  //   semestre.getAll().then((data: any) => {
-  //     if (data.length > 0) {
-  //       data.forEach((dataind: any) => {
-  //         total.creditos += dataind.creditos;
-  //         total.htd += dataind.htd;
-  //         total.htc += dataind.htc;
-  //         total.hta += dataind.hta;
-  //         total.OB += dataind.OB;
-  //         total.OC += dataind.OC;
-  //         total.EI += dataind.EI;
-  //         total.EE += dataind.EE;
-  //         total.CP += dataind.CP;
-  //         total.ENFQ_TEO += dataind.ENFQ_TEO;
-  //         total.ENFQ_PRAC += dataind.ENFQ_PRAC;
-  //         total.ENFQ_TEOPRAC += dataind.ENFQ_TEOPRAC;
-  //       });
-  //     }
-  //   });
-  //   this.totalTotal();
-  //   return [total];
-  // }
 
   filaTotal(semestre: any[]): any {
     let total = <any>UtilidadesService.hardCopy(this.formatototal);
@@ -1082,14 +805,9 @@ export abstract class PlanEstudioBaseComponent {
       this.proyecto_id = this.planEstudioBody.ProyectoAcademicoId;
       this.crearFormulario(FORM_PLAN_ESTUDIO_VISUALIZACION);
       if (this.esPlanEstudioPadre) {
-        // this.createSimpleTableStudyPlan(false);
-        // this.createTableOrganizedStudyPlan(false);
-        //this.dataOrganizedStudyPlans = new LocalDataSource();
         this.dataOrganizedStudyPlans = new MatTableDataSource<any>([]);
         this.vista = VIEWS.SECONDARY_FORM;
       } else {
-        // this.createTableEspaciosAcademicos(false);
-        // this.createTableSemestreTotal(false);
         this.totalTotal();
         this.vista = VIEWS.FORM;
       }
@@ -1138,7 +856,6 @@ export abstract class PlanEstudioBaseComponent {
       this.simpleStudyPlans.forEach(plan => {
         this.organizarDatosTablaSimplePlanEstudio(plan);
       });
-      //this.dataSimpleStudyPlans.load(this.simpleStudyPlans);
       this.dataSimpleStudyPlans = new MatTableDataSource<any>(this.simpleStudyPlans);
 
       this.loading = false;
@@ -1157,8 +874,6 @@ export abstract class PlanEstudioBaseComponent {
     this.modoCreacion = true;
     this.esPlanEstudioPadre = true;
     this.crearFormulario(FORM_PLAN_ESTUDIO);
-    //this.createSimpleTableStudyPlan();
-    //this.createTableOrganizedStudyPlan();
     this.vista = VIEWS.SECONDARY_FORM;
     this.loadStudyPlanSimpleTable();
   }
@@ -1313,11 +1028,6 @@ export abstract class PlanEstudioBaseComponent {
     resumenTotal = dataResumen[0];
     resumenTotal["numero_semestres"] = this.dataSemestre.data.length;
     this.planEstudioBody.ResumenPlanEstudios = JSON.stringify(resumenTotal);
-    // this.dataSemestreTotalTotal.getAll().then((data: any) => {
-    //   resumenTotal = data[0];
-    //   resumenTotal["numero_semestres"] = this.dataSemestre.length;
-    //   this.planEstudioBody.ResumenPlanEstudios = JSON.stringify(resumenTotal);
-    // })
   }
   //#endregion
   // * ----------
@@ -1340,20 +1050,6 @@ export abstract class PlanEstudioBaseComponent {
         } else {
           reject(false);
         }
-        // this.organizarEspaciosSemestreActual().then((semestreRes) => {
-        //   if (Object.keys(semestreRes).length > 0) {
-        //     const semestreEt = Object.keys(semestreRes)[0];
-        //     if (Object.keys(espaciosSemestre).length > 0) {
-        //       espaciosSemestre[semestreEt] = semestreRes[semestreEt];
-        //     } else {
-        //       espaciosSemestre = semestreRes;
-        //     }
-        //     this.planEstudioBody.EspaciosSemestreDistribucion = JSON.stringify(espaciosSemestre);
-        //     resolve(true);
-        //   } else {
-        //     reject(false);
-        //   }
-        // });
       });
     } catch (error) {
       this.loading = false;
@@ -1401,34 +1097,6 @@ export abstract class PlanEstudioBaseComponent {
         }
       });
     }
-
-    // this.dataSemestre[this.punteroSemestrePlan].then((espacios: any) => {
-    //   if (espacios.length == 0) {
-    //     semestre[etiquetaSemestre] = {
-    //       espacios_academicos: []
-    //     }
-    //   } else {
-    //     espacios.forEach((espacio: any, index: any) => {
-    //       let etiquetaEspacio = "espacio_".concat((index + 1).toString());
-    //       let newEspacio = new EspacioEspaciosSemestreDistribucion();
-    //       let espaciosRequeridosId = espacio["prerequisitos"] ? espacio["prerequisitos"].map((e: any) => e._id) : "NA";
-    //       newEspacio.Id = espacio["_id"];
-    //       newEspacio.OrdenTabla = index + 1;
-    //       newEspacio.EspaciosRequeridos = {
-    //         Id: espaciosRequeridosId,
-    //       };
-    //       espaciosAcademicosOrdenados.push({
-    //         [etiquetaEspacio]: newEspacio
-    //       });
-
-    //       if (index >= (espacios.length - 1)) {
-    //         semestre[etiquetaSemestre] = {
-    //           espacios_academicos: espaciosAcademicosOrdenados
-    //         };
-    //       }
-    //     });
-    //   }
-    // });
     return semestre;
   }
 
@@ -1457,19 +1125,7 @@ export abstract class PlanEstudioBaseComponent {
           semestre.data = [];
           const totalSemestre = await this.filaTotal(this.dataSemestre.data[this.punteroSemestrePlan].data);
           this.dataSemestreTotal[this.punteroSemestrePlan] = totalSemestre;
-          //this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
           this.prepareUpdateBySemester();
-          // semestre.getAll().then(async (data: any) => {
-          //   await data.forEach((dataind: any) => {
-          //     //this.dataEspaciosAcademicos.add(dataind);
-          //   });
-          //   //await this.dataEspaciosAcademicos.refresh();
-          //   await semestre.load([]);
-          //   const totalSemestre = await this.filaTotal(this.dataSemestre[this.punteroSemestrePlan]);
-          //   await this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
-          //   await this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
-          //   this.prepareUpdateBySemester();
-          // });
         }
       });
   }
@@ -1479,14 +1135,9 @@ export abstract class PlanEstudioBaseComponent {
     if (semestresMax && this.dataSemestre.data.length < semestresMax) {
       this.enEdicionSemestreNuevo = true;
       this.enEdicionSemestreViejo = false;
-      //this.dataSemestre.push(new LocalDataSource());
       this.dataSemestre.data.push(new MatTableDataSource<any>([]));
       this.punteroSemestrePlan = this.dataSemestre.data.length - 1;
-      //let total = <any>UtilidadesService.hardCopy(this.formatototal);
-      //this.dataSemestreTotal.push(new LocalDataSource([total]));
       this.dataSemestreTotal.push([UtilidadesService.hardCopy(this.formatototal)]);
-      //this.createTableSemestre();
-      //this.createTableSemestreTotal();
       this.numSemestresCompletado = this.dataSemestre.data.length === semestresMax;
     }
   }
@@ -1566,31 +1217,6 @@ export abstract class PlanEstudioBaseComponent {
   //#endregion
   // * ----------
 
-  // validarPrerrequisitoSinAsignar(prerrequisito: any): Promise<any> {
-  //   return new Promise((resolve) => {
-  //     // Valida que no se encuentre en la lista de espacios por asignar
-  //     this.dataEspaciosAcademicos.getAll().then((data: any) => {
-  //       let index = 0;
-
-  //       if (data.length > 0) {
-  //         for (const element of data) {
-  //           if (element._id === prerrequisito._id) {
-  //             resolve(false);
-  //             break;
-  //           }
-
-  //           if (index >= data.length - 1) {
-  //             resolve(true);
-  //           }
-  //           index++;
-  //         }
-  //       } else {
-  //         resolve(true);
-  //       }
-  //     });
-  //   });
-  // }
-
   async validarPrerrequisitoSinAsignar(prerrequisito: any): Promise<any> {
     return new Promise((resolve) => {
       // Valida que no se encuentre en la lista de espacios por asignar
@@ -1609,37 +1235,10 @@ export abstract class PlanEstudioBaseComponent {
     });
   }
 
-  // async validarPrerrequisitoSemestreActual(prerrequisito: any): Promise<any> {
-  //   return new Promise((resolve) => {
-  //     // Valida que no se encuentre en el semestre actual
-  //     this.dataSemestre[this.dataSemestre.length - 1].getAll().then((data: any) => {
-  //       let index = 0;
-
-  //       if (data.length > 0) {
-  //         for (const element of data) {
-  //           if (element._id === prerrequisito._id) {
-  //             resolve(false);
-  //             break;
-  //           }
-
-  //           if (index >= data.length - 1) {
-  //             resolve(true);
-  //           }
-  //           index++;
-  //         }
-  //       } else {
-  //         resolve(true);
-  //       }
-  //     });
-  //   });
-  // }
-
   async validarPrerrequisitoSemestreActual(prerrequisito: any): Promise<any> {
     return new Promise((resolve) => {
       // Valida que no se encuentre en el semestre actual
-      console.log(this.dataSemestre.data, this.dataSemestre.data[this.dataSemestre.data.length - 1].data)
       const data = this.dataSemestre.data[this.dataSemestre.data.length - 1].data
-      console.log(data)
       if (data.length > 0) {
         for (const element of data) {
           if (element._id === prerrequisito._id) {
@@ -1651,35 +1250,16 @@ export abstract class PlanEstudioBaseComponent {
       } else {
         resolve(true);
       }
-      // this.dataSemestre.data[this.dataSemestre.data.length - 1].data.then((data: any) => {
-      //   if (data.length > 0) {
-      //     for (const element of data) {
-      //       if (element._id === prerrequisito._id) {
-      //         resolve(false);
-      //         break;
-      //       }
-      //     }
-
-      //     resolve(true);
-      //   } else {
-      //     resolve(true);
-      //   }
-      // });
     });
   }
 
   addtoSemester(id: any) {
     if (this.dataSemestre.data.length >= 1 && (this.enEdicionSemestreNuevo || this.enEdicionSemestreViejo)) {
-      //this.dataSemestre[this.punteroSemestrePlan].add(event.data);
       let espacio = this.ListEspacios.find(espacio => espacio._id == id);
       this.dataSemestre.data[this.punteroSemestrePlan].data.push(espacio);
-      //this.dataSemestre[this.punteroSemestrePlan].refresh();
-      //this.dataEspaciosAcademicos.remove(event.data);
       this.dataEspaciosAcademicos.data = this.dataEspaciosAcademicos.data.filter((element: any) => element._id !== id);
       const totalSemestre = this.filaTotal(this.dataSemestre.data[this.punteroSemestrePlan].data);
-      //this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
       this.dataSemestreTotal[this.punteroSemestrePlan] = totalSemestre;
-      //this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
       this.dataSemestre.data[this.punteroSemestrePlan].data = this.dataSemestre.data[this.punteroSemestrePlan].data
     }
   }
@@ -1761,80 +1341,52 @@ export abstract class PlanEstudioBaseComponent {
   }
 
   async removePlan(element: any) {
-    // let element = this.dataOrganizedStudyPlans.data.find((element: any) => {
-    //   console.log(element, element._id, element.Id, id)
-    //   element.Id === id
-    // })
-    //await this.dataOrganizedStudyPlans.remove(element);
-    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data)
     this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data.filter((item: any) => item.Id !== element.Id);
-    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data, this.planEstudioOrdenadoBody)
 
     if (this.planEstudioOrdenadoBody) {
       this.prepareUpdateOrderedPlan().then((res) => {
         if (res) {
           this.dataSimpleStudyPlans.data.push(element);
-          //this.dataSimpleStudyPlans.refresh();
           let dataPlans = this.dataOrganizedStudyPlans.data
           dataPlans.forEach((plan: any, index: any) => {
             plan["orden"] = index + 1;
           });
-          // this.dataOrganizedStudyPlans.getAll().then((dataPlans: any) => {
-          //   dataPlans.forEach((plan: any, index: any) => {
-          //     plan["orden"] = index + 1;
-          //   });
-          // });
 
         } else {
           this.dataOrganizedStudyPlans.data.push(element);
-          //this.dataOrganizedStudyPlans.refresh();
+          this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data;
         }
       });
     } else {
       this.dataSimpleStudyPlans.data.push(element);
-      //this.dataSimpleStudyPlans.refresh();
+      this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data;
       let dataPlans = this.dataOrganizedStudyPlans.data
       dataPlans.forEach((plan: any, index: any) => {
         plan["orden"] = index + 1;
       });
-      // this.dataOrganizedStudyPlans.getAll().then((dataPlans: any) => {
-      //   dataPlans.forEach((plan: any, index: any) => {
-      //     plan["orden"] = index + 1;
-      //   });
-      // });
-      //this.dataOrganizedStudyPlans.refresh();
+      this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
     }
   }
 
   addPlan(element: any) {
-    //et planPrueba = this.dataSimpleStudyPlans.data.find((plan: any) => plan._id === element.Id)
-    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data)
     let newPlan = element;
     newPlan["orden"] = this.dataOrganizedStudyPlans.data.length + 1;
     this.dataOrganizedStudyPlans.data.push(newPlan);
-    //this.dataOrganizedStudyPlans.refresh();
-    //this.dataSimpleStudyPlans.remove(event.data);
     this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
     this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data.filter((item: any) => item.Id !== element.Id);
-
     //this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data
-
-    console.log(element, this.dataOrganizedStudyPlans.data, this.dataSimpleStudyPlans.data)
   }
 
   async removeFromSemester(element: any) {
     if (this.enEdicionSemestreNuevo || this.enEdicionSemestreViejo) {
-      //let element = this.dataSimpleStudyPlans.data.find((plan: any) => plan.id === id)
-      //await this.dataSemestre[this.punteroSemestrePlan].remove(event.data);
       this.dataSemestre.data[this.punteroSemestrePlan].data = this.dataSemestre.data[this.punteroSemestrePlan].data.filter((item: any) => item._id !== element._id);
       await this.prepareUpdateBySemester().then((res) => {
         if (res) {
           this.dataEspaciosAcademicos.data.push(element);
-          //this.dataEspaciosAcademicos.refresh();
+          this.dataEspaciosAcademicos.data = this.dataEspaciosAcademicos.data
           const totalSemestre = this.filaTotal(this.dataSemestre.data[this.punteroSemestrePlan].data);
-          // this.dataSemestreTotal[this.punteroSemestrePlan].load(totalSemestre);
           this.dataSemestreTotal[this.punteroSemestrePlan] = new MatTableDataSource<any>(totalSemestre);
-          //this.dataSemestreTotal[this.punteroSemestrePlan].refresh();
+          this.dataSemestreTotal[this.punteroSemestrePlan] = this.dataSemestreTotal[this.punteroSemestrePlan]
         } else {
           this.addtoSemester(element._id);
         }
@@ -1872,63 +1424,4 @@ export abstract class PlanEstudioBaseComponent {
         break;
     }
   }
-
-  // aplicarFiltroPlanesEstudio(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataPlanesEstudio.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataPlanesEstudio.paginator) {
-  //     this.dataPlanesEstudio.paginator.firstPage();
-  //   }
-  // }
-
-  // aplicarFiltroSimpleStudyPlans(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSimpleStudyPlans.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataSimpleStudyPlans.paginator) {
-  //     this.dataSimpleStudyPlans.paginator.firstPage();
-  //   }
-  // }
-
-  // aplicarFiltroEspaciosAcademicos(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataEspaciosAcademicos.filter = filterValue.trim().toLowerCase();
-
-  //   if (this.dataEspaciosAcademicos.paginator) {
-  //     this.dataEspaciosAcademicos.paginator.firstPage();
-  //   }
-  // }
-
-  //--------------AQUIIIIII----------------//
-  /*
-  onAction(event: any): void {
-    switch (event.action) {
-      case "add_to_semester":
-        // ToDo mostrar mensaje de confirmación cuando no sea el último semestre
-        this.runValidations2SpacesAdding(event)
-          .then((result: any) => {
-            if (result["valid"]) {
-              this.addtoSemester(event);
-            } else {
-              this.popUpManager.showErrorAlert(result["error"]);
-            }
-          })
-          .catch((result) => {
-            this.popUpManager.showErrorAlert(result["error"]);
-          });
-        break;
-      case "remove_from_semester":
-        // ToDo validar si no tiene prerrequisitos
-        this.removeFromSemester(event);
-        break;
-      case "add_to_plan":
-        this.addPlan(event);
-        break;
-      case "remove_plan":
-        this.removePlan(event);
-        break;
-    }
-  }
-  */
 }

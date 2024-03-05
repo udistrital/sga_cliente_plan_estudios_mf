@@ -3,9 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PopUpManager } from 'src/app/managers/popUpManager'; 
 import { UtilidadesService } from 'src/app/services/utilidades.service'; 
 import { FORM_PLAN_ESTUDIO } from 'src/app/form-plan_estudio'; 
-import { ProyectoAcademicoService } from 'src/app/services/proyecto_academico.service'; 
-//import { LocalDataSource } from 'ng2-smart-table';
-//import { Ng2StButtonComponent } from '../../../@theme/components';
+import { ProyectoAcademicoService } from 'src/app/services/proyecto_academico.service';
 import { ACTIONS, MODALS, ROLES, VIEWS } from 'src/app/models/diccionario'; 
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SgaMidService } from 'src/app/services/sga_mid.service'; 
@@ -22,9 +20,6 @@ import { ImplicitAutenticationService } from 'src/app/services/implicit_autentic
 import { PlanEstudioSummary } from 'src/app/models/plan_estudio_summary';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserService } from "src/app/services/users.service";
-
-import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
-import { ParametrosService } from "src/app/services/parametros.service";
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
@@ -63,13 +58,11 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     planEstudiosService: PlanEstudiosService,
     gestorDocumentalService: NewNuxeoService,
     userService: UserService,
-    autenticationService: ImplicitAutenticationService,
-    espaciosAcademicosService: EspaciosAcademicosService,
-    parametrosService: ParametrosService
+    autenticationService: ImplicitAutenticationService
   ) {
     super(translate, popUpManager, projectService, 
       sgaMidService, domSanitizer, planEstudiosService, 
-      gestorDocumentalService, userService, autenticationService, espaciosAcademicosService, parametrosService);
+      gestorDocumentalService, userService, autenticationService);
     // this.dataPlanesEstudio = new LocalDataSource();
     // this.dataSimpleStudyPlans = new LocalDataSource();
     // this.dataOrganizedStudyPlans = new LocalDataSource();

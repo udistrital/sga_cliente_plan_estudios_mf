@@ -1,5 +1,4 @@
-<!-- <mat-card [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="xxlarge"
-    nbSpinnerMessage="{{ 'GLOBAL.cargando' | translate }}" [ngSwitch]="vista"> -->
+
 <mat-card [ngSwitch]="vista">
     <div [class.loader-div]="loading">
         <mat-spinner *ngIf="loading" diameter="100" color="primary"></mat-spinner>
@@ -15,12 +14,9 @@
         <ng-container *ngSwitchCase="VIEWS.LIST">
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}">
                 <legend><small>&nbsp; {{ 'plan_estudios.planes_estudio_creados' | translate }} </small></legend>
-                <!-- <legend><small>&nbsp; Planes de estudio creados </small></legend> -->
                 <div class="alinear-center">
                     <div class="advertencia">{{ 'plan_estudios.mensaje_soporte_multiple_proyecto' | translate }}</div>
                 </div>
-                <!-- <ng2-smart-table [settings]="tbPlanesEstudio" [source]="dataPlanesEstudio">
-                </ng2-smart-table> -->
                 <mat-form-field class="filtro">
                     <input matInput (keyup)="aplicarFiltro($event, 'planes estudio')"
                         placeholder="{{ 'GLOBAL.buscar' | translate }}" #input>
@@ -110,8 +106,6 @@
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
                     <small>&nbsp; {{ 'plan_estudios.crear_editar' | translate }} </small>
-                    <!-- <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="{{'GLOBAL.cancelar' | translate}}" (click)="cancelar()"></i> -->
                     <i class="button cancel" aria-hidden="true" title="{{'GLOBAL.cancelar' | translate}}"
                         (click)="cancelar()">
                         <mat-icon class="icon-boton">close</mat-icon>
@@ -143,9 +137,6 @@
                                 {{'plan_estudios.mensaje_tabla_espacios_si_vacio_solicite_inclusion' | translate }}
                             </div>
                         </div>
-                        <!-- <ng2-smart-table [settings]="tbEspaciosAcademicos" [source]="dataEspaciosAcademicos"
-                            (custom)="onAction($event)">
-                        </ng2-smart-table> -->
                         <mat-form-field class="filtro">
                             <input matInput (keyup)="aplicarFiltro($event, 'espacios academicos')"
                                 placeholder="{{ 'GLOBAL.buscar' | translate }}" #input>
@@ -190,8 +181,6 @@
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsEspaciosAcademicos"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsEspaciosAcademicos;"></tr>
-                            <!-- <mat-paginator class="paginacion" [pageSize]="10">
-                            </mat-paginator> -->
                         </table>
                         <mat-paginator class="paginacion" [pageSize]="10">
                         </mat-paginator>
@@ -233,9 +222,6 @@
                                 </mat-expansion-panel-header>
                                 <div class="custom-action-tb"
                                     [class.hide]="!this.enEdicionSemestreNuevo && !this.enEdicionSemestreViejo">
-                                    <!-- <ng2-smart-table [settings]="tbSemestre" [source]="semestre"
-                                        (custom)="onAction($event)">
-                                    </ng2-smart-table> -->
                                     <table mat-table [dataSource]="semestre" class="mat-elevation-z5">
 
                                         <ng-container matColumnDef="nombre">
@@ -342,8 +328,6 @@
                                 </div>
 
                                 <div class="resumenTabla">
-                                    <!-- <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotal[numero]">
-                                    </ng2-smart-table> -->
 
                                     <table mat-table [dataSource]="dataSemestreTotal[numero]"
                                         class="mat-elevation-z5 tabla-total">
@@ -430,7 +414,6 @@
                                             <th mat-header-cell *matHeaderCellDef> {{'GLOBAL.acciones' | translate }}
                                             </th>
                                             <td mat-cell *matCellDef="let element">
-                                                <!-- <button mat-raised-button (click)="removeFromSemester(element)" class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo) || (semestre.length == 0) || !(numero === punteroSemestrePlan)">-</button> -->
                                                 <button mat-raised-button (click)="removeFromSemester(element)"
                                                     class="btn-accion" color="primary" [disabled]="true">-</button>
                                             </td>
@@ -464,8 +447,6 @@
                             </mat-card-header>
                             <mat-card-content style="padding: 1px;">
                                 <div class="resumenTotal">
-                                    <!-- <ng2-smart-table [settings]="tbSemestreTotal" [source]="dataSemestreTotalTotal">
-                                    </ng2-smart-table> -->
                                     <table mat-table [dataSource]="dataSemestreTotalTotal" class="mat-elevation-z5">
 
                                         <ng-container matColumnDef="nombre">
@@ -550,7 +531,6 @@
                                             <th mat-header-cell *matHeaderCellDef> {{'GLOBAL.acciones' | translate }}
                                             </th>
                                             <td mat-cell *matCellDef="let element">
-                                                <!-- <button mat-raised-button (click)="removeFromSemester(element)" class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo)">-</button> -->
                                                 <button mat-raised-button (click)="removeFromSemester(element)"
                                                     class="btn-accion" color="primary" [disabled]="!(enEdicionSemestreNuevo || enEdicionSemestreViejo)">-</button>
                                             </td>
@@ -571,8 +551,6 @@
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
                     <small>&nbsp; {{ 'plan_estudios.crear_editar' | translate }} </small>
-                    <!-- <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="{{'GLOBAL.cancelar' | translate}}" (click)="cancelar()"></i> -->
                     <i class="button cancel" aria-hidden="true" title="{{'GLOBAL.cancelar' | translate}}"
                         (click)="cancelar()">
                         <mat-icon class="icon-boton">close</mat-icon>
@@ -605,9 +583,6 @@
                                 translate }}
                             </div>
                         </div>
-                        <!-- <ng2-smart-table [settings]="tbSimpleStudyPlans" [source]="dataSimpleStudyPlans"
-                            (custom)="onAction($event)">
-                        </ng2-smart-table> -->
                         <mat-form-field class="filtro">
                             <input matInput (keyup)="aplicarFiltro($event, 'simple study plans')"
                                 placeholder="{{ 'GLOBAL.buscar' | translate }}" #input>
@@ -672,9 +647,6 @@
                                 </mat-card-title>
                             </mat-card-header>
                         </mat-card>
-                        <!-- <ng2-smart-table [settings]="tbOrganizedStudyPlans" [source]="dataOrganizedStudyPlans"
-                            (custom)="onAction($event)">
-                        </ng2-smart-table> -->
                         <table mat-table [dataSource]="dataOrganizedStudyPlans" class="mat-elevation-z5">
 
                             <ng-container matColumnDef="plan_estudio">
@@ -752,8 +724,6 @@
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
                 <legend class="modo-ventana">
                     <small>&nbsp; {{ 'plan_estudios.resumen' | translate }} </small>
-                    <!-- <i class="fa fa-times fa-2xs button cancel" aria-hidden="true"
-                        title="{{'GLOBAL.cancelar' | translate}}" (click)="vista=VIEWS.LIST;"></i>> -->
                     <i class="button cancel" aria-hidden="true" title="{{'GLOBAL.cancelar' | translate}}"
                         (click)="vista=VIEWS.LIST;">
                         <mat-icon class="icon-boton">close</mat-icon>
