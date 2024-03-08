@@ -21,6 +21,7 @@ import { PlanEstudioSummary } from 'src/app/models/plan_estudio_summary';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserService } from "src/app/services/users.service";
 import { MatPaginator } from '@angular/material/paginator';
+import { decrypt } from 'src/utils/util-encrypt';
 
 @Component({
   selector: 'revisar-planes-estudio',
@@ -63,23 +64,13 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     super(translate, popUpManager, projectService, 
       sgaMidService, domSanitizer, planEstudiosService, 
       gestorDocumentalService, userService, autenticationService);
-    // this.dataPlanesEstudio = new LocalDataSource();
-    // this.dataSimpleStudyPlans = new LocalDataSource();
-    // this.dataOrganizedStudyPlans = new LocalDataSource();
-    // this.dataEspaciosAcademicos = new LocalDataSource();
-    // this.dataSemestre = [];
-    // this.dataSemestreTotal = [];
-    // this.dataSemestreTotalTotal = new LocalDataSource();
     this.translate.onLangChange.subscribe(() => {
-    //   this.createTablePlanesEstudio();
-    //   this.createTableEspaciosAcademicos();
-    //   this.createTableSemestre();
-    //   this.createTableSemestreTotal();
     })
    }
 
   async ngOnInit() {
-    this.personaId = await Number(window.localStorage.getItem('persona_id'));
+    const id = decrypt(localStorage.getItem('persona_id'));
+    this.personaId = Number(id);
     await this.setRoles();
     this.loading = false;
     this.vista = VIEWS.LIST;
@@ -90,44 +81,11 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     this.dataSemestre = new MatTableDataSource<any>([])
     this.dataSemestreTotal = [];
     this.dataSemestreTotalTotal = new MatTableDataSource<any>([])
-    // this.loadSelects().then(() => {
-    //   this.loadStudyPlanTable();
-    // });
     await this.loadSelects();
     await this.loadStudyPlanTable();
-    //this.createTablePlanesEstudio();
     this.gestorDocumentalService.clearLocalFiles();
     this.habilitarGenerarPlan();
   }
-
-  // * ----------
-  // * Crear tabla de lista planes estudio
-  //#region
-  // createTablePlanesEstudio() {
-  //   let tableColumns = <any>UtilidadesService.hardCopy(this.studyPlanTableColumns);
-  //   tableColumns['ver'] = {
-  //     title: this.translate.instant('GLOBAL.ver'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance) => {
-  //       instance.valueChanged.subscribe((out) => {
-  //         this.generarPlanEstudioVisualizacion(out.rowData);
-  //       })
-  //     }
-  //   };
-  //   this.tbPlanesEstudio = {
-  //     columns: tableColumns,
-  //     hideSubHeader: false,
-  //     mode: 'external',
-  //     actions: false,
-  //     noDataMessage: this.translate.instant('GLOBAL.table_no_data_found')
-  //   };
-  // }
-  //#endregion
-  // * ----------
 
   // * ----------
   // * Cargar datos plan de estudio tabla

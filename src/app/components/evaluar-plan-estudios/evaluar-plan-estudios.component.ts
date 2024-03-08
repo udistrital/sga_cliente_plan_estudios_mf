@@ -23,6 +23,7 @@ import { DialogoEvaluarComponent } from '../dialogo-evaluar/dialogo-evaluar.comp
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
 import { UserService } from "src/app/services/users.service";
 import { MatPaginator } from '@angular/material/paginator';
+import { decrypt } from 'src/utils/util-encrypt';
 
 @Component({
   selector: 'evaluar-plan-estudios',
@@ -207,7 +208,8 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
   // * Visualización de ventana evaluación
   // #region
   showEvaluationDialog(planEstudioBody: PlanEstudio) {
-    let persona_id = Number(localStorage.getItem('persona_id'));
+    const id = decrypt(localStorage.getItem('persona_id'));
+    let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
     dialogConfig.height = '590px';
@@ -231,7 +233,8 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
   // #region
 
   viewObservation(planEstudioBody: PlanEstudio) {
-    let persona_id = Number(localStorage.getItem('persona_id'));
+    const id = decrypt(localStorage.getItem('persona_id'));
+    let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
     dialogConfig.height = '510px';

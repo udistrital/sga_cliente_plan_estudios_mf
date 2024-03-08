@@ -22,6 +22,7 @@ import { ImplicitAutenticationService } from 'src/app/services/implicit_autentic
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { UserService } from "src/app/services/users.service";
+import { decrypt } from 'src/utils/util-encrypt';
 
 @Component({
   selector: 'creacion-plan-estudios',
@@ -69,7 +70,8 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   }
 
   async ngOnInit() {
-    this.personaId = await Number(window.localStorage.getItem('persona_id'));
+    const id = decrypt(localStorage.getItem('persona_id'));
+    this.personaId = Number(id);
     await this.setRoles();
     this.loading = false;
     this.dataPlanesEstudio = new MatTableDataSource<any>([])
@@ -445,7 +447,8 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // #region
 
   viewObservation(planEstudioBody: any) {
-    let persona_id = Number(localStorage.getItem('persona_id'));
+    const id = decrypt(localStorage.getItem('persona_id'));
+    let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
     dialogConfig.height = '510px';
