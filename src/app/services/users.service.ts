@@ -91,6 +91,7 @@ export class UserService {
           if (Object.keys(this.user).length !== 0) {
             this.user$.next(this.user);
             this.userSubject.next(this.user);             // window.localStorage.setItem('ente', res[0].Ente);
+            console.log("persona_id justo antes de encriptar: " + this.user.Id)
             const persona_id = encrypt(this.user.Id.toString())
             window.localStorage.setItem('persona_id', persona_id);
             resolve(true);

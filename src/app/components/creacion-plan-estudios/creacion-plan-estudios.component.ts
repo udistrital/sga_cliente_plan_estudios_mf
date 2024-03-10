@@ -447,7 +447,9 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // #region
 
   viewObservation(planEstudioBody: any) {
+    console.log("persona_id encriptada: " + localStorage.getItem('persona_id'))
     const id = decrypt(localStorage.getItem('persona_id'));
+    console.log("persona_id desencriptada: " + id)
     let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
