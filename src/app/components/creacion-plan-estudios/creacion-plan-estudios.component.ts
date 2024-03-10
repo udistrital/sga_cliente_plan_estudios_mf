@@ -4,15 +4,11 @@ import { PopUpManager } from 'src/app/managers/popUpManager';
 import { UtilidadesService } from 'src/app/services/utilidades.service';
 import { FORM_PLAN_ESTUDIO, FORM_PLAN_ESTUDIO_EDICION } from 'src/app/form-plan_estudio';
 import { ProyectoAcademicoService } from 'src/app/services/proyecto_academico.service';
-//import { LocalDataSource } from 'ng2-smart-table';
-//import { Ng2StButtonComponent } from '../../../@theme/components';
 import { MatTableDataSource } from '@angular/material/table';
 import { ACTIONS, MODALS, ROLES, VIEWS } from 'src/app/models/diccionario';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SgaMidService } from 'src/app/services/sga_mid.service';
 import { PlanEstudiosService } from 'src/app/services/plan_estudios.service';
-import { EspaciosAcademicosService } from "src/app/services/espacios_academicos.service";
-import { ParametrosService } from "src/app/services/parametros.service";
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
@@ -25,6 +21,8 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ImplicitAutenticationService } from 'src/app/services/implicit_autentication.service';
 import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-ver-observacion.component';
 import { MatPaginator } from '@angular/material/paginator';
+import { UserService } from "src/app/services/users.service";
+import { decrypt } from 'src/utils/util-encrypt';
 
 @Component({
   selector: 'creacion-plan-estudios',
@@ -48,14 +46,8 @@ import { MatPaginator } from '@angular/material/paginator';
     },
   ]
 })
-export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit {
-  displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
-  displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
-  displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsSemestreTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
+export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit { 
   displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
-  displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
   @ViewChild(MatPaginator) paginator!: MatPaginator
 
   constructor(
@@ -66,104 +58,36 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     domSanitizer: DomSanitizer,
     planEstudiosService: PlanEstudiosService,
     gestorDocumentalService: NewNuxeoService,
+    userService: UserService,
     autenticationService: ImplicitAutenticationService,
-    espaciosAcademicosService: EspaciosAcademicosService,
-    parametrosService: ParametrosService,
     private dialog: MatDialog
   ) {
     super(translate, popUpManager, projectService,
       sgaMidService, domSanitizer, planEstudiosService,
-      gestorDocumentalService, autenticationService, espaciosAcademicosService, parametrosService);
+      gestorDocumentalService, userService, autenticationService);
     this.translate.onLangChange.subscribe(() => {
-      //this.createTablePlanesEstudio();
-      //this.createTableEspaciosAcademicos();
-      //this.createTableSemestre();
-      //this.createTableSemestreTotal();
     })
   }
 
   async ngOnInit() {
-    this.personaId = await Number(window.localStorage.getItem('persona_id'));
+    const id = decrypt(localStorage.getItem('persona_id'));
+    this.personaId = Number(id);
     await this.setRoles();
     this.loading = false;
-    this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
     this.dataPlanesEstudio = new MatTableDataSource<any>([])
     this.dataSimpleStudyPlans = new MatTableDataSource<any>([])
     this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([])
     this.dataSemestreTotalTotal = new MatTableDataSource<any>([])
     this.vista = VIEWS.LIST;
-    //this.dataSemestre = [];
     this.dataSemestre = new MatTableDataSource<any>([])
     this.dataSemestreTotal = [];
-    // this.loadSelects().then(async () => {
-    //   await this.loadStudyPlanTable();
-    // });
+    this.dataSimpleStudyPlans.paginator = this.paginator
     await this.loadSelects();
     await this.loadStudyPlanTable();
-    //this.createTablePlanesEstudio();
     this.gestorDocumentalService.clearLocalFiles();
     this.habilitarGenerarPlan();
   }
-
-  // * ----------
-  // * Crear tabla de lista planes estudio
-  //#region
-  // createTablePlanesEstudio() {
-  //   let tableColumns = <any>UtilidadesService.hardCopy(this.studyPlanTableColumns);
-  //   tableColumns['ver'] = {
-  //     title: this.translate.instant('GLOBAL.ver_editar'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance: any) => {
-  //       instance.valueChanged.subscribe((out: any) => {
-  //         if (out.rowData.ver.type == "editar") {
-  //           this.prepareFormUpdateStudyPlan(out.rowData);
-  //         } else {
-  //           this.viewStudyPlan(out.rowData);
-  //         }
-  //       })
-  //     }
-  //   };
-  //   tableColumns['ver_ob'] = {
-  //     title: this.translate.instant('GLOBAL.ver_ob'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance: any) => {
-  //       instance.valueChanged.subscribe((out: any) => {
-  //         this.viewObservation(out.rowData);
-  //       })
-  //     }
-  //   };
-  //   tableColumns['enviar'] = {
-  //     title: this.translate.instant('GLOBAL.enviar'),
-  //     editable: false,
-  //     width: '5%',
-  //     filter: false,
-  //     type: 'custom',
-  //     renderComponent: Ng2StButtonComponent,
-  //     onComponentInitFunction: (instance: any) => {
-  //       instance.valueChanged.subscribe((out: any) => {
-  //         this.send2ReviewStudyPlan(out.rowData);
-  //       })
-  //     }
-  //   }
-  //   this.tbPlanesEstudio = {
-  //     columns: tableColumns,
-  //     hideSubHeader: false,
-  //     mode: 'external',
-  //     actions: false,
-  //     noDataMessage: this.translate.instant('GLOBAL.table_no_data_found')
-  //   };
-  // }
-  //#endregion
-  // * ----------
 
   // * ----------
   // * Cargar datos plan de estudio tabla
@@ -183,11 +107,8 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           this.planesEstudio.forEach(plan => {
             this.organizarDatosTablaPlanEstudio(plan);
           });
-          //this.dataPlanesEstudio.load(this.planesEstudio);
-          console.log(this.dataPlanesEstudio)
           this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
           this.dataPlanesEstudio.paginator = this.paginator
-          console.log(this.dataPlanesEstudio, this.planesEstudio)
           this.loading = false;
         } catch (error) {
           this.loading = false;
@@ -203,9 +124,8 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             this.planesEstudio.forEach(plan => {
               this.organizarDatosTablaPlanEstudio(plan);
             });
-            //this.dataPlanesEstudio.load(this.planesEstudio);
             this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-
+            this.dataPlanesEstudio.paginator = this.paginator
             this.loading = false;
           } else {
             this.hideButtons = true;
@@ -282,9 +202,14 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     }
   }
 
+  override async cancelar() {
+    await super.cancelar();
+    this.loadStudyPlanTable();
+  }
+
   override async salirEdicionFormulario() {
     await super.cancelar();
-    await this.loadStudyPlanTable();
+    this.loadStudyPlanTable();
   }
 
   nuevoPlanEstudio() {
@@ -293,13 +218,10 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.modoCreacion = true;
     this.esPlanEstudioPadre = false;
     this.crearFormulario(FORM_PLAN_ESTUDIO);
-    //this.createTableEspaciosAcademicos();
-    //this.createTableSemestreTotal();
     this.totalTotal();
     this.vista = VIEWS.FORM;
-    // this.dataEspaciosAcademicos.load([]);
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
-    console.log(this.formPlanEstudio, this.formGroupPlanEstudio, this.dataEspaciosAcademicos)
+    this.dataEspaciosAcademicos.paginator = this.paginator
   }
 
   guardar(stepper: MatStepper) {
@@ -341,30 +263,22 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     }
     newPlanEstudio.SoporteDocumental = this.prepareIds2Stringify(idsArchivos, "SoporteDocumental");
     this.loading = false;
-    console.log(newPlanEstudio);
-    console.log('prepareCreate 1');
 
     let res = await this.createStudyPlan(newPlanEstudio)
-    console.log('prepareCreate 2');
     this.planEstudioBody = res;
       if (this.esPlanEstudioPadre) {
-        console.log('prepareCreate 3');
         this.modoCreacion = false;
         this.planEstudioPadreAsignado2Form = false;
-        //this.dataOrganizedStudyPlans = new LocalDataSource();
+        this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
         stepper.next();
-        console.log('prepareCreate 4');
       } else {
         this.modoCreacion = false;
         try {
-          console.log('prepareCreate 3', this.proyecto_id);
           let result = await this.consultarEspaciosAcademicos(this.proyecto_id);
-          console.log('prepareCreate 4');
           this.ListEspacios = result;
-          //this.dataEspaciosAcademicos.load(this.ListEspacios);
           this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
+          this.dataEspaciosAcademicos.paginator = this.paginator
           this.planEstudioPadreAsignado2Form = false;
-          console.log(this.dataEspaciosAcademicos, this.ListEspacios)
           stepper.next();
         } catch (error: any) {
           this.ListEspacios = [];
@@ -375,53 +289,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             this.translate.instant('ERROR.persiste_error_comunique_OAS'),
             MODALS.ERROR, false);
         }
-
-        // this.consultarEspaciosAcademicos(this.proyecto_id).then((result) => {
-        //   this.ListEspacios = result;
-        //   //this.dataEspaciosAcademicos.load(this.ListEspacios);
-        //   this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
-        //   this.planEstudioPadreAsignado2Form = false;
-        //   console.log(this.dataEspaciosAcademicos, this.ListEspacios)
-        //   stepper.next();
-        // }, (error) => {
-        //   this.ListEspacios = [];
-        //   const falloEn = Object.keys(error)[0];
-        //   this.popUpManager.showPopUpGeneric(
-        //     this.translate.instant('ERROR.titulo_generico'),
-        //     this.translate.instant('ERROR.fallo_informacion_en') + ': <b>' + falloEn + '</b>.<br><br>' +
-        //     this.translate.instant('ERROR.persiste_error_comunique_OAS'),
-        //     MODALS.ERROR, false);
-        // });
       }
-      console.log('prepareCreate 5');
-
-    // await this.createStudyPlan(newPlanEstudio).then((res: any) => {
-    //   this.planEstudioBody = res;
-    //   if (this.esPlanEstudioPadre) {
-    //     this.modoCreacion = false;
-    //     this.planEstudioPadreAsignado2Form = false;
-    //     //this.dataOrganizedStudyPlans = new LocalDataSource();
-    //     stepper.next();
-    //   } else {
-    //     this.modoCreacion = false;
-    //     this.consultarEspaciosAcademicos(this.proyecto_id).then((result) => {
-    //       this.ListEspacios = result;
-    //       //this.dataEspaciosAcademicos.load(this.ListEspacios);
-    //       this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
-    //       this.planEstudioPadreAsignado2Form = false;
-    //       console.log(this.dataEspaciosAcademicos, this.ListEspacios)
-    //       stepper.next();
-    //     }, (error) => {
-    //       this.ListEspacios = [];
-    //       const falloEn = Object.keys(error)[0];
-    //       this.popUpManager.showPopUpGeneric(
-    //         this.translate.instant('ERROR.titulo_generico'),
-    //         this.translate.instant('ERROR.fallo_informacion_en') + ': <b>' + falloEn + '</b>.<br><br>' +
-    //         this.translate.instant('ERROR.persiste_error_comunique_OAS'),
-    //         MODALS.ERROR, false);
-    //     });
-    //   }
-    // });
   }
 
   async createStudyPlan(planEstudioBody: PlanEstudio) {
@@ -547,22 +415,17 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.mainAction = ACTIONS.EDIT;
     this.enEdicionPlanEstudio = true;
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
+    this.dataEspaciosAcademicos.paginator = this.paginator
 
     try {
-      console.log(this.planEstudioBody);
       this.planEstudioBody = await this.consultarPlanEstudio(idPlan);
-      console.log(this.planEstudioBody);
       this.esPlanEstudioPadre = this.planEstudioBody.EsPlanEstudioPadre ? true : false;
       this.proyecto_id = this.planEstudioBody.ProyectoAcademicoId;
       this.crearFormulario(FORM_PLAN_ESTUDIO_EDICION);
       if (this.esPlanEstudioPadre) {
-        //this.createSimpleTableStudyPlan();
-        //this.createTableOrganizedStudyPlan();
-        //this.dataOrganizedStudyPlans = new LocalDataSource();
+        this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
         this.vista = VIEWS.SECONDARY_FORM;
       } else {
-        //this.createTableEspaciosAcademicos();
-        //this.createTableSemestreTotal();
         this.totalTotal();
         this.vista = VIEWS.FORM;
         this.enEdicionSemestreNuevo = false;
@@ -577,51 +440,25 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
         this.translate.instant('ERROR.persiste_error_comunique_OAS'),
         MODALS.ERROR, false);
     }
-
-    // await this.consultarPlanEstudio(idPlan).then((res) => {
-    //   this.planEstudioBody = res;
-    //   this.esPlanEstudioPadre = this.planEstudioBody.EsPlanEstudioPadre ? true : false;
-    //   this.proyecto_id = this.planEstudioBody.ProyectoAcademicoId;
-    //   this.crearFormulario(FORM_PLAN_ESTUDIO_EDICION);
-    //   if (this.esPlanEstudioPadre) {
-    //     //this.createSimpleTableStudyPlan();
-    //     //this.createTableOrganizedStudyPlan();
-    //     //this.dataOrganizedStudyPlans = new LocalDataSource();
-    //     this.vista = VIEWS.SECONDARY_FORM;
-    //   } else {
-    //     //this.createTableEspaciosAcademicos();
-    //     //this.createTableSemestreTotal();
-    //     this.totalTotal();
-    //     this.vista = VIEWS.FORM;
-    //     this.enEdicionSemestreNuevo = false;
-    //     this.enEdicionSemestreViejo = false;
-    //   }
-    // }, (error) => {
-    //   this.loading = false;
-    //   this.vista = VIEWS.LIST;
-    //   this.popUpManager.showPopUpGeneric(
-    //     this.translate.instant('ERROR.titulo_generico'),
-    //     this.translate.instant('plan_estudios.error_cargando_datos_formulario') + '</b>.<br><br>' +
-    //     this.translate.instant('ERROR.persiste_error_comunique_OAS'),
-    //     MODALS.ERROR, false);
-    // });
   }
 
   // * ----------
   // * Visualización de ventana aprobación
   // #region
 
-  viewObservation(id: any) {
-    let persona_id = Number(localStorage.getItem('persona_id'));
+  viewObservation(planEstudioBody: any) {
+    console.log("persona_id encriptada: " + localStorage.getItem('persona_id'))
+    const id = decrypt(localStorage.getItem('persona_id'));
+    console.log("persona_id desencriptada: " + id)
+    let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
     dialogConfig.height = '510px';
     dialogConfig.data = {
       "tercero_id": persona_id,
       "estadosAprobacion": this.estadosAprobacion,
-      "planEstudioId": id
+      "planEstudioId": planEstudioBody.Id
     };
-    console.log(persona_id, dialogConfig.data);
     this.dialog.open(DialogVerObservacionComponent, dialogConfig);
   }
   //#endregion
@@ -631,7 +468,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * Enviar plan de estudios a revision
   //#region
   async send2ReviewStudyPlan(id: any) {
-    console.log(this.planesEstudio)
     this.popUpManager.showPopUpGeneric(
       this.translate.instant('plan_estudios.plan_estudios'),
       this.translate.instant('plan_estudios.enviar_revision_pregunta'), MODALS.INFO, true).
@@ -640,20 +476,12 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           if (action.value) {
             let planEstudioBody: PlanEstudio = this.planesEstudio.find(plan => plan.Id == id);
             this.loading = true;
-            // TODO recuperar plan estudio con id
-            // if (this.planesEstudio) {
-            //   const planEstudio = this.planesEstudio.find(plan => plan.Id == id);
-            //   if (planEstudio) {
-            //     planEstudioBody = planEstudio;
-            //   }
-            // }
             if (this.estadosAprobacion) {
               const matchingEstado = this.estadosAprobacion.find(estado => estado.CodigoAbreviacion === STD.IN_REV);
               if (matchingEstado) {
                 planEstudioBody.EstadoAprobacionId = matchingEstado;
               }
             }
-            //this.planEstudiosService.put('plan_estudio/', planEstudioBody).
             this.planEstudiosService.put('plan_estudio/', planEstudioBody).
               subscribe(
                 async (resp: any) => {
@@ -681,33 +509,4 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   }
   //#endregion
   // * ----------
-
-  //--------------- AQUIIII -----------------//
-  /*
-  //#endregion
-  // * ----------
-
-  // * ----------
-  // * Acciones botones 
-  //#region
-  override async cancelar() {
-    await super.cancelar();
-    this.loadStudyPlanTable();
-  }
-  override async salirEdicionFormulario() {
-    await super.cancelar();
-    this.loadStudyPlanTable();
-  }
-
-  // * ----------
-  // * Crear plan de estudios datos básicos 
-  //#region
-
-  
-
-  
-  //#endregion
-  // * ----------
-
-  */
 }

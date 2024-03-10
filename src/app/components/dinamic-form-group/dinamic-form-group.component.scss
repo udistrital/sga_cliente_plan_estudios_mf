@@ -32,6 +32,8 @@ mat-hint {
   color: var(--primary);
   margin-left: 1rem;
   padding: 10px !important;
+  display: flex;
+  align-items: center;
 }
 
 .archivo_invalido {
