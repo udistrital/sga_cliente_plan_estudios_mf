@@ -1,9 +1,4 @@
-<!-- <mat-dialog-content class="mat-typography" [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="xxlarge"
-nbSpinnerMessage="{{ 'GLOBAL.cargando' | translate }}"> -->
 <mat-dialog-content class="mat-typography">
-    <div [class.loader-div]="loading">
-        <mat-spinner *ngIf="loading" diameter="100" color="primary"></mat-spinner>
-    </div>
     <object [data]="documentData | safeUrl" type="application/pdf" *ngIf="documentLoad" id="pdf_view"></object>
 
 
