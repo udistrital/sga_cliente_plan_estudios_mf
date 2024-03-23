@@ -13,7 +13,6 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
   
   documentData!: string;
   documentLoad!: boolean;
-  loading!: boolean;
   studyPlanVisualizationData: any;
 
   constructor(
@@ -26,31 +25,24 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
     }
 
   async ngOnInit() {
-    this.loading = true;
     this.documentLoad = false;
     await this.getDocumentWitPlanData().then(documentOk => {
-      this.loading = false;
     },
     errorDocument => {
-      this.loading = false;
       this.documentLoad = false;
     }
     );
-    this.loading = false;
   }
 
   getPlanVisualizationData(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.loading = true;
       var urlPlanVisualization = `plan_estudios/study_plan_visualization/${this.data.plan_estudio_id}`;
       this.sgaMidService.get(urlPlanVisualization).subscribe(
         (response: any) => {
-          this.loading = false;
           this.studyPlanVisualizationData = response.Data;
           resolve({response});
         },
         (error: any) => {
-          this.loading = false;
           reject({ "plan_data": error });
         }
       );
@@ -59,14 +51,12 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
 
   getDocumentWitPlanData(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.loading = true;
       if (this.data.dataPlanes != null) {
         this.studyPlanVisualizationData = this.data.dataPlanes;  
         var urlPlanDocument = "plan_estudios/documento_plan_visual";
         this.sgaMidService.post(urlPlanDocument, this.studyPlanVisualizationData).subscribe(
           (resDocument: any) => {
             this.documentData = "data:application/pdf;base64,"+resDocument.Data;
-            this.loading = false;
             this.documentLoad = true;
             resolve(true);
           },
@@ -81,13 +71,11 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
                 this.dialogRef.close();
               }
             });
-            this.loading = false;
             this.documentLoad = false;
             reject(false);
           }
         );
       } else {
-        this.loading = false;
         this.documentLoad = false;
         this.popUpManager.showPopUpGeneric(
           this.translate.instant('GLOBAL.error'),
@@ -106,14 +94,11 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
 
   getDocumentById(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.loading = true;
       this.getPlanVisualizationData().then(planVisualizationData => {
-        this.loading = true;
         var urlPlanDocument = "plan_estudios/documento_plan_visual";
         this.sgaMidService.post(urlPlanDocument, this.studyPlanVisualizationData).subscribe(
           (resDocument: any) => {
             this.documentData = "data:application/pdf;base64,"+resDocument.Data;
-            this.loading = false;
             this.documentLoad = true;
             resolve(true);
           },
@@ -128,14 +113,12 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
                 this.dialogRef.close();
               }
             });
-            this.loading = false;
             this.documentLoad = false;
             reject(false);
           }
         );
       },
       errorData => {
-        this.loading = false;
         this.documentLoad = false;
         this.popUpManager.showPopUpGeneric(
           this.translate.instant('GLOBAL.error'),

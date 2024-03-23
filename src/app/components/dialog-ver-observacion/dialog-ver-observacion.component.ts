@@ -14,7 +14,6 @@ import { PlanEstudio } from 'src/app/models/plan_estudio';
 })
 export class DialogVerObservacionComponent implements OnInit {
 
-  loading: boolean = true;
   revisionForm: FormGroup;
   rol!: string;
   rolSeleccionado!: string;
@@ -34,7 +33,6 @@ export class DialogVerObservacionComponent implements OnInit {
     private terceroService: TercerosService,
     @Inject(MAT_DIALOG_DATA) private data: any,
   ) {
-    this.loading = true;
     this.data = data;
     this.revisionForm = this.builder.group({
       'estadoSeleccionado': ['', Validators.required],
@@ -42,7 +40,6 @@ export class DialogVerObservacionComponent implements OnInit {
       'nombreEvaluador': [''],
       'rolSeleccionado': ['', Validators.required]
     });
-    this.loading = false;
   }
 
   ngOnInit() {
@@ -71,7 +68,6 @@ export class DialogVerObservacionComponent implements OnInit {
         this.revisionForm.get('rolSeleccionado')!.setValue(this.planEstudio.RevisorRol);
       }
     }).catch((error) => {
-      this.loading = false;
       this.popUpManager.showPopUpGeneric(
         this.translate.instant('GLOBAL.error'),
         this.translate.instant('plan_estudios.error_cargando_datos_formulario'),
@@ -81,7 +77,6 @@ export class DialogVerObservacionComponent implements OnInit {
         this.dialogRef.close();
       });
     });
-    this.loading = false;
   }
 
   private async loadTerceroData(): Promise<any> {
@@ -97,15 +92,12 @@ export class DialogVerObservacionComponent implements OnInit {
   }
 
   private getPlanEstudioById(planEstudioId: number): Promise<any> {
-    this.loading = true;
     return new Promise((resolve, reject) => {
       this.planEstudiosService.get(`plan_estudio/${planEstudioId}`).subscribe(
         (response: any) => {
-          this.loading = false;
           resolve(response.Data);
         },
         error => {
-          this.loading = false;
           reject({"planEstudio": error});
         });
     });
