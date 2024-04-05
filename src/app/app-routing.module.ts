@@ -17,7 +17,7 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [
     provideRouter(routes),
-    { provide: APP_BASE_HREF, useValue: '/plan-estudio/' },
+    { provide: APP_BASE_HREF, useValue: '/plan-estudios/' },
     getSingleSpaExtraProviders(),
     provideHttpClient(withFetch()) ]
 })
