@@ -19,7 +19,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row form-columns">
                         <div class="column">
                             <mat-form-field floatLabel="always">
                                 <mat-label>* {{ 'plan_estudios.estado_evaluacion' | translate }}:</mat-label>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row form-columns">
                         <div class="column">
                             <ng-container *ngIf="!multipleRoles">
                                 <mat-form-field style="width: 100%;">
@@ -76,12 +76,12 @@
                                 </mat-form-field>
                             </ng-container>
                         </div>
-                    <div class="column">
-                        <mat-form-field style="width: 100%;">
-                        <mat-label for="nombreEvaluador">{{ 'plan_estudios.nombre_evaluador' | translate }}</mat-label>
-                        <input matInput type="text" formControlName="nombreEvaluador">
-                        </mat-form-field>
-                    </div>
+                        <div class="column">
+                            <mat-form-field style="width: 100%;">
+                            <mat-label for="nombreEvaluador">{{ 'plan_estudios.nombre_evaluador' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="nombreEvaluador">
+                            </mat-form-field>
+                        </div>
                     </div>
 
                     <div class="row">

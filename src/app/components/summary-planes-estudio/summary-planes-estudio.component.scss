@@ -1,6 +1,7 @@
 .encabezado {
     display: flex;
     justify-content: space-around;
+    overflow: overlay;
 }
 
 .content {
@@ -78,6 +79,7 @@
     display: flex;
     justify-content: center;
     padding: 1rem;
+    overflow: overlay;
 }
 
 .column_semester {
@@ -158,4 +160,13 @@
     padding-bottom: 1rem;
     display: flex;
     justify-content: space-around;
+}
+
+.contenedor-tabla {
+    overflow: overlay;
+}
+
+button {
+    min-height: 40px;
+    height: auto;
 }
