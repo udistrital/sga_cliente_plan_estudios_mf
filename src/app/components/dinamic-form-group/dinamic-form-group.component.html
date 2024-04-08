@@ -35,10 +35,12 @@
                         <div class="col-12 d-flex flex-wrap">
                             <button #selectFiles type="button" mat-raised-button (click)="documento.click()"  [disabled]="defineForm[nombre].soloLectura ? defineForm[nombre].soloLectura : false">{{'GLOBAL.seleccionar_archivo' | translate}}</button>
                             <span class="enlace-documento" *ngFor="let archivo of defineForm[nombre].archivosLocal" (click)="previewFile(archivo.urlTemp)" title="{{'GLOBAL.tooltip_previsualizar_archivo' | translate}}" [ngClass]="{'archivo_invalido': archivo.err}">
-                                {{ archivo.file.name }} <i *ngIf="!selectFiles.disabled" class="fa fa-times fa-2xs" aria-hidden="true" title="{{'GLOBAL.eliminar' | translate}}" (click)="deleteSelectedFile(nombre, archivo.file.name)"></i>
+                                <!-- {{ archivo.file.name }} <i *ngIf="!selectFiles.disabled" class="fa fa-times fa-2xs" aria-hidden="true" title="{{'GLOBAL.eliminar' | translate}}" (click)="deleteSelectedFile(nombre, archivo.file.name)"></i> -->
+                                {{ archivo.file.name }} <mat-icon class="icon-boton" aria-hidden="true" *ngIf="!selectFiles.disabled" title="{{'GLOBAL.eliminar' | translate}}" (click)="deleteSelectedFile(nombre, archivo.file.name)">close</mat-icon>
                             </span>
                             <span class="enlace-documento" *ngFor="let archivoLinea of defineForm[nombre].archivosLinea" (click)="previewFile(archivoLinea.url)" title="{{'GLOBAL.tooltip_descargar_arhivo' | translate}}">
-                                <i class="fa fa-cloud-download fa-2sx" aria-hidden="true"></i> {{ archivoLinea.nombre }}{{ archivoLinea.type }} <i *ngIf="!selectFiles.disabled" class="fa fa-times fa-2xs" aria-hidden="true" title="{{'GLOBAL.eliminar_temporalmente' | translate}}" (click)="deleteSelectedFileLinea(nombre, archivoLinea.Id)"></i>
+                                <!-- <i class="fa fa-cloud-download fa-2sx" aria-hidden="true"></i> {{ archivoLinea.nombre }}{{ archivoLinea.type }} <i *ngIf="!selectFiles.disabled" class="fa fa-times fa-2xs" aria-hidden="true" title="{{'GLOBAL.eliminar_temporalmente' | translate}}" (click)="deleteSelectedFileLinea(nombre, archivoLinea.Id)"></i> -->
+                                <mat-icon class="icon-boton" aria-hidden="true">download</mat-icon> {{ archivoLinea.nombre }}{{ archivoLinea.type }} <mat-icon class="icon-boton" aria-hidden="true" *ngIf="!selectFiles.disabled" title="{{'GLOBAL.eliminar_temporalmente' | translate}}" (click)="deleteSelectedFileLinea(nombre, archivoLinea.Id)">close</mat-icon>
                             </span>
                         </div>
                         <div class="col-12">

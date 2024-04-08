@@ -21,15 +21,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DialogVerObservacionComponent } from './components/dialog-ver-observacion/dialog-ver-observacion.component';
 import { PlanEstudiosService } from './services/plan_estudios.service';
-import { EspaciosAcademicosService } from './services/espacios_academicos.service';
 import { SummaryPlanesEstudioComponent } from './components/summary-planes-estudio/summary-planes-estudio.component';
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
 import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinamic-form-group.component';
 import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
+import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
+import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
+import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-evaluar.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,10 @@ import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
     SummaryPlanesEstudioComponent,
     VisualizarDocumentoPlanComponent,
     SafeURL,
-    DinamicFormGroupComponent
+    DinamicFormGroupComponent,
+    EvaluarPlanEstudiosComponent,
+    RevisarPlanesEstudioComponent,
+    DialogoEvaluarComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +62,7 @@ import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
     MatIconModule,
     MatTableModule,
     MatButtonModule,
+    MatTooltipModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,
@@ -72,7 +79,6 @@ import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
   ],
   providers: [
     PlanEstudiosService,
-    EspaciosAcademicosService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
@@ -82,5 +88,3 @@ export class AppModule { }
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'http://localhost:4211/assets/i18n/', '.json');
 }
-
-//export function createTranslateLoader(http: HttpClient) { return new TranslateHttpLoader(http, 'http:localhost:4211/assets/i18n/', '.json'); }

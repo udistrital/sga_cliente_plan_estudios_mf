@@ -10,11 +10,13 @@ fieldset {
 .modo-ventana {
     display: flex;
     justify-content: space-between;
+
     .button {
         cursor: pointer;
         border: 2px solid var(--primary);
         border-radius: 0.3rem;
     }
+
     .cancel {
         color: darkred;
     }
@@ -44,10 +46,6 @@ fieldset {
     padding-bottom: 1rem;
     display: flex;
     justify-content: space-around;
-}
-
-.alinear-center-espacio-doble button {
-    margin: 0 10px;
 }
 
 .alinear-center.right {
@@ -98,13 +96,15 @@ fieldset {
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover,
 .mat-expansion-panel-header.mat-expanded.cdk-focused {
-  background-color: var(--primary);
-  mat-panel-title {
-    color: floralwhite !important;
-  }
-  mat-panel-description {
-    color: floralwhite !important;
-  }
+    background-color: var(--primary);
+
+    mat-panel-title {
+        color: floralwhite !important;
+    }
+
+    mat-panel-description {
+        color: floralwhite !important;
+    }
 }
 
 ::ng-deep {
@@ -120,7 +120,7 @@ fieldset {
     padding-right: 25%;
     place-content: space-around;
 }
-  
+
 ::ng-deep {
     ng2-st-tbody-edit-delete {
         display: none;
@@ -138,17 +138,22 @@ fieldset {
 }
 
 :host {
+    width: 100%;
+
     ::ng-deep .resumenTabla .ng2-smart-titles {
         background-color: var(--primary);
     }
+
     ::ng-deep .resumenTabla .ng2-smart-title {
         height: 1px;
         overflow: hidden;
     }
+
     ::ng-deep .resumenTotal .nombre .ng2-smart-title {
         height: 1px;
         overflow: hidden;
     }
+
     ::ng-deep .resumenTotal .ng2-smart-actions .ng2-smart-title {
         height: 1px;
         overflow: hidden;
@@ -164,7 +169,7 @@ fieldset {
         ng2-st-tbody-custom {
             display: flex;
             text-align: center;
-    
+
             a.ng2-smart-action.ng2-smart-action-custom-custom:hover {
                 color: darkred;
             }
@@ -177,7 +182,7 @@ fieldset {
         ng2-st-tbody-custom {
             display: flex;
             text-align: center;
-    
+
             a.ng2-smart-action.ng2-smart-action-custom-custom {
                 display: none;
             }
@@ -190,10 +195,24 @@ fieldset {
     border-bottom: 2px solid var(--primary);
 }
 
-.titulo {
-    margin: 0 auto;
-    font-weight: bold;
-    font-size: larger;
+.loader-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(117, 115, 115, 0.5);
+    /* Fondo semitransparente rojo */
+    z-index: 1;
+}
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0 0;
 }
 
 table th {
@@ -214,61 +233,10 @@ table td {
     color: white;
 }
 
-.none {
-    display: none;
-}
-
-.tabla-total ::ng-deep .mat-mdc-header-row {
-    //display: none;
-    min-height: 1px;
-    max-height: 1px;
-    height: 1px;
-}
-
-.tabla-total ::ng-deep .mat-mdc-header-row .mat-mdc-header-cell {
-    //display: none;
-    min-height: 0px;
-    max-height: 0px;
-    height: 1px;
-}
-
-.paginacion {
-    display: flex;
-    justify-content: center;
-    margin: 15px 0 0;
-}
-
-.btn-accion {
-    border-radius: 50%;
-    min-width: 25px;
-    height: 25px;
-    padding: 0;
-}
-
-.loader-div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(117, 115, 115, 0.5);
-    /* Fondo semitransparente rojo */
-    z-index: 1;
-}
-
-.tiutlo-semestre-total {
-    text-align: center;
-    margin: 15px 0;
-    font-weight: bold;
-    font-size: large;
-}
-
-.titulo-totaltotal {
+.titulo {
     margin: 0 auto;
-    padding: 5px;
+    font-weight: bold;
+    font-size: larger;
 }
 
 .filtro {
