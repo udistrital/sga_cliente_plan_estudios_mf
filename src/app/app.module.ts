@@ -77,7 +77,7 @@ import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinam
 export class AppModule { }
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'http://localhost:4211/assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'http://localhost:4215/assets/i18n/', '.json');
 }
 
 //export function createTranslateLoader(http: HttpClient) { return new TranslateHttpLoader(http, 'http:localhost:4211/assets/i18n/', '.json'); }

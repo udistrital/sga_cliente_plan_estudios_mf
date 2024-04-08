@@ -6,7 +6,7 @@
 
 export const environment = {
     production: false,
-    apiUrl:"",
+    apiUrl:"http:localhost:4215/",
     NUXEO: {
       PATH: 'https://documental.portaloas.udistrital.edu.co/nuxeo/',
       CREDENTIALS: {

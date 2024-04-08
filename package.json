@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:single-spa:sga-planEstudios-mf": "ng build sga-planEstudios-mf --configuration production",
-    "serve:single-spa:sga-planEstudios-mf": "ng s --project sga-planEstudios-mf --disable-host-check --port 4211 --live-reload false"
+    "serve:single-spa:sga-planEstudios-mf": "ng s --project sga-planEstudios-mf --disable-host-check --port 4215 --live-reload false"
   },
   "private": true,
   "dependencies": {
