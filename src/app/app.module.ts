@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CreacionPlanEstudiosComponent } from './components/creacion-plan-estudios/creacion-plan-estudios.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
@@ -29,6 +29,7 @@ import { SummaryPlanesEstudioComponent } from './components/summary-planes-estud
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
 import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinamic-form-group.component';
+import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
 import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
 import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-evaluar.component';
@@ -67,6 +68,7 @@ import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-ev
     MatSelectModule,
     MatExpansionModule,
     MatPaginatorModule,
+    SpinnerUtilModule,
     TranslateModule.forRoot({
       loader:{
         provide: TranslateLoader,
@@ -76,7 +78,8 @@ import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-ev
     }),
   ],
   providers: [
-    PlanEstudiosService
+    PlanEstudiosService,
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

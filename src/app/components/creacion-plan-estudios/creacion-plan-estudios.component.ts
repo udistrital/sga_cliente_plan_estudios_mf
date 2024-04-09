@@ -73,7 +73,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     const id = decrypt(localStorage.getItem('persona_id'));
     this.personaId = Number(id);
     await this.setRoles();
-    this.loading = false;
     this.dataPlanesEstudio = new MatTableDataSource<any>([])
     this.dataSimpleStudyPlans = new MatTableDataSource<any>([])
     this.dataOrganizedStudyPlans = new MatTableDataSource<any>([])
@@ -93,15 +92,12 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * Cargar datos plan de estudio tabla
   //#region
   async loadStudyPlanTable() {
-    this.loading = true;
     try {
       let rolAdmin = this.personaRoles.find(role => (role == ROLES.ADMIN_SGA || role == ROLES.VICERRECTOR || role == ROLES.ASESOR_VICE));
       let rolCoordinador = this.personaRoles.find(role => (role == ROLES.COORDINADOR || role == ROLES.COORDINADOR_PREGADO || role == ROLES.COORDINADOR_POSGRADO || role == ROLES.ADMIN_DOCENCIA));
 
       // Datos de la tabla planes de estudio
       if (rolAdmin) {
-        this.loading = true;
-
         try {
           this.planesEstudio = await this.loadPlanesEstudio();
           this.planesEstudio.forEach(plan => {
@@ -109,9 +105,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           });
           this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
           this.dataPlanesEstudio.paginator = this.paginator
-          this.loading = false;
         } catch (error) {
-          this.loading = false;
           this.popUpManager.showPopUpGeneric(
             this.translate.instant('plan_estudios.plan_estudios'),
             this.translate.instant('ERROR.sin_informacion_en') + ': <b>' + this.translate.instant('plan_estudios.plan_estudios') + '</b>.',
@@ -126,24 +120,19 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             });
             this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
             this.dataPlanesEstudio.paginator = this.paginator
-            this.loading = false;
           } else {
             this.hideButtons = true;
-            this.loading = false;
             this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.plan_estudios_sin_vinculacion_error'));
           }
         }).catch((error) => {
           this.hideButtons = true;
-          this.loading = false;
           this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.plan_estudios_sin_vinculacion_error'));
         });
       } else {
         this.hideButtons = true;
-        this.loading = false;
         this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.plan_estudios_sin_vinculacion_error'));
       }
     } catch (error: any) {
-      this.loading = false;
       this.hideButtons = true;
       const falloEn = Object.keys(error)[0];
       this.popUpManager.showPopUpGeneric(this.translate.instant('ERROR.titulo_generico'),
@@ -245,7 +234,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   }
 
   async prepareCreate(stepper: MatStepper) {
-    this.loading = true;
     let newPlanEstudio = new PlanEstudio();
     newPlanEstudio.Nombre = this.formGroupPlanEstudio.get('nombrePlanEstudio')!.value;
     newPlanEstudio.NumeroResolucion = Number(this.formGroupPlanEstudio.get('numeroResolucion')!.value);
@@ -262,7 +250,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
       idsArchivos = await this.cargarArchivos(archivos);
     }
     newPlanEstudio.SoporteDocumental = this.prepareIds2Stringify(idsArchivos, "SoporteDocumental");
-    this.loading = false;
 
     let res = await this.createStudyPlan(newPlanEstudio)
     this.planEstudioBody = res;
@@ -294,15 +281,12 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
 
   async createStudyPlan(planEstudioBody: PlanEstudio) {
     return new Promise((resolve, reject) => {
-      this.loading = true;
       this.sgaMidService.post('plan_estudios/base', planEstudioBody)
         .subscribe((res: any) => {
-          this.loading = false;
           this.popUpManager.showSuccessAlert(this.translate.instant('plan_estudios.plan_estudios_creacion_ok'));
           resolve(res.Data);
         },
           (error: HttpErrorResponse) => {
-            this.loading = false;
             this.popUpManager.showErrorAlert(
               this.translate.instant('plan_estudios.plan_estudios_creacion_error')
             );
@@ -316,7 +300,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * Actualizar plan de estudios datos básicos 
   //#region
   async prepareUpdate(stepper: MatStepper) {
-    this.loading = true;
     const archivos = await this.prepararArchivos();
     let idsArchivos: any[] = [];
     if (Array.isArray(archivos) && archivos.length) {
@@ -432,7 +415,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
         this.enEdicionSemestreViejo = false;
       }
     } catch (error) {
-      this.loading = false;
       this.vista = VIEWS.LIST;
       this.popUpManager.showPopUpGeneric(
         this.translate.instant('ERROR.titulo_generico'),
@@ -440,6 +422,33 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
         this.translate.instant('ERROR.persiste_error_comunique_OAS'),
         MODALS.ERROR, false);
     }
+
+    // await this.consultarPlanEstudio(idPlan).then((res) => {
+    //   this.planEstudioBody = res;
+    //   this.esPlanEstudioPadre = this.planEstudioBody.EsPlanEstudioPadre ? true : false;
+    //   this.proyecto_id = this.planEstudioBody.ProyectoAcademicoId;
+    //   this.crearFormulario(FORM_PLAN_ESTUDIO_EDICION);
+    //   if (this.esPlanEstudioPadre) {
+    //     //this.createSimpleTableStudyPlan();
+    //     //this.createTableOrganizedStudyPlan();
+    //     //this.dataOrganizedStudyPlans = new LocalDataSource();
+    //     this.vista = VIEWS.SECONDARY_FORM;
+    //   } else {
+    //     //this.createTableEspaciosAcademicos();
+    //     //this.createTableSemestreTotal();
+    //     this.totalTotal();
+    //     this.vista = VIEWS.FORM;
+    //     this.enEdicionSemestreNuevo = false;
+    //     this.enEdicionSemestreViejo = false;
+    //   }
+    // }, (error) => {
+    //   this.vista = VIEWS.LIST;
+    //   this.popUpManager.showPopUpGeneric(
+    //     this.translate.instant('ERROR.titulo_generico'),
+    //     this.translate.instant('plan_estudios.error_cargando_datos_formulario') + '</b>.<br><br>' +
+    //     this.translate.instant('ERROR.persiste_error_comunique_OAS'),
+    //     MODALS.ERROR, false);
+    // });
   }
 
   // * ----------
@@ -475,7 +484,13 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
         action => {
           if (action.value) {
             let planEstudioBody: PlanEstudio = this.planesEstudio.find(plan => plan.Id == id);
-            this.loading = true;
+            // TODO recuperar plan estudio con id
+            // if (this.planesEstudio) {
+            //   const planEstudio = this.planesEstudio.find(plan => plan.Id == id);
+            //   if (planEstudio) {
+            //     planEstudioBody = planEstudio;
+            //   }
+            // }
             if (this.estadosAprobacion) {
               const matchingEstado = this.estadosAprobacion.find(estado => estado.CodigoAbreviacion === STD.IN_REV);
               if (matchingEstado) {
@@ -486,7 +501,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
               subscribe(
                 async (resp: any) => {
                   if (resp.Status == "200") {
-                    this.loading = false;
                     const reload = new Promise(async (resolve) => {
                       await this.loadStudyPlanTable();
                       this.vista = VIEWS.LIST;
@@ -496,12 +510,10 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
                       this.translate.instant('plan_estudios.enviar_revision_ok'));
                     await reload;
                   } else {
-                    this.loading = false;
                     this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.enviar_revision_fallo'));
                   }
                 },
                 err => {
-                  this.loading = false;
                   this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.enviar_revision_fallo'));
                 });
           }

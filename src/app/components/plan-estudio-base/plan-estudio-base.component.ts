@@ -20,15 +20,6 @@ import { ImplicitAutenticationService } from "src/app/services/implicit_autentic
 import { PlanEstudioSummary } from "src/app/models/plan_estudio_summary";
 
 export abstract class PlanEstudioBaseComponent {
-  displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
-  displayedColumnsSemestreTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
-  displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
-
-  loading!: boolean;
-
   readonly VIEWS = VIEWS;
   vista!: Symbol;
 
@@ -165,7 +156,6 @@ export abstract class PlanEstudioBaseComponent {
   // * Insertar info parametrica en formulario 
   //#region
   async loadSelects() {
-    this.loading = true;
     try {
       // ? carga paralela de parametricas
       let promesas = [];
@@ -179,9 +169,7 @@ export abstract class PlanEstudioBaseComponent {
 
       this.estadosAprobacion = await this.loadEstadosAprobacion();
 
-      this.loading = false;
     } catch (error: any) {
-      this.loading = false;
       const falloEn = Object.keys(error)[0];
       this.popUpManager.showPopUpGeneric(this.translate.instant('ERROR.titulo_generico'),
         this.translate.instant('ERROR.fallo_informacion_en') + ': <b>' + falloEn + '</b>.<br><br>' +
@@ -347,9 +335,7 @@ export abstract class PlanEstudioBaseComponent {
   // * Visualizador dinámico planes de estudio
   //#region
   generarPlanEstudio() {
-    this.loading = true;
     this.sgaMidService.get('plan_estudios/study_plan_visualization/' + this.planEstudioBody.Id).subscribe((resp: any) => {
-      this.loading = false;
       if (resp !== null && resp.Status == "200") {
         this.dataPlanes = resp.Data;
         this.vista = VIEWS.SUMMARY;
@@ -361,7 +347,6 @@ export abstract class PlanEstudioBaseComponent {
           MODALS.ERROR, false);
       }
     }, (error: any) => {
-      this.loading = false;
       this.dataPlanes = undefined;
       this.popUpManager.showPopUpGeneric(
         this.translate.instant('ERROR.titulo_generico'),
@@ -373,7 +358,6 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
 
   async registrarPlanOrdenado(): Promise<any> {
-    this.loading = true;
     let newPlanCicloOrdenado = await new PlanCiclosOrdenado();
     await this.formatearOrdenPlanesCiclos().then((ordenPlanes) => {
       newPlanCicloOrdenado.PlanEstudioId = this.planEstudioBody;
@@ -384,7 +368,6 @@ export abstract class PlanEstudioBaseComponent {
         this.planEstudioOrdenadoBody.OrdenPlan = newPlanCicloOrdenado.OrdenPlan;
         this.planEstudiosService.put('plan_estudio_proyecto_academico', this.planEstudioOrdenadoBody)
           .subscribe((res: any) => {
-            this.loading = false;
             if (Object.keys(res.Data).length > 0) {
               this.popUpManager.showSuccessAlert(this.translate.instant('plan_estudios.plan_estudios_actualizacion_ok'));
               this.planEstudioOrdenadoBody = res.Data;
@@ -396,7 +379,6 @@ export abstract class PlanEstudioBaseComponent {
             }
           },
             (error: HttpErrorResponse) => {
-              this.loading = false;
               this.popUpManager.showErrorAlert(
                 this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
               );
@@ -404,7 +386,6 @@ export abstract class PlanEstudioBaseComponent {
       } else {
         this.planEstudiosService.post('plan_estudio_proyecto_academico', newPlanCicloOrdenado)
           .subscribe((res: any) => {
-            this.loading = false;
             if (Object.keys(res.Data).length > 0) {
               this.popUpManager.showSuccessAlert(this.translate.instant('plan_estudios.plan_estudios_actualizacion_ok'));
               this.planEstudioOrdenadoBody = res.Data;
@@ -416,7 +397,6 @@ export abstract class PlanEstudioBaseComponent {
             }
           },
             (error: HttpErrorResponse) => {
-              this.loading = false;
               this.popUpManager.showErrorAlert(
                 this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
               );
@@ -479,7 +459,6 @@ export abstract class PlanEstudioBaseComponent {
   async cargarFormularioPlanEstudios(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        this.loading = true;
         let proyectoCurricular: any;
         let subnivel: any;
         let nivel: any;
@@ -522,9 +501,7 @@ export abstract class PlanEstudioBaseComponent {
             reject(false);
           });
         }
-        this.loading = false;
       } catch (error) {
-        this.loading = false;
         reject(false);
       }
     });
@@ -551,7 +528,6 @@ export abstract class PlanEstudioBaseComponent {
           this.translate.instant('plan_estudios.error_cargando_datos_formulario') + '</b>.<br><br>' +
           this.translate.instant('ERROR.persiste_error_comunique_OAS'),
           MODALS.ERROR, false).then(async () => {
-            this.loading = false;
             this.planEstudioPadreAsignado2Form = false;
             this.formGroupPlanEstudio.reset();
             this.dataSemestre = new MatTableDataSource<any>([])
@@ -571,7 +547,6 @@ export abstract class PlanEstudioBaseComponent {
 
   async cargarParametrizacionSemestres(withActions: boolean = true) {
     try {
-      this.loading = true;
       let semestreDistribucion = this.str2JsonValidated(this.planEstudioBody.EspaciosSemestreDistribucion);
 
       await this.consultarEspaciosAcademicos(this.proyecto_id).then((espacios) => {
@@ -610,7 +585,6 @@ export abstract class PlanEstudioBaseComponent {
         this.formPlanEstudio['numeroSemestres'].minimo = this.dataSemestre.data.length;
         this.loading = false;
       }, (error) => {
-        this.loading = false;
         this.popUpManager.showPopUpGeneric(
           this.translate.instant('ERROR.titulo_generico'),
           this.translate.instant('plan_estudios.error_cargando_datos_formulario') + '</b>.<br><br>' +
@@ -618,7 +592,6 @@ export abstract class PlanEstudioBaseComponent {
           MODALS.ERROR, false);
       });
     } catch (error) {
-      this.loading = false;
       this.popUpManager.showErrorAlert(
         this.translate.instant('plan_estudios.error_cargando_datos_formulario'));
     }
@@ -633,7 +606,6 @@ export abstract class PlanEstudioBaseComponent {
   }
 
   async descargarArchivos(idArchivos: any[]): Promise<any> {
-    this.loading = true;
     return new Promise<any>((resolve, reject) => {
       this.checkIfAlreadyDownloaded(idArchivos).then(
         faltantes => {
@@ -647,16 +619,13 @@ export abstract class PlanEstudioBaseComponent {
             this.gestorDocumentalService.getManyFiles('?query=Id__in:' + idsForQuery + '&limit=' + limitQuery).subscribe(
               r => {
                 if (!r.downloadProgress) {
-                  this.loading = false;
                   resolve(true);
                 }
               }, e => {
-                this.loading = false;
                 reject(false);
               }
             );
           } else {
-            this.loading = false;
             resolve(true)
           }
         });
@@ -665,7 +634,6 @@ export abstract class PlanEstudioBaseComponent {
 
   async cargarPlanesOrdenados(withActions: boolean = true) {
     try {
-      this.loading = true;
       this.simpleStudyPlans = await this.loadPlanesEstudio("EsPlanEstudioPadre:false");
       for (const plan of this.simpleStudyPlans) {
         this.organizarDatosTablaSimplePlanEstudio(plan);
@@ -699,10 +667,8 @@ export abstract class PlanEstudioBaseComponent {
             }
             this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
             this.dataSimpleStudyPlans = new MatTableDataSource<any>(this.simpleStudyPlans);
-            this.loading = false;
           }
         }, (error) => {
-          this.loading = false;
           this.popUpManager.showPopUpGeneric(
             this.translate.instant('ERROR.titulo_generico'),
             this.translate.instant('plan_estudios.error_cargando_datos_formulario') + '</b>.<br><br>' +
@@ -711,7 +677,6 @@ export abstract class PlanEstudioBaseComponent {
         });
 
     } catch (error) {
-      this.loading = false;
       this.popUpManager.showErrorAlert(
         this.translate.instant('plan_estudios.error_cargando_datos_formulario'));
     }
@@ -735,14 +700,11 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
 
   consultarPlanOrdenadoQuery(queryComplement: string): Promise<any> {
-    this.loading = true;
     return new Promise((resolve, reject) => {
       this.planEstudiosService.get('plan_estudio_proyecto_academico?query=activo:true,' + queryComplement)
         .subscribe((resp: any) => {
-          this.loading = false;
           resolve(resp.Data);
         }, (err) => {
-          this.loading = false;
           reject({ "plan_estudio_proyecto": err });
         });
     });
@@ -751,6 +713,18 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
   // * Cargar informacion particular 
   //#region
+  // async consultarEspaciosAcademicos(id_proyecto: number): Promise<any> {
+  //   console.log('Consulta espacios 1');
+  //   return new Promise((resolve, reject) => {
+  //     this.sgaMidService.get('espacios_academicos/byProject/' + id_proyecto).subscribe((resp: any) => {
+  //       console.log('Consulta espacios 2o');
+  //       resolve(resp.Data);
+  //     }, (err: any) => {
+  //       console.log('Consulta espacios 2e');
+  //       reject({ "espacios": err });
+  //     })
+  //   })
+  // }
   async consultarEspaciosAcademicos(id_proyecto: number): Promise<any> {
     this.loading = true;
     console.log('Consulta espacios 1');
@@ -814,7 +788,6 @@ export abstract class PlanEstudioBaseComponent {
       this.mainAction = ACTIONS.VIEW;
       this.loading = false;
     }, (error) => {
-      this.loading = false;
       this.vista = VIEWS.LIST;
       this.popUpManager.showPopUpGeneric(
         this.translate.instant('ERROR.titulo_generico'),
@@ -829,13 +802,10 @@ export abstract class PlanEstudioBaseComponent {
   // * Cargar datos del plan de estudio actual
   //#region
   async consultarPlanEstudio(idPlan: number): Promise<any> {
-    this.loading = true;
     return new Promise((resolve, reject) => {
       this.planEstudiosService.get('plan_estudio/' + idPlan).subscribe((resp: any) => {
-        this.loading = false;
         resolve(resp.Data);
       }, (err) => {
-        this.loading = false;
         this.popUpManager.showErrorAlert(
           this.translate.instant('plan_estudios.error_cargando_datos_formulario')
         );
@@ -847,7 +817,6 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
 
   async loadStudyPlanSimpleTable() {
-    this.loading = true;
     try {
       // Datos de la tabla planes de estudio por ciclos
       //ToDo agregar filtro de solo planes aprobados, actualmente muestra todos los que
@@ -857,15 +826,12 @@ export abstract class PlanEstudioBaseComponent {
         this.organizarDatosTablaSimplePlanEstudio(plan);
       });
       this.dataSimpleStudyPlans = new MatTableDataSource<any>(this.simpleStudyPlans);
-
-      this.loading = false;
     } catch (error: any) {
       const falloEn = Object.keys(error)[0];
       this.popUpManager.showPopUpGeneric(this.translate.instant('ERROR.titulo_generico'),
         this.translate.instant('ERROR.fallo_informacion_en') + ': <b>' + falloEn + '</b>.<br><br>' +
         this.translate.instant('ERROR.persiste_error_comunique_OAS'),
         MODALS.ERROR, false);
-      this.loading = false;
     }
   }
 
@@ -941,10 +907,8 @@ export abstract class PlanEstudioBaseComponent {
 
   updateStudyPlan(planEstudioBody: PlanEstudio): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.loading = true;
       this.planEstudiosService.put('plan_estudio/', planEstudioBody)
         .subscribe((res: any) => {
-          this.loading = false;
           if (Object.keys(res.Data).length > 0) {
             this.popUpManager.showSuccessAlert(this.translate.instant('plan_estudios.plan_estudios_actualizacion_ok'));
             resolve(res.Data);
@@ -956,7 +920,6 @@ export abstract class PlanEstudioBaseComponent {
           }
         },
           (error: HttpErrorResponse) => {
-            this.loading = false;
             this.popUpManager.showErrorAlert(
               this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
             );
@@ -991,26 +954,21 @@ export abstract class PlanEstudioBaseComponent {
   // * Actualizar plan de estudios datos básicos 
   //#region
   async prepareUpdateBySemester(): Promise<boolean> {
-    this.loading = true;
     await this.formatearResumenTotal();
     return new Promise((resolve) => {
       this.formatearEspaciosPlanEstudio().then((res) => {
         if (res) {
-          this.loading = true;
           this.updateStudyPlan(this.planEstudioBody).then((updatedPlan) => {
-            this.loading = false;
             this.planEstudioBody = updatedPlan;
             resolve(true);
           });
         } else {
-          this.loading = false;
           this.popUpManager.showErrorAlert(
             this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
           );
           resolve(false);
         }
       }).catch((error) => {
-        this.loading = false;
         this.popUpManager.showErrorAlert(
           this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
         );
@@ -1052,7 +1010,6 @@ export abstract class PlanEstudioBaseComponent {
         }
       });
     } catch (error) {
-      this.loading = false;
       this.popUpManager.showPopUpGeneric(this.translate.instant('ERROR.titulo_generico'),
         this.translate.instant('ERROR.fallo_informacion_en') + ': <b>' + this.translate.instant('plan_estudios.organizar') +
         '</b>.<br><br>' + this.translate.instant('ERROR.persiste_error_comunique_OAS'),
@@ -1265,11 +1222,9 @@ export abstract class PlanEstudioBaseComponent {
   }
 
   actualizarPlanOrdenado(planCiclosBody: PlanCiclosOrdenado): Promise<any> {
-    this.loading = true;
     return new Promise((resolve, reject) => {
       this.planEstudiosService.put('plan_estudio_proyecto_academico/', planCiclosBody)
         .subscribe((res: any) => {
-          this.loading = false;
           if (Object.keys(res.Data).length > 0) {
             this.popUpManager.showSuccessAlert(this.translate.instant('plan_estudios.plan_estudios_actualizacion_ok'));
             resolve(res.Data);
@@ -1281,7 +1236,6 @@ export abstract class PlanEstudioBaseComponent {
           }
         },
           (error: HttpErrorResponse) => {
-            this.loading = false;
             this.popUpManager.showErrorAlert(
               this.translate.instant('plan_estudios.plan_estudios_actualizacion_error')
             );
@@ -1293,50 +1247,40 @@ export abstract class PlanEstudioBaseComponent {
   // * ----------
 
   consultarPlanOrdenado(idPlanOrdenadoCiclo: number): Promise<any> {
-    this.loading = true;
     return new Promise((resolve, reject) => {
       this.planEstudiosService.get('plan_estudio_proyecto_academico/' + idPlanOrdenadoCiclo)
         .subscribe((resp: any) => {
-          this.loading = false;
           resolve(resp.Data);
         }, (err) => {
-          this.loading = false;
           reject({ "plan_estudio_proyecto": err });
         });
     });
   }
 
   desactivarSuprimidos(idArchivos: any[], relacion: string) {
-    this.loading = true;
     if (idArchivos.length > 0) {
       idArchivos.forEach((id, i) => {
         this.gestorDocumentalService.deleteByIdDoc(id, relacion).subscribe();
         if ((i + 1) == idArchivos.length) {
-          this.loading = false;
         }
       });
-    } else {
-      this.loading = false;
     }
   }
   //#endregion
   // * ----------
 
   async prepareUpdateOrderedPlan(): Promise<boolean> {
-    this.loading = true;
     await this.formatearOrdenPlanesCiclos().then((ordenPlanes) => {
       this.planEstudioOrdenadoBody.OrdenPlan = JSON.stringify(ordenPlanes);
     });
     return new Promise((resolve) => {
       this.actualizarPlanOrdenado(this.planEstudioOrdenadoBody).then((updatedOrderedPlan) => {
-        this.loading = false;
         this.planEstudioOrdenadoBody = updatedOrderedPlan;
         resolve(true);
       },
-        (err) => {
-          this.loading = false;
-          resolve(false);
-        });
+      (err) => {
+        resolve(false);
+      });
     });
   }
 

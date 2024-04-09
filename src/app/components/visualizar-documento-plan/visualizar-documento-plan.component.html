@@ -1,7 +1,4 @@
 <mat-dialog-content class="mat-typography">
-    <div [class.loader-div]="loading">
-        <mat-spinner *ngIf="loading" diameter="100" color="primary"></mat-spinner>
-    </div>
     <object [data]="documentData | safeUrl" type="application/pdf" *ngIf="documentLoad" id="pdf_view"></object>
 </mat-dialog-content>
 <mat-dialog-actions style="align-items: center;flex-direction: row;">
