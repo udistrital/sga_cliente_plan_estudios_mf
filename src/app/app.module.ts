@@ -86,5 +86,5 @@ import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-ev
 export class AppModule { }
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'http://localhost:4211/assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'http://localhost:4215/assets/i18n/', '.json');
 }
