@@ -69,7 +69,7 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
    }
 
   async ngOnInit() {
-    const id = decrypt(localStorage.getItem('persona_id'));
+    const id = await this.userService.getPersonaId();
     this.personaId = Number(id);
     await this.setRoles();
     this.loading = false;

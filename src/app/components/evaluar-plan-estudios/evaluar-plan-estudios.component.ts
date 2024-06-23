@@ -207,8 +207,8 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
   // * ----------
   // * Visualización de ventana evaluación
   // #region
-  showEvaluationDialog(planEstudioBody: PlanEstudio) {
-    const id = decrypt(localStorage.getItem('persona_id'));
+  async showEvaluationDialog(planEstudioBody: PlanEstudio) {
+    const id = await this.userService.getPersonaId();
     let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
@@ -232,8 +232,8 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
   // * Visualización de ventana aprobación
   // #region
 
-  viewObservation(planEstudioBody: PlanEstudio) {
-    const id = decrypt(localStorage.getItem('persona_id'));
+  async viewObservation(planEstudioBody: PlanEstudio) {
+    const id = await this.userService.getPersonaId();
     let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';

@@ -70,7 +70,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   }
 
   async ngOnInit() {
-    const id = decrypt(localStorage.getItem('persona_id'));
+    const id = await this.userService.getPersonaId();
     this.personaId = Number(id);
     await this.setRoles();
     this.dataPlanesEstudio = new MatTableDataSource<any>([])
@@ -455,10 +455,8 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
   // * Visualización de ventana aprobación
   // #region
 
-  viewObservation(planEstudioBody: any) {
-    console.log("persona_id encriptada: " + localStorage.getItem('persona_id'))
-    const id = decrypt(localStorage.getItem('persona_id'));
-    console.log("persona_id desencriptada: " + id)
+  async viewObservation(planEstudioBody: any) {
+    const id = await this.userService.getPersonaId();
     let persona_id = Number(id);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '80vw';
