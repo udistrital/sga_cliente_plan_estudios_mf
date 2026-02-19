@@ -4,7 +4,7 @@ import { fromEvent } from 'rxjs';
 import { getCookie } from 'src/utils/cookie';
 
 @Component({
-  selector: 'sga-planEStudios-mf',
+  selector: 'sga-plan-estudios-mf',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

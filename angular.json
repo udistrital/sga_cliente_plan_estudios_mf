@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sga-planEstudios-mf": {
+    "sga-plan-estudios-mf": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -35,7 +35,7 @@
             "scripts": [],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
-              "libraryName": "sga-planEstudios-mf",
+              "libraryName": "sga-plan-estudios-mf",
               "libraryTarget": "umd"
             }
           },
@@ -89,13 +89,13 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "sga-planEstudios-mf:build:production"
+              "browserTarget": "sga-plan-estudios-mf:build:production"
             },
             "development": {
-              "browserTarget": "sga-planEstudios-mf:build:development"
+              "browserTarget": "sga-plan-estudios-mf:build:development"
             },
             "local": {
-              "browserTarget": "sga-planEstudios-mf:build:local"
+              "browserTarget": "sga-plan-estudios-mf:build:local"
             }
           },
           "defaultConfiguration": "local"
@@ -103,7 +103,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sga-planEstudios-mf:build"
+            "browserTarget": "sga-plan-estudios-mf:build"
           }
         },
         "test": {

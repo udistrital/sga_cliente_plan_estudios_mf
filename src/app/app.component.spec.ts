@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'sga-planEstudios-mf'`, () => {
+  it(`should have as title 'sga-plan-estudios-mf'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('sga-planEstudios-mf');
+    expect(app.title).toEqual('sga-plan-estudios-mf');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('sga-planEstudios-mf app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('sga-plan-estudios-mf app is running!');
   });
 });
