@@ -7,8 +7,13 @@ import { CreacionPlanEstudiosComponent } from './components/creacion-plan-estudi
 import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
+import { EmptyRouteComponent } from './empty-route/empty-route.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    component: EmptyRouteComponent,
+  },
   {
     path: 'crear',
     component: CreacionPlanEstudiosComponent
