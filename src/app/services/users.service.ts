@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment'; 
 import { ImplicitAutenticationService } from './implicit_autentication.service'; 
 import { AnyService } from './any.service';
+import { TercerosService } from './terceros.service';
 import { decrypt, encrypt } from 'src/utils/util-encrypt';
 
 const path = environment.TERCEROS_SERVICE;
@@ -18,7 +19,11 @@ export class UserService {
   public tercero$ = this.userSubject.asObservable();
   public user: any;
 
-  constructor(private anyService: AnyService, private autenticationService: ImplicitAutenticationService) {
+  constructor(
+    private anyService: AnyService,
+    private autenticationService: ImplicitAutenticationService,
+    private terceroService: TercerosService
+  ) {
     if (window.localStorage.getItem('id_token') !== null && window.localStorage.getItem('id_token') !== undefined) {
       /* const id_token = window.localStorage.getItem('id_token').split('.');
       const payload = JSON.parse(atob(id_token[1])); */
@@ -59,7 +64,7 @@ export class UserService {
 
   private async findByDocument(DocIdentificacion: any, Usuario: any, Correo: any){
     return new Promise<boolean>((resolve, reject) => {
-     this.anyService.get(path, 'datos_identificacion?query=Activo:true,Numero:' + DocIdentificacion + '&sortby=FechaCreacion&order=desc')
+     this.terceroService.get('datos_identificacion?query=Activo:true,Numero:' + DocIdentificacion + '&sortby=FechaCreacion&order=desc')
       .subscribe((res: any) => {
         if (res !== null) {
           if (res.length > 1) {
