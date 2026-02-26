@@ -18,6 +18,7 @@ import { UserService } from "src/app/services/users.service";
 import { EstadoAprobacion } from "src/app/models/estado_aprobacion";
 import { ImplicitAutenticationService } from "src/app/services/implicit_autentication.service";
 import { PlanEstudioSummary } from "src/app/models/plan_estudio_summary";
+import { GestorDocumentalMidService } from "src/app/services/gestor_documental_mid.service";
 
 export abstract class PlanEstudioBaseComponent {
   displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
@@ -26,7 +27,7 @@ export abstract class PlanEstudioBaseComponent {
   displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
   displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
   displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
-  
+
   readonly VIEWS = VIEWS;
   vista!: Symbol;
 
@@ -149,10 +150,14 @@ export abstract class PlanEstudioBaseComponent {
     protected sgaMidService: SgaMidService,
     protected domSanitizer: DomSanitizer,
     protected planEstudiosService: PlanEstudiosService,
+    protected gestorDocumental: GestorDocumentalMidService,
     protected gestorDocumentalService: NewNuxeoService,
     protected userService: UserService,
-    protected autenticationService: ImplicitAutenticationService
-  ) { }
+    protected autenticationService: ImplicitAutenticationService,
+    protected utilidadesService: UtilidadesService
+  ) {
+    this.formGroupPlanEstudio = new FormGroup({});
+   }
 
   setRoles() {
     this.autenticationService.getRole().then((rol: any) => {
@@ -496,7 +501,7 @@ export abstract class PlanEstudioBaseComponent {
           const listaSoportes = soporteDocumental['SoporteDocumental'] ? soporteDocumental['SoporteDocumental'] : [];
           this.descargarArchivos(listaSoportes).then(() => {
             listaSoportes.forEach((idSoporte: number) => {
-              this.gestorDocumentalService.getByIdLocal(idSoporte).subscribe(supportFile => {
+              this.utilidadesService.getByIdLocal(idSoporte).subscribe(supportFile => {
                 this.formPlanEstudio['soportes'].archivosLinea!.push(supportFile);
                 nombresSoporte += supportFile.nombre + ', ';
                 this.formGroupPlanEstudio.patchValue({
@@ -624,17 +629,21 @@ export abstract class PlanEstudioBaseComponent {
             if (i < limitQuery - 1) idsForQuery += '|';
           });
           if (limitQuery > 0) {
-            this.gestorDocumentalService.getManyFiles('?query=Id__in:' + idsForQuery + '&limit=' + limitQuery).subscribe(
-              r => {
-                if (!r.downloadProgress) {
-                  resolve(true);
-                }
-              }, e => {
-                reject(false);
-              }
-            );
+            this.gestorDocumental
+              .get('/document?query=Id__in:' + idsForQuery + '&limit=' + limitQuery)
+              .subscribe({
+                next: async (response: any) => {
+                  try {
+                    const docs = await this.utilidadesService.mapDocuments(response);
+                    resolve(docs.filter(Boolean));
+                  } catch (err) {
+                    reject(err);
+                  }
+                },
+                error: err => reject(err)
+              });
           } else {
-            resolve(true)
+            resolve([]);
           }
         });
     });
@@ -887,7 +896,7 @@ export abstract class PlanEstudioBaseComponent {
     return new Promise<number[]>((resolve) => {
       if (idArchivos.length > 0) {
         idArchivos.forEach((id, i) => {
-          this.gestorDocumentalService.getByIdLocal(id).subscribe(
+          this.utilidadesService.getByIdLocal(id).subscribe(
             () => {/* Ya está */ },
             () => { notDonwloaded.push(id); }
           );
@@ -1286,9 +1295,9 @@ export abstract class PlanEstudioBaseComponent {
         this.planEstudioOrdenadoBody = updatedOrderedPlan;
         resolve(true);
       },
-      (err) => {
-        resolve(false);
-      });
+        (err) => {
+          resolve(false);
+        });
     });
   }
 

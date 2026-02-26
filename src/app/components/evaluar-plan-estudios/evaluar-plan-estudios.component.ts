@@ -24,6 +24,7 @@ import { DialogVerObservacionComponent } from '../dialog-ver-observacion/dialog-
 import { UserService } from "src/app/services/users.service";
 import { MatPaginator } from '@angular/material/paginator';
 import { decrypt } from 'src/utils/util-encrypt';
+import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_mid.service';
 
 @Component({
   selector: 'evaluar-plan-estudios',
@@ -64,13 +65,15 @@ export class EvaluarPlanEstudiosComponent extends PlanEstudioBaseComponent imple
     sgaMidService: SgaMidService,
     domSanitizer: DomSanitizer,
     planEstudiosService: PlanEstudiosService,
+    gestorDocumental: GestorDocumentalMidService,
     gestorDocumentalService: NewNuxeoService,
     userService: UserService,
+    utilidadesService: UtilidadesService,
     autenticationService: ImplicitAutenticationService
   ) {
     super(translate, popUpManager, projectService,
-      sgaMidService, domSanitizer, planEstudiosService,
-      gestorDocumentalService, userService, autenticationService);
+      sgaMidService, domSanitizer, planEstudiosService,gestorDocumental,
+      gestorDocumentalService, userService, autenticationService, utilidadesService);
    }
 
   async ngOnInit() {
