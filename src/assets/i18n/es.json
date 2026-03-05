@@ -1120,6 +1120,7 @@
         "enviar_evaluacion_ok": "¡Enviada evaluación correctamente!",
         "enviar_evaluacion_fallo": "¡No se pudo enviar la evaluación!",
         "error_validacion_prerrequisitos_espacios": "El espacio académico seleccionado tiene prerrequisitos que deben ser asignados en semestres anteriores",
+        "error_validacion_creditos_espacios": "Los espacios académicos suman mas creditos de los asignados para el plan de estudios",
         "error_cargando_datos_formulario": "Error cargando información del Plan de Estudios",
         "error_datos_incompletos": "Por favor complete todos los campos obligatorios",
         "error_cargando_plan_estudio_visualizacion": "Error cargando datos del plan de estudio para su visualización",
