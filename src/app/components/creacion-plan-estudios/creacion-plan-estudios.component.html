@@ -90,7 +90,7 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsPlanesEstudio"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumnsPlanesEstudio;"></tr>
                 </table>
-                <mat-paginator class="paginacion" [pageSize]="10">
+                <mat-paginator class="paginacion" #paginatorPlanes [pageSize]="10">
                 </mat-paginator>
 
                 <div class="alinear-center-espacio-doble" [class.generate]="habilitadoGenerarPlan">
@@ -181,7 +181,7 @@
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsEspaciosAcademicos"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsEspaciosAcademicos;"></tr>
                         </table>
-                        <mat-paginator class="paginacion" [pageSize]="10">
+                        <mat-paginator class="paginacion" #paginatorEspacios [pageSize]="10">
                         </mat-paginator>
 
                         <div class="alinear-right espacio-doble">
@@ -636,7 +636,7 @@
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsStudy"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsStudy;"></tr>
                         </table>
-                        <mat-paginator class="paginacion" [pageSize]="10">
+                        <mat-paginator class="paginacion" #paginatorSimpleSudyPlans [pageSize]="10">
                         </mat-paginator>
                         <br>
                         <mat-card class="alinear-center espacio-doble mat-card-custom">

@@ -49,7 +49,9 @@ import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_m
 })
 export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit { 
   displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
-  @ViewChild(MatPaginator) paginator!: MatPaginator
+  @ViewChild('paginatorPlanes') paginatorPlanes!: MatPaginator
+  @ViewChild('paginatorEspacios') paginatorEspacios!: MatPaginator
+  @ViewChild('paginatorSimpleSudyPlans') paginatorSimpleSudyPlans!: MatPaginator
 
   constructor(
     translate: TranslateService,
@@ -84,13 +86,23 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.vista = VIEWS.LIST;
     this.dataSemestre = new MatTableDataSource<any>([])
     this.dataSemestreTotal = [];
-    this.dataSimpleStudyPlans.paginator = this.paginator
     await this.loadSelects();
     await this.loadStudyPlanTable();
     this.gestorDocumentalService.clearLocalFiles();
     this.habilitarGenerarPlan();
   }
-
+  ngAfterViewChecked() {
+    if (this.dataPlanesEstudio.paginator !== this.paginatorPlanes) {
+      this.dataPlanesEstudio.paginator = this.paginatorPlanes;
+    }
+    if (this.dataEspaciosAcademicos.paginator !== this.paginatorEspacios) {
+      this.dataEspaciosAcademicos.paginator = this.paginatorEspacios;
+    }
+    if (this.dataSimpleStudyPlans.paginator !== this.paginatorSimpleSudyPlans) {
+      this.dataSimpleStudyPlans.paginator = this.paginatorSimpleSudyPlans;
+    }
+    
+  }
   // * ----------
   // * Cargar datos plan de estudio tabla
   //#region
@@ -106,8 +118,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           this.planesEstudio.forEach(plan => {
             this.organizarDatosTablaPlanEstudio(plan);
           });
-          this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-          this.dataPlanesEstudio.paginator = this.paginator
+          this.dataPlanesEstudio.data = this.planesEstudio;
         } catch (error) {
           this.popUpManager.showPopUpGeneric(
             this.translate.instant('plan_estudios.plan_estudios'),
@@ -121,8 +132,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
             this.planesEstudio.forEach(plan => {
               this.organizarDatosTablaPlanEstudio(plan);
             });
-            this.dataPlanesEstudio = new MatTableDataSource<any>(this.planesEstudio);
-            this.dataPlanesEstudio.paginator = this.paginator
+            this.dataPlanesEstudio.data = this.planesEstudio;
           } else {
             this.hideButtons = true;
             this.popUpManager.showErrorAlert(this.translate.instant('plan_estudios.plan_estudios_sin_vinculacion_error'));
@@ -213,7 +223,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.totalTotal();
     this.vista = VIEWS.FORM;
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
-    this.dataEspaciosAcademicos.paginator = this.paginator
   }
 
   guardar(stepper: MatStepper) {
@@ -267,7 +276,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
           let result = await this.consultarEspaciosAcademicos(this.proyecto_id);
           this.ListEspacios = result;
           this.dataEspaciosAcademicos = new MatTableDataSource<any>(this.ListEspacios);
-          this.dataEspaciosAcademicos.paginator = this.paginator
           this.planEstudioPadreAsignado2Form = false;
           stepper.next();
         } catch (error: any) {
@@ -308,7 +316,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     if (Array.isArray(archivos) && archivos.length) {
       idsArchivos = await this.cargarArchivos(archivos);
     }
-
     let soportesPlan = this.str2JsonValidated(this.planEstudioBody.SoporteDocumental);
     let totalSoportes = [];
     if (soportesPlan) {
@@ -320,7 +327,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     if (Array.isArray(idsArchivos)) {
       totalSoportes.push(...idsArchivos);
     }
-
+    
     this.planEstudioBody.Nombre = this.formGroupPlanEstudio.get('nombrePlanEstudio')!.value;
     this.planEstudioBody.NumeroResolucion = Number(this.formGroupPlanEstudio.get('numeroResolucion')!.value);
     this.planEstudioBody.NumeroSemestres = Number(this.formGroupPlanEstudio.get('numeroSemestres')!.value);
@@ -401,7 +408,6 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.mainAction = ACTIONS.EDIT;
     this.enEdicionPlanEstudio = true;
     this.dataEspaciosAcademicos = new MatTableDataSource<any>([]);
-    this.dataEspaciosAcademicos.paginator = this.paginator
 
     try {
       this.planEstudioBody = await this.consultarPlanEstudio(idPlan);
