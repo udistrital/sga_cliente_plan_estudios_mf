@@ -129,7 +129,7 @@ export class UtilidadesService {
                 };
             })
         );
-        this.documentsList= results.filter(Boolean);
+        this.documentsList.push(...results.filter(Boolean));
         return this.documentsList;
     }
 

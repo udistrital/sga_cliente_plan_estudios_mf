@@ -327,7 +327,12 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     if (Array.isArray(idsArchivos)) {
       totalSoportes.push(...idsArchivos);
     }
-    
+    const archivosDelete = this.formPlanEstudio['soportes'].archivosDelete || [];
+    if (Array.isArray(archivosDelete) && archivosDelete.length) {
+      totalSoportes = totalSoportes.filter(
+        id => !archivosDelete.includes(id)
+      );
+    }
     this.planEstudioBody.Nombre = this.formGroupPlanEstudio.get('nombrePlanEstudio')!.value;
     this.planEstudioBody.NumeroResolucion = Number(this.formGroupPlanEstudio.get('numeroResolucion')!.value);
     this.planEstudioBody.NumeroSemestres = Number(this.formGroupPlanEstudio.get('numeroSemestres')!.value);
