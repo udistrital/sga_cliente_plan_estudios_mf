@@ -18,6 +18,7 @@ import { UserService } from "src/app/services/users.service";
 import { EstadoAprobacion } from "src/app/models/estado_aprobacion";
 import { ImplicitAutenticationService } from "src/app/services/implicit_autentication.service";
 import { PlanEstudioSummary } from "src/app/models/plan_estudio_summary";
+import { GestorDocumentalMidService } from "src/app/services/gestor_documental_mid.service";
 
 export abstract class PlanEstudioBaseComponent {
   displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
@@ -26,7 +27,7 @@ export abstract class PlanEstudioBaseComponent {
   displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
   displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
   displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
-  
+
   readonly VIEWS = VIEWS;
   vista!: Symbol;
 
@@ -149,10 +150,14 @@ export abstract class PlanEstudioBaseComponent {
     protected sgaMidService: SgaMidService,
     protected domSanitizer: DomSanitizer,
     protected planEstudiosService: PlanEstudiosService,
+    protected gestorDocumental: GestorDocumentalMidService,
     protected gestorDocumentalService: NewNuxeoService,
     protected userService: UserService,
-    protected autenticationService: ImplicitAutenticationService
-  ) { }
+    protected autenticationService: ImplicitAutenticationService,
+    protected utilidadesService: UtilidadesService
+  ) {
+    this.formGroupPlanEstudio = new FormGroup({});
+  }
 
   setRoles() {
     this.autenticationService.getRole().then((rol: any) => {
@@ -496,7 +501,7 @@ export abstract class PlanEstudioBaseComponent {
           const listaSoportes = soporteDocumental['SoporteDocumental'] ? soporteDocumental['SoporteDocumental'] : [];
           this.descargarArchivos(listaSoportes).then(() => {
             listaSoportes.forEach((idSoporte: number) => {
-              this.gestorDocumentalService.getByIdLocal(idSoporte).subscribe(supportFile => {
+              this.utilidadesService.getByIdLocal(idSoporte).subscribe(supportFile => {
                 this.formPlanEstudio['soportes'].archivosLinea!.push(supportFile);
                 nombresSoporte += supportFile.nombre + ', ';
                 this.formGroupPlanEstudio.patchValue({
@@ -624,17 +629,21 @@ export abstract class PlanEstudioBaseComponent {
             if (i < limitQuery - 1) idsForQuery += '|';
           });
           if (limitQuery > 0) {
-            this.gestorDocumentalService.getManyFiles('?query=Id__in:' + idsForQuery + '&limit=' + limitQuery).subscribe(
-              r => {
-                if (!r.downloadProgress) {
-                  resolve(true);
-                }
-              }, e => {
-                reject(false);
-              }
-            );
+            this.gestorDocumental
+              .get('/document?query=Id__in:' + idsForQuery + '&limit=' + limitQuery)
+              .subscribe({
+                next: async (response: any) => {
+                  try {
+                    const docs = await this.utilidadesService.mapDocuments(response);
+                    resolve(docs.filter(Boolean));
+                  } catch (err) {
+                    reject(err);
+                  }
+                },
+                error: err => reject(err)
+              });
           } else {
-            resolve(true)
+            resolve([]);
           }
         });
     });
@@ -887,7 +896,7 @@ export abstract class PlanEstudioBaseComponent {
     return new Promise<number[]>((resolve) => {
       if (idArchivos.length > 0) {
         idArchivos.forEach((id, i) => {
-          this.gestorDocumentalService.getByIdLocal(id).subscribe(
+          this.utilidadesService.getByIdLocal(id).subscribe(
             () => {/* Ya está */ },
             () => { notDonwloaded.push(id); }
           );
@@ -1128,19 +1137,42 @@ export abstract class PlanEstudioBaseComponent {
       error: null,
       showPopUp: false,
       messagePopUp: ""
+    };
+    const validPrereq = await this.validarPrerequisitosAgregar(id);
+    if (!validPrereq) {
+      return {
+        ...result,
+        valid: false,
+        error: this.translate.instant(
+          'plan_estudios.error_validacion_prerrequisitos_espacios'
+        )
+      };
     }
-    return new Promise<object>((resolve, reject) => {
-      this.validarPrerequisitosAgregar(id).then((valid) => {
-        if (valid) {
-          resolve(result);
-        } else {
-          result["valid"] = false;
-          result["error"] = this.translate.instant(
-            'plan_estudios.error_validacion_prerrequisitos_espacios');
-          reject(result);
-        }
-      });
-    });
+    const validCreditos = await this.validarTotalCreditosEspacios(id);
+    if (!validCreditos) {
+      return {
+        ...result,
+        valid: false,
+        error: this.translate.instant(
+          'plan_estudios.error_validacion_creditos_espacios'
+        )
+      };
+    }
+    return result;
+  }
+
+  async validarTotalCreditosEspacios(id: any): Promise<boolean> {
+    let currentSpace = this.ListEspacios.find(espacio => espacio._id == id);
+    let creditos = currentSpace["creditos"];
+    const creditosPlan = Number(
+      this.formGroupPlanEstudio.get('totalCreditosPrograma')?.value
+    );
+    let totalCreditosSemestre = this.dataSemestreTotalTotal.data[0].creditos;
+    if (creditosPlan && creditos && (totalCreditosSemestre + creditos) > creditosPlan) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   async validarPrerequisitosAgregar(id: any): Promise<boolean> {
@@ -1286,9 +1318,9 @@ export abstract class PlanEstudioBaseComponent {
         this.planEstudioOrdenadoBody = updatedOrderedPlan;
         resolve(true);
       },
-      (err) => {
-        resolve(false);
-      });
+        (err) => {
+          resolve(false);
+        });
     });
   }
 
@@ -1319,13 +1351,53 @@ export abstract class PlanEstudioBaseComponent {
       this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
     }
   }
+  async validarTotalCreditosPlan(element: any): Promise<boolean> {
+    let creditosAgregados=element.TotalCreditos
+    let creditosProgramasAgregados=this.dataOrganizedStudyPlans.data
+                              .reduce((total: number, plan: any) => {
+                                return total + Number(plan.TotalCreditos);
+                              }, 0)
+    let totalCreditosPlan = Number(this.formGroupPlanEstudio.get('totalCreditosPrograma')?.value);
+    if ((creditosAgregados + creditosProgramasAgregados) > totalCreditosPlan) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  async runValidations2PlansAdding(element: any): Promise<object> {
+    let result = {
+      valid: true,
+      error: null,
+      showPopUp: false,
+      messagePopUp: ""
+    };
+    const validCreditos = await this.validarTotalCreditosPlan(element);
+    if (!validCreditos) {
+      return {
+        ...result,
+        valid: false,
+        error: this.translate.instant(
+          'plan_estudios.error_validacion_creditos_espacios'
+        )
+      };
+    }
+    return result;
+  }
 
   addPlan(element: any) {
     let newPlan = element;
-    newPlan["orden"] = this.dataOrganizedStudyPlans.data.length + 1;
-    this.dataOrganizedStudyPlans.data.push(newPlan);
-    this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
-    this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data.filter((item: any) => item.Id !== element.Id);
+    this.runValidations2PlansAdding(element).then((result: any) => {
+      if (result["valid"]) {
+      newPlan["orden"] = this.dataOrganizedStudyPlans.data.length + 1;
+      this.dataOrganizedStudyPlans.data.push(newPlan);
+      this.dataOrganizedStudyPlans.data = this.dataOrganizedStudyPlans.data
+      this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data.filter((item: any) => item.Id !== element.Id);
+      } else {
+        this.popUpManager.showErrorAlert(result["error"]);
+      }
+    }).catch((result) => {
+      this.popUpManager.showErrorAlert(result["error"]);
+    });
     //this.dataSimpleStudyPlans.data = this.dataSimpleStudyPlans.data
   }
 

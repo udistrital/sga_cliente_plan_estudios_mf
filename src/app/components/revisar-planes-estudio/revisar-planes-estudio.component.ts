@@ -22,6 +22,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { UserService } from "src/app/services/users.service";
 import { MatPaginator } from '@angular/material/paginator';
 import { decrypt } from 'src/utils/util-encrypt';
+import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_mid.service';
 
 @Component({
   selector: 'revisar-planes-estudio',
@@ -57,13 +58,15 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     sgaMidService: SgaMidService,
     domSanitizer: DomSanitizer,
     planEstudiosService: PlanEstudiosService,
+    gestorDocumental: GestorDocumentalMidService,
     gestorDocumentalService: NewNuxeoService,
     userService: UserService,
+    utilidadesService: UtilidadesService,
     autenticationService: ImplicitAutenticationService
   ) {
     super(translate, popUpManager, projectService, 
       sgaMidService, domSanitizer, planEstudiosService, 
-      gestorDocumentalService, userService, autenticationService);
+      gestorDocumental, gestorDocumentalService, userService, autenticationService, utilidadesService);
     this.translate.onLangChange.subscribe(() => {
     })
    }

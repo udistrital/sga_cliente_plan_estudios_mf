@@ -86,10 +86,7 @@ export class NewNuxeoService {
         const documents$ = documentsSubject.asObservable();
         this.gestorDocumentalService.get('/document'+query).subscribe(
             async (response: any) => {
-                if (response.type === HttpEventType.DownloadProgress) {
-                    const downloadProgress = 100 * response.loaded / response.total;
-                    documentsSubject.next({"downloadProgress": downloadProgress});
-                }
+                
                 if (response.type === HttpEventType.Response) {
                     //no estoy seguro
                     let listaDocsRaw = <Array<any>>response.body.Data;
