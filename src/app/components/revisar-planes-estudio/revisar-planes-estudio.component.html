@@ -34,6 +34,16 @@
                             <td mat-cell *matCellDef="let element"> {{element.proyectoCurricular}} </td>
                         </ng-container>
     
+                        <ng-container matColumnDef="estado_proyecto">
+                            <th mat-header-cell *matHeaderCellDef>
+                                Estado Proyecto
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                {{ obtenerEstadoProyecto(element) }}
+                            </td>
+                        </ng-container>
+
                         <ng-container matColumnDef="resolucion">
                             <th mat-header-cell *matHeaderCellDef> {{ 'plan_estudios.resolucion' |
                                 translate }} </th>
