@@ -48,7 +48,7 @@ import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_m
   ]
 })
 export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit { 
-  displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
+  displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular','estado_proyecto', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];
   @ViewChild('paginatorPlanes') paginatorPlanes!: MatPaginator
   @ViewChild('paginatorEspacios') paginatorEspacios!: MatPaginator
   @ViewChild('paginatorSimpleSudyPlans') paginatorSimpleSudyPlans!: MatPaginator
@@ -102,6 +102,9 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
       this.dataSimpleStudyPlans.paginator = this.paginatorSimpleSudyPlans;
     }
     
+  }
+  crearEspacioAcademico() {
+    window.open(`/espacios-academicos/formulario/crear/0`, '_blank');
   }
   // * ----------
   // * Cargar datos plan de estudio tabla

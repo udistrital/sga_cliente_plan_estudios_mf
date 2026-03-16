@@ -22,11 +22,11 @@ import { GestorDocumentalMidService } from "src/app/services/gestor_documental_m
 
 export abstract class PlanEstudioBaseComponent {
   displayedColumnsSemestreTotalTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
-  displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
+  displayedColumnsOrganizedStudy: string[] = ['plan_estudio', 'proyectoCurricular', 'estado_proyecto', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'orden', 'acciones'];
   displayedColumnsSemestreTotal: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
   displayedColumnsSemestre: string[] = ['nombre', 'creditos', 'htd', 'htc', 'hta', 'OB', 'OC', 'EI', 'EE', 'CP', 'ENFQ_TEO', 'ENFQ_PRAC', 'ENFQ_TEOPRAC', 'acciones'];
   displayedColumnsEspaciosAcademicos: string[] = ['#', 'nombre', 'pre_requisitos', 'clase', 'creditos', 'acciones'];
-  displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
+  displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular','estado_proyecto', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver_editar', 'observacion', 'enviar'];
 
   readonly VIEWS = VIEWS;
   vista!: Symbol;
@@ -110,6 +110,12 @@ export abstract class PlanEstudioBaseComponent {
     },
     proyectoCurricular: {
       title: this.translate.instant("inscripcion.proyecto_curricular"),
+      editable: false,
+      width: "15%",
+      filter: true,
+    },
+    estado_proyecto: {
+      title: this.translate.instant("GLOBAL.Activo"),
       editable: false,
       width: "15%",
       filter: true,
@@ -214,7 +220,7 @@ export abstract class PlanEstudioBaseComponent {
 
   async loadProyectos(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.projectService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0').subscribe(
+      this.projectService.get('proyecto_academico_institucion?sortby=Nombre&order=asc&limit=0').subscribe(
         (resp: any) => {
           if (Object.keys(resp[0]).length > 0) {
             resolve(resp);
@@ -1447,5 +1453,16 @@ export abstract class PlanEstudioBaseComponent {
         }
         break;
     }
+  }
+  obtenerEstadoProyecto(plan: any): string {
+    const proyecto = this.proyectos.find(
+      p => p.Id === plan.ProyectoAcademicoId
+    );
+
+    if (!proyecto) {
+      return " ";
+    }
+
+    return proyecto.Activo ? "Activo" : "Inactivo";
   }
 }

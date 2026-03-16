@@ -49,7 +49,7 @@ import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_m
 export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
-  override displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver'];
+  override displayedColumnsPlanesEstudio: string[] = ['plan_estudios', 'proyecto_curricular','estado_proyecto', 'resolucion', 'estado', 'total_creditos', 'plan_estudios_ciclos', 'ver'];
 
   constructor(
     translate: TranslateService,
@@ -173,7 +173,7 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
 
   organizarDatosTablaPlanEstudio(plan: any) {
     const proyecto = this.proyectos.find(proyecto => proyecto.Id == plan.ProyectoAcademicoId);
-    plan["proyectoCurricular"] = proyecto["Nombre"];
+    plan["proyectoCurricular"] = proyecto?.["Nombre"] ?? " ";
 
     plan["plan_estudio"] = plan["Nombre"];
     plan["resolucion"] = plan["NumeroResolucion"];
@@ -197,6 +197,7 @@ export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent impl
     this.consultarPlanEstudio(idPlan).then((res) => {
       this.planEstudioBody = res;
       this.generarPlanEstudio();
+      this.loading=false;
     }, (error) => {
       this.loading = false;
       this.vista = VIEWS.LIST;
