@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CreacionPlanEstudiosComponent } from './components/creacion-plan-estudios/creacion-plan-estudios.component';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from 'src/environments/environment';
@@ -33,54 +33,47 @@ import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
 import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-evaluar.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    CreacionPlanEstudiosComponent,
-    DialogVerObservacionComponent,
-    SummaryPlanesEstudioComponent,
-    VisualizarDocumentoPlanComponent,
-    SafeURL,
-    DinamicFormGroupComponent,
-    EvaluarPlanEstudiosComponent,
-    RevisarPlanesEstudioComponent,
-    DialogoEvaluarComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatStepperModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatIconModule,
-    MatTableModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatExpansionModule,
-    MatPaginatorModule,
-    TranslateModule.forRoot({
-      loader:{
-        provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      }
-    }),
-  ],
-  providers: [
-    PlanEstudiosService,
-    // { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        CreacionPlanEstudiosComponent,
+        DialogVerObservacionComponent,
+        SummaryPlanesEstudioComponent,
+        VisualizarDocumentoPlanComponent,
+        SafeURL,
+        DinamicFormGroupComponent,
+        EvaluarPlanEstudiosComponent,
+        RevisarPlanesEstudioComponent,
+        DialogoEvaluarComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatStepperModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCardModule,
+        MatIconModule,
+        MatTableModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatSnackBarModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatExpansionModule,
+        MatPaginatorModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (createTranslateLoader),
+                deps: [HttpClient]
+            }
+        })], providers: [
+        PlanEstudiosService,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }
 
 export function createTranslateLoader(http: HttpClient) {
