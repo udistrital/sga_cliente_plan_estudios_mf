@@ -29,7 +29,6 @@ import { SummaryPlanesEstudioComponent } from './components/summary-planes-estud
 import { VisualizarDocumentoPlanComponent } from './components/visualizar-documento-plan/visualizar-documento-plan.component';
 import { SafeURL } from './pipes/safeUrl.pipe';
 import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinamic-form-group.component';
-import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
 import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
 import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-evaluar.component';
@@ -68,7 +67,6 @@ import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-ev
     MatSelectModule,
     MatExpansionModule,
     MatPaginatorModule,
-    SpinnerUtilModule,
     TranslateModule.forRoot({
       loader:{
         provide: TranslateLoader,
@@ -79,7 +77,7 @@ import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-ev
   ],
   providers: [
     PlanEstudiosService,
-    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
+    // { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
