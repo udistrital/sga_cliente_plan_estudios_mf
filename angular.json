@@ -89,13 +89,13 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "sga-plan-estudios-mf:build:production"
+              "buildTarget": "sga-plan-estudios-mf:build:production"
             },
             "development": {
-              "browserTarget": "sga-plan-estudios-mf:build:development"
+              "buildTarget": "sga-plan-estudios-mf:build:development"
             },
             "local": {
-              "browserTarget": "sga-plan-estudios-mf:build:local"
+              "buildTarget": "sga-plan-estudios-mf:build:local"
             }
           },
           "defaultConfiguration": "local"
