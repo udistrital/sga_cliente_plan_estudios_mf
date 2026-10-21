@@ -8,9 +8,10 @@ import { TercerosService } from 'src/app/services/terceros.service';
 import { PlanEstudio } from 'src/app/models/plan_estudio';
 
 @Component({
-  selector: 'dialog-ver-observacion',
-  templateUrl: './dialog-ver-observacion.component.html',
-  styleUrls: ['./dialog-ver-observacion.component.scss']
+    selector: 'dialog-ver-observacion',
+    templateUrl: './dialog-ver-observacion.component.html',
+    styleUrls: ['./dialog-ver-observacion.component.scss'],
+    standalone: false
 })
 export class DialogVerObservacionComponent implements OnInit {
 
