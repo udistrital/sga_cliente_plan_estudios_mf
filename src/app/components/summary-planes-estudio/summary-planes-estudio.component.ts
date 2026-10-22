@@ -5,9 +5,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { VisualizarDocumentoPlanComponent } from '../visualizar-documento-plan/visualizar-documento-plan.component';
 
 @Component({
-  selector: 'summary-planes-estudio',
-  templateUrl: './summary-planes-estudio.component.html',
-  styleUrls: ['./summary-planes-estudio.component.scss']
+    selector: 'summary-planes-estudio',
+    templateUrl: './summary-planes-estudio.component.html',
+    styleUrls: ['./summary-planes-estudio.component.scss'],
+    standalone: false
 })
 export class SummaryPlanesEstudioComponent implements OnInit {
   

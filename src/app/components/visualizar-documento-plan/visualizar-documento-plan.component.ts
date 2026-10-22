@@ -5,9 +5,10 @@ import { SgaMidService } from 'src/app/services/sga_mid.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'visualizar-documento-plan',
-  templateUrl: './visualizar-documento-plan.component.html',
-  styleUrls: ['./visualizar-documento-plan.component.scss']
+    selector: 'visualizar-documento-plan',
+    templateUrl: './visualizar-documento-plan.component.html',
+    styleUrls: ['./visualizar-documento-plan.component.scss'],
+    standalone: false
 })
 export class VisualizarDocumentoPlanComponent implements OnInit {
   

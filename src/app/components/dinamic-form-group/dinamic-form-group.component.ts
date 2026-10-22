@@ -4,9 +4,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'dinamic-form-group',
-  templateUrl: './dinamic-form-group.component.html',
-  styleUrls: ['./dinamic-form-group.component.scss']
+    selector: 'dinamic-form-group',
+    templateUrl: './dinamic-form-group.component.html',
+    styleUrls: ['./dinamic-form-group.component.scss'],
+    standalone: false
 })
 export class DinamicFormGroupComponent implements OnInit, OnChanges, OnDestroy {
 

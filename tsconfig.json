@@ -14,7 +14,10 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "paths": {
+      "single-spa": ["node_modules/single-spa/typings/single-spa.d.ts"]
+    },
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
