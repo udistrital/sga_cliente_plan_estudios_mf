@@ -87,6 +87,11 @@
         },
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "headers": {
+              "Access-Control-Allow-Origin": "*"
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "sga-plan-estudios-mf:build:production"
