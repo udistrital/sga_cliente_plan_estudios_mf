@@ -10,9 +10,10 @@ import { MODALS } from 'src/app/models/diccionario';
 import { TercerosService } from 'src/app/services/terceros.service'; 
 
 @Component({
-  selector: 'dialogo-evaluar',
-  templateUrl: './dialogo-evaluar.component.html',
-  styleUrls: ['./dialogo-evaluar.component.scss']
+    selector: 'dialogo-evaluar',
+    templateUrl: './dialogo-evaluar.component.html',
+    styleUrls: ['./dialogo-evaluar.component.scss'],
+    standalone: false
 })
 export class DialogoEvaluarComponent implements OnInit {
   

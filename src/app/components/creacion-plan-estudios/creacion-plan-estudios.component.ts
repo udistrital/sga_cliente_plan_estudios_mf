@@ -26,26 +26,27 @@ import { decrypt } from 'src/utils/util-encrypt';
 import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_mid.service';
 
 @Component({
-  selector: 'creacion-plan-estudios',
-  templateUrl: './creacion-plan-estudios.component.html',
-  styleUrls: ['./creacion-plan-estudios.component.scss'],
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ transform: 'translateY(-100%)' }),
-        animate('300ms ease-out', style({ transform: 'translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-out', style({ transform: 'translateY(150%)' }))
-      ])
-    ])
-  ],
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: { displayDefaultIndicatorType: false },
-    },
-  ]
+    selector: 'creacion-plan-estudios',
+    templateUrl: './creacion-plan-estudios.component.html',
+    styleUrls: ['./creacion-plan-estudios.component.scss'],
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ transform: 'translateY(-100%)' }),
+                animate('300ms ease-out', style({ transform: 'translateY(0)' }))
+            ]),
+            transition(':leave', [
+                animate('300ms ease-out', style({ transform: 'translateY(150%)' }))
+            ])
+        ])
+    ],
+    providers: [
+        {
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: { displayDefaultIndicatorType: false },
+        },
+    ],
+    standalone: false
 })
 export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent implements OnInit { 
   displayedColumnsStudy: string[] = ['plan_estudio', 'proyectoCurricular','estado_proyecto', 'resolucion', 'estado', 'totalCreditos', 'planPorCiclos', 'acciones'];

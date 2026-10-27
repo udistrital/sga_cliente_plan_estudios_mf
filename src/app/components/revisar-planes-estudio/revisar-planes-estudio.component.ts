@@ -25,26 +25,27 @@ import { decrypt } from 'src/utils/util-encrypt';
 import { GestorDocumentalMidService } from 'src/app/services/gestor_documental_mid.service';
 
 @Component({
-  selector: 'revisar-planes-estudio',
-  templateUrl: './revisar-planes-estudio.component.html',
-  styleUrls: ['./revisar-planes-estudio.component.scss'],
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ transform: 'translateY(-100%)' }),
-        animate('300ms ease-out', style({ transform: 'translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-out', style({ transform: 'translateY(150%)' }))
-      ])
-    ])
-  ],
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {displayDefaultIndicatorType: false},
-    },
-  ]
+    selector: 'revisar-planes-estudio',
+    templateUrl: './revisar-planes-estudio.component.html',
+    styleUrls: ['./revisar-planes-estudio.component.scss'],
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ transform: 'translateY(-100%)' }),
+                animate('300ms ease-out', style({ transform: 'translateY(0)' }))
+            ]),
+            transition(':leave', [
+                animate('300ms ease-out', style({ transform: 'translateY(150%)' }))
+            ])
+        ])
+    ],
+    providers: [
+        {
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: { displayDefaultIndicatorType: false },
+        },
+    ],
+    standalone: false
 })
 export class RevisarPlanesEstudioComponent extends PlanEstudioBaseComponent implements OnInit {
 
