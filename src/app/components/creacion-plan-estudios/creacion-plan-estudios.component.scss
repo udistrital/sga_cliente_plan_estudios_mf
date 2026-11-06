@@ -80,16 +80,6 @@ fieldset {
     padding-bottom: 1rem;
 }
 
-.advertencia {
-    background-color: var(--warning-main);
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-align: center;
-    padding: 1rem;
-    border-radius: 0.4rem;
-    margin: 1rem;
-}
-
 .recuadro {
     border: 1px solid var(--primary);
     border-radius: 0.2rem;
@@ -277,4 +267,447 @@ table td {
 
 i.cancel mat-icon {
     color: red;
+}
+
+
+:host {
+  display: block;
+  padding: 24px;
+  color: #243247;
+  background: #f4f7fb;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.plan-estudios-card {
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid #e3eaf3;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgb(28 48 74 / 7%);
+}
+
+/* Encabezado de la pantalla */
+.encabezado-principal {
+  display: block;
+  padding: 24px 28px;
+  margin: 0;
+  color: #fff;
+  background: linear-gradient(120deg, #164e80 0%, #236fa5 100%);
+}
+
+.encabezado-contenido {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.encabezado-icono {
+  display: grid;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 12%);
+
+  mat-icon {
+    width: 27px;
+    height: 27px;
+    font-size: 27px;
+  }
+}
+
+.encabezado-texto {
+  min-width: 0;
+
+  mat-card-title {
+    margin: 0;
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  mat-card-subtitle {
+    margin-top: 5px;
+    color: rgb(255 255 255 / 82%);
+    font-size: 0.9rem;
+  }
+}
+
+.contenido-principal {
+  padding: 28px !important;
+  margin: 0;
+}
+
+/* Sección de la tabla */
+.seccion-listado {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.seccion-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.titulo-seccion {
+  margin: 0;
+  color: #1d3553;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.descripcion-seccion {
+  margin: 5px 0 0;
+  color: #68778b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+
+/* Tabla y desplazamiento horizontal */
+.tabla-contenedor {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e4eaf2;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.tabla-planes {
+  width: 100%;
+  min-width: 900px;
+  background: #fff;
+  box-shadow: none !important;
+}
+
+.tabla-planes .mat-mdc-header-row {
+  height: 52px;
+  background: #edf3f9;
+}
+
+.tabla-planes .mat-mdc-header-cell {
+  padding: 12px 16px;
+  border-bottom: 1px solid #dce5ef;
+  color: #344b66;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+}
+
+.tabla-planes .mat-mdc-row {
+  height: 60px;
+  transition: background-color 160ms ease;
+}
+
+.tabla-planes .mat-mdc-cell {
+  padding: 10px 16px;
+  border-bottom-color: #edf1f6;
+  color: #46566b;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.tabla-planes .mat-mdc-row:hover {
+  background: #f5f9ff;
+}
+
+.tabla-planes .mat-mdc-row:last-child .mat-mdc-cell {
+  border-bottom: 0;
+}
+
+.texto-principal {
+  color: #203d5d;
+  font-weight: 600;
+}
+
+.estado-texto {
+  display: inline-block;
+  max-width: 220px;
+  overflow-wrap: anywhere;
+  color: #42556c;
+}
+
+.mensaje-sin-datos {
+  height: 100px;
+  color: #718096;
+  text-align: center;
+}
+
+/* Botones de acción dentro de la tabla */
+.acciones-tabla {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.boton-accion {
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  border-radius: 10px;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+
+  mat-icon {
+    color: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.boton-ver {
+  color: #1767a5;
+  background: #eaf4ff;
+}
+
+.boton-editar {
+  color: #8a5b0b;
+  background: #fff3d9;
+}
+
+.boton-observacion {
+  color: #6552a3;
+  background: #f0edff;
+}
+
+.boton-enviar {
+  color: #14744b;
+  background: #e5f7ed;
+}
+
+/* Paginador */
+.paginacion {
+  border-top: 1px solid #edf1f6;
+  background: #fff;
+}
+
+/* Acciones principales debajo de la tabla */
+.acciones-principales {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.acciones-principales button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.boton-principal {
+  box-shadow: 0 3px 8px rgb(25 91 145 / 18%);
+}
+
+/* Indicador de carga */
+.loader-div {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(245 248 252 / 72%);
+  backdrop-filter: blur(2px);
+}
+
+/* Adaptación para móviles */
+@media (max-width: 768px) {
+  :host {
+    padding: 10px;
+  }
+
+  .encabezado-principal {
+    padding: 20px 16px;
+  }
+
+  .encabezado-texto mat-card-title {
+    font-size: 1.1rem;
+  }
+
+  .contenido-principal {
+    padding: 16px !important;
+  }
+
+  .seccion-encabezado {
+    align-items: flex-start;
+  }
+
+  .acciones-principales {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acciones-principales button {
+    width: 100%;
+  }
+
+  .filtro {
+    width: 100%;
+  }
+}
+
+
+/* Aviso informativo: un único contenedor */
+.contenedor-advertencia {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 18px;
+  border: 1px solid #f1d89a;
+  border-radius: 12px;
+  background: #fff9e9;
+  color: #805c14;
+
+  > mat-icon {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    color: #b58119;
+    font-size: 24px;
+  }
+}
+
+.texto-advertencia {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* Búsqueda a todo lo ancho */
+.barra-herramientas {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.filtro {
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+
+  mat-icon[matPrefix] {
+    margin-right: 8px;
+    color: #73849a;
+  }
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+  .contenedor-advertencia {
+    align-items: flex-start;
+    padding: 13px;
+  }
+
+  .contenedor-advertencia > mat-icon {
+    margin-top: 2px;
+  }
+
+  .texto-advertencia {
+    font-size: 0.85rem;
+  }
+
+  .barra-herramientas,
+  .filtro {
+    width: 100%;
+  }
+}
+
+
+/* Centrar encabezados de las columnas de acciones */
+.tabla-planes .mat-column-ver_editar,
+.tabla-planes .mat-column-observacion,
+.tabla-planes .mat-column-enviar {
+  text-align: center !important;
+  vertical-align: middle;
+}
+
+/* Centrar el contenido de cada celda */
+.tabla-planes td.celda-acciones {
+  text-align: center !important;
+  vertical-align: middle;
+  padding: 8px !important;
+}
+
+/* El contenedor ocupa todo el ancho disponible */
+.tabla-planes .acciones-tabla {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Botones con dimensiones uniformes */
+.tabla-planes .boton-accion {
+  display: inline-flex;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+  margin: 0;
+  border-radius: 10px;
+  line-height: normal;
+}
+
+/* El icono queda centrado dentro del botón */
+.tabla-planes .boton-accion mat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+/* Evitar que las columnas de acciones queden demasiado estrechas */
+.tabla-planes .mat-column-ver_editar {
+  min-width: 110px;
+}
+
+.tabla-planes .mat-column-observacion,
+.tabla-planes .mat-column-enviar {
+  min-width: 105px;
 }

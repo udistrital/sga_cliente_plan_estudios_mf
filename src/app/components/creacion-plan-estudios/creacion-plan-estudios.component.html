@@ -1,115 +1,322 @@
-<mat-card [ngSwitch]="vista">
+<mat-card class="plan-estudios-card" [ngSwitch]="vista">
+
+    <!-- Indicador de carga -->
     <div [class.loader-div]="loading">
-        <mat-spinner *ngIf="loading" diameter="100" color="primary"></mat-spinner>
+        <mat-spinner
+            *ngIf="loading"
+            diameter="64"
+            color="primary">
+        </mat-spinner>
     </div>
-    <mat-card-header>
-        <div class="row titulo">
-            <div class="col">
-                {{ 'plan_estudios.crear_editar' | translate }}
+
+    <!-- Encabezado principal -->
+    <mat-card-header class="encabezado-principal">
+        <div class="encabezado-contenido">
+            <div class="encabezado-icono">
+                <mat-icon>account_balance</mat-icon>
+            </div>
+
+            <div class="encabezado-texto">
+                <mat-card-title>
+                    {{ 'plan_estudios.crear_editar' | translate }}
+                </mat-card-title>
+
+                <mat-card-subtitle>
+                    Consulta, crea y administra los planes de estudio.
+                </mat-card-subtitle>
             </div>
         </div>
     </mat-card-header>
-    <mat-card-content>
+
+    <mat-card-content class="contenido-principal">
+
+        <!-- LISTADO PRINCIPAL -->
         <ng-container *ngSwitchCase="VIEWS.LIST">
-            <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}">
-                <legend><small>&nbsp; {{ 'plan_estudios.planes_estudio_creados' | translate }} </small></legend>
-                <div class="alinear-center">
-                    <div class="advertencia">{{ 'plan_estudios.mensaje_soporte_multiple_proyecto' | translate }}</div>
+
+            <section class="seccion-listado" [@fadeInOut]>
+
+                <!-- Título y descripción de la sección -->
+                <div class="seccion-encabezado">
+                    <div>
+                        <h2 class="titulo-seccion">
+                            {{ 'plan_estudios.planes_estudio_creados' | translate }}
+                        </h2>
+
+                        <p class="descripcion-seccion">
+                            Consulta los planes registrados y accede a sus acciones.
+                        </p>
+                    </div>
                 </div>
-                <mat-form-field class="filtro">
-                    <input matInput (keyup)="aplicarFiltro($event, 'planes estudio')"
-                        placeholder="{{ 'GLOBAL.buscar' | translate }}" #input>
-                </mat-form-field>
-                <table mat-table [dataSource]="dataPlanesEstudio" class="mat-elevation-z5">
 
-                    <ng-container matColumnDef="plan_estudios">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'plan_estudios.plan_estudios' | translate }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.plan_estudio}} </td>
-                    </ng-container>
+                
+                <!-- Aviso informativo: un solo contenedor -->
+                <div class="contenedor-advertencia">
+                    <mat-icon aria-hidden="true">info_outline</mat-icon>
 
-                    <ng-container matColumnDef="proyecto_curricular">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'inscripcion.proyecto_curricular' | translate }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.proyectoCurricular}} </td>
-                    </ng-container>
+                    <div class="texto-advertencia">
+                        {{ 'plan_estudios.mensaje_soporte_multiple_proyecto' | translate }}
+                    </div>
+                </div>
 
-                    <ng-container matColumnDef="estado_proyecto">
-                        <th mat-header-cell *matHeaderCellDef>
-                            Estado Proyecto
-                        </th>
+                <!-- Búsqueda por nombre del plan de estudios -->
+                <div class="barra-herramientas">
+                    <mat-form-field appearance="outline" class="filtro">
+                        <mat-label>Buscar por nombre del plan de estudios</mat-label>
 
-                        <td mat-cell *matCellDef="let element">
-                            {{ obtenerEstadoProyecto(element) }}
-                        </td>
-                    </ng-container>
+                        <mat-icon matPrefix>search</mat-icon>
 
-                    <ng-container matColumnDef="resolucion">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'plan_estudios.resolucion' | translate }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.resolucion}} </td>
-                    </ng-container>
+                        <input
+                            matInput
+                            #input
+                            placeholder="Escribe el nombre del plan de estudios..."
+                            (keyup)="aplicarFiltro($event, 'planes estudio')">
 
-                    <ng-container matColumnDef="estado">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'GLOBAL.estado' | translate }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
-                    </ng-container>
+                        <button
+                            *ngIf="input.value"
+                            mat-icon-button
+                            matSuffix
+                            type="button"
+                            aria-label="Limpiar búsqueda"
+                            (click)="input.value = ''; aplicarFiltro($event, 'planes estudio')">
+                            <mat-icon>close</mat-icon>
+                        </button>
 
-                    <ng-container matColumnDef="total_creditos">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'plan_estudios.total_creditos' | translate }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.totalCreditos}} </td>
-                    </ng-container>
+                        <mat-hint>
+                            Ingresa el nombre del plan que deseas consultar.
+                        </mat-hint>
+                    </mat-form-field>
+                </div>
 
-                    <ng-container matColumnDef="plan_estudios_ciclos">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'plan_estudios.plan_estudios_ciclos' | translate }}
-                        </th>
-                        <td mat-cell *matCellDef="let element"> {{element.planPorCiclos}} </td>
-                    </ng-container>
 
-                    <ng-container matColumnDef="ver_editar">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'GLOBAL.ver_editar' | translate }} </th>
-                        <td mat-cell *matCellDef="let element">
-                            <button *ngIf="element.ver.type == 'ver'" mat-raised-button color="primary"
-                                [disabled]="element.ver.disabled" (click)="viewStudyPlan(element.Id)">
-                                <mat-icon class="icon-boton">search</mat-icon>
-                            </button>
-                            <button *ngIf="element.ver.type == 'editar'" mat-raised-button color="primary"
-                                [disabled]="element.ver.disabled" (click)="prepareFormUpdateStudyPlan(element.Id)">
-                                <mat-icon class="icon-boton">edit</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
+                <!-- Tabla -->
+                <div class="tabla-contenedor">
+                    <table
+                        mat-table
+                        [dataSource]="dataPlanesEstudio"
+                        class="tabla-planes">
 
-                    <ng-container matColumnDef="observacion">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'GLOBAL.ver_ob' | translate }} </th>
-                        <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button color="primary" *ngIf="!element.ver_ob.disabled"
-                                [disabled]="element.ver_ob.disabled" (click)="viewObservation(element)">
-                                <mat-icon class="icon-boton color-negro">search</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
+                        <!-- Plan de estudios -->
+                        <ng-container matColumnDef="plan_estudios">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{ 'plan_estudios.plan_estudios' | translate }}
+                            </th>
 
-                    <ng-container matColumnDef="enviar">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'GLOBAL.enviar' | translate }} </th>
-                        <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button color="primary" *ngIf="!element.enviar.disabled"
-                                [disabled]="element.enviar.disabled"
-                                (click)="send2ReviewStudyPlan(element.Id)"><mat-icon
-                                    class="icon-boton color-negro">send</mat-icon></button>
-                        </td>
-                    </ng-container>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="texto-principal">
+                                    {{ element.plan_estudio }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumnsPlanesEstudio"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumnsPlanesEstudio;"></tr>
-                </table>
-                <mat-paginator class="paginacion" #paginatorPlanes [pageSize]="10">
+                        <!-- Proyecto curricular -->
+                        <ng-container matColumnDef="proyecto_curricular">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{ 'inscripcion.proyecto_curricular' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.proyectoCurricular }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Estado del proyecto -->
+                        <ng-container matColumnDef="estado_proyecto">
+                            <th mat-header-cell *matHeaderCellDef>
+                                Estado Proyecto
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                {{ obtenerEstadoProyecto(element) }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Resolución -->
+                        <ng-container matColumnDef="resolucion">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{ 'plan_estudios.resolucion' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.resolucion }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Estado -->
+                        <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{ 'GLOBAL.estado' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                <span class="estado-texto">
+                                    {{ element.estado }}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <!-- Total de créditos -->
+                        <ng-container matColumnDef="total_creditos">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{ 'plan_estudios.total_creditos' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.totalCreditos }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Plan por ciclos -->
+                        <ng-container matColumnDef="plan_estudios_ciclos">
+                            <th mat-header-cell *matHeaderCellDef>
+                                {{ 'plan_estudios.plan_estudios_ciclos' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element">
+                                {{ element.planPorCiclos }}
+                            </td>
+                        </ng-container>
+
+                        <!-- Ver / editar -->
+                        <ng-container matColumnDef="ver_editar">
+                            <th mat-header-cell *matHeaderCellDef class="columna-acciones">
+                                {{ 'GLOBAL.ver_editar' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element" class="celda-acciones">
+                                <div class="acciones-tabla">
+                                    <button
+                                        *ngIf="element.ver.type == 'ver'"
+                                        mat-icon-button
+                                        class="boton-accion boton-ver"
+                                        [disabled]="element.ver.disabled"
+                                        matTooltip="Ver plan de estudios"
+                                        aria-label="Ver plan de estudios"
+                                        (click)="viewStudyPlan(element.Id)">
+                                        <mat-icon>visibility</mat-icon>
+                                    </button>
+
+                                    <button
+                                        *ngIf="element.ver.type == 'editar'"
+                                        mat-icon-button
+                                        class="boton-accion boton-editar"
+                                        [disabled]="element.ver.disabled"
+                                        matTooltip="Editar plan de estudios"
+                                        aria-label="Editar plan de estudios"
+                                        (click)="prepareFormUpdateStudyPlan(element.Id)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <!-- Observaciones -->
+                        <ng-container matColumnDef="observacion">
+                            <th mat-header-cell *matHeaderCellDef class="columna-acciones">
+                                {{ 'GLOBAL.ver_ob' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element" class="celda-acciones">
+                                <div class="acciones-tabla">
+                                    <button
+                                        *ngIf="!element.ver_ob.disabled"
+                                        mat-icon-button
+                                        class="boton-accion boton-observacion"
+                                        [disabled]="element.ver_ob.disabled"
+                                        matTooltip="Ver observaciones"
+                                        aria-label="Ver observaciones"
+                                        (click)="viewObservation(element)">
+                                        <mat-icon>comment</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <!-- Enviar -->
+                        <ng-container matColumnDef="enviar">
+                            <th mat-header-cell *matHeaderCellDef class="columna-acciones">
+                                {{ 'GLOBAL.enviar' | translate }}
+                            </th>
+
+                            <td mat-cell *matCellDef="let element" class="celda-acciones">
+                                <div class="acciones-tabla">
+                                    <button
+                                        *ngIf="!element.enviar.disabled"
+                                        mat-icon-button
+                                        class="boton-accion boton-enviar"
+                                        [disabled]="element.enviar.disabled"
+                                        matTooltip="Enviar a revisión"
+                                        aria-label="Enviar a revisión"
+                                        (click)="send2ReviewStudyPlan(element.Id)">
+                                        <mat-icon>send</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <!-- Filas -->
+                        <tr
+                            mat-header-row
+                            *matHeaderRowDef="displayedColumnsPlanesEstudio">
+                        </tr>
+
+                        <tr
+                            mat-row
+                            *matRowDef="let row; columns: displayedColumnsPlanesEstudio;">
+                        </tr>
+
+                        <!-- Estado sin registros -->
+                        <tr class="mat-mdc-row" *matNoDataRow>
+                            <td
+                                class="mat-mdc-cell mensaje-sin-datos"
+                                [attr.colspan]="displayedColumnsPlanesEstudio.length">
+                                No se encontraron planes de estudio.
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <mat-paginator
+                    class="paginacion"
+                    #paginatorPlanes
+                    [pageSize]="10"
+                    [pageSizeOptions]="[5, 10, 25, 50]"
+                    showFirstLastButtons>
                 </mat-paginator>
 
-                <div class="alinear-center-espacio-doble" [class.generate]="habilitadoGenerarPlan">
-                    <button mat-raised-button color="primary" (click)="nuevoPlanEstudio()">{{ 'plan_estudios.crear' |
-                        translate }}</button>
-                    <button mat-raised-button color="primary" (click)="organizarPlanEstudioCompuesto()">{{
-                        'plan_estudios.organizar' | translate }}</button>
+                <!-- Acciones principales -->
+                <div
+                    class="acciones-principales"
+                    [class.generate]="habilitadoGenerarPlan">
+
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        class="boton-principal"
+                        type="button"
+                        (click)="nuevoPlanEstudio()">
+
+                        <mat-icon>add</mat-icon>
+
+                        {{ 'plan_estudios.crear' | translate }}
+                    </button>
+
+                    <button
+                        mat-stroked-button
+                        color="primary"
+                        class="boton-secundario"
+                        type="button"
+                        (click)="organizarPlanEstudioCompuesto()">
+
+                        <mat-icon>account_tree</mat-icon>
+
+                        {{ 'plan_estudios.organizar' | translate }}
+                    </button>
+
                 </div>
-            </fieldset>
+
+            </section>
         </ng-container>
         <ng-container *ngSwitchCase="VIEWS.FORM">
             <fieldset [@fadeInOut] [ngClass]="{'fieldseter':true}" class="sombra-mini">
