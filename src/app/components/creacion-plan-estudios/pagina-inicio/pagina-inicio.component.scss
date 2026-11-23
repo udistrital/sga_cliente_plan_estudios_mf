@@ -1,0 +1,426 @@
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding: 24px;
+
+  color: #243247;
+  background: #f4f7fb;
+
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   ENCABEZADO
+========================================= */
+
+.seccion-listado {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.seccion-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.titulo-seccion {
+  margin: 0;
+  color: #1d3553;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.descripcion-seccion {
+  margin: 5px 0 0;
+  color: #68778b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* =========================================
+   AVISO INFORMATIVO
+========================================= */
+
+.contenedor-advertencia {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  padding: 16px 18px;
+  border: 1px solid #f1d89a;
+  border-radius: 12px;
+
+  background: #fff9e9;
+  color: #805c14;
+
+  > mat-icon {
+    flex: 0 0 24px;
+    color: #b58119;
+    font-size: 24px;
+  }
+}
+
+.texto-advertencia {
+  flex: 1;
+  min-width: 0;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* =========================================
+   BÚSQUEDA
+========================================= */
+
+.barra-herramientas {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.filtro {
+  width: 100%;
+  max-width: 500px;
+  min-width: 0;
+  margin: 0;
+
+  mat-icon[matPrefix] {
+    margin-right: 8px;
+    color: #73849a;
+  }
+}
+
+/* =========================================
+   TABLA
+========================================= */
+
+.tabla-contenedor {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  border: 1px solid #e4eaf2;
+  border-radius: 12px;
+
+  background: #fff;
+}
+
+/* Tabla */
+
+.tabla-planes {
+  width: 100%;
+  min-width: 900px;
+
+  background: #fff;
+  box-shadow: none !important;
+  border-collapse: collapse;
+}
+
+/* =========================================
+   ENCABEZADOS DE TABLA
+========================================= */
+
+.tabla-planes .mat-mdc-header-row {
+  height: 52px !important;
+  background: #edf3f9 !important;
+}
+
+.tabla-planes .mat-mdc-header-cell {
+  display: table-cell !important;
+
+  height: 52px !important;
+  padding: 12px 16px !important;
+
+  border-bottom: 1px solid #dce5ef !important;
+
+  color: #344b66 !important;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+
+  text-align: left;
+  white-space: nowrap;
+
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* =========================================
+   FILAS Y CELDAS
+========================================= */
+
+.tabla-planes .mat-mdc-row {
+  height: 60px !important;
+  transition: background-color 160ms ease;
+}
+
+.tabla-planes .mat-mdc-cell {
+  display: table-cell !important;
+
+  padding: 10px 16px !important;
+
+  border-bottom-color: #edf1f6 !important;
+
+  color: #46566b !important;
+  font-size: 0.86rem;
+  line-height: 1.5;
+
+  visibility: visible;
+  opacity: 1;
+}
+
+.tabla-planes .mat-mdc-row:hover {
+  background: #f5f9ff;
+}
+
+/* Texto principal */
+
+.texto-principal {
+  color: #203d5d;
+  font-weight: 600;
+}
+
+.estado-texto {
+  display: inline-block;
+  max-width: 220px;
+
+  overflow-wrap: anywhere;
+
+  color: #42556c;
+}
+
+/* Sin resultados */
+
+.mensaje-sin-datos {
+  height: 100px;
+  color: #718096;
+  text-align: center;
+}
+
+/* =========================================
+   ACCIONES DE TABLA
+========================================= */
+
+.acciones-tabla {
+  display: flex;
+
+  width: 100%;
+  min-height: 44px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.boton-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+
+  border-radius: 10px;
+
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+
+  mat-icon {
+    color: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.boton-ver {
+  color: #1767a5;
+  background: #eaf4ff;
+}
+
+.boton-editar {
+  color: #8a5b0b;
+  background: #fff3d9;
+}
+
+.boton-observacion {
+  color: #6552a3;
+  background: #f0edff;
+}
+
+.boton-enviar {
+  color: #14744b;
+  background: #e5f7ed;
+}
+
+/* Columnas de acciones */
+
+.tabla-planes .mat-column-ver_editar,
+.tabla-planes .mat-column-observacion,
+.tabla-planes .mat-column-enviar {
+  min-width: 105px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.tabla-planes td.celda-acciones {
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px !important;
+}
+
+/* =========================================
+   PAGINADOR
+========================================= */
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 100%;
+
+  margin: 15px 0 0;
+
+  border-top: 1px solid #edf1f6;
+  background: #fff;
+}
+
+/* =========================================
+   ACCIONES PRINCIPALES
+========================================= */
+
+.acciones-principales {
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+
+  padding-top: 6px;
+}
+
+.acciones-principales button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 0 20px;
+
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.boton-principal {
+  box-shadow: 0 3px 8px rgb(25 91 145 / 18%);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+  :host {
+    padding: 10px;
+  }
+
+  .seccion-encabezado {
+    align-items: flex-start;
+  }
+
+  .contenedor-advertencia {
+    align-items: flex-start;
+    padding: 13px;
+  }
+
+  .texto-advertencia {
+    font-size: 0.85rem;
+  }
+
+  .filtro {
+    max-width: 100%;
+  }
+
+  .acciones-principales {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acciones-principales button {
+    width: 100%;
+  }
+}
+
+
+/* Acciones principales debajo de la tabla */
+.acciones-principales {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.acciones-principales button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.boton-principal {
+  box-shadow: 0 3px 8px rgb(25 91 145 / 18%);
+}

@@ -4,6 +4,7 @@ import { RouterModule, Routes, provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { CreacionPlanEstudiosComponent } from './components/creacion-plan-estudios/creacion-plan-estudios.component';
+import { PaginaInicioComponent } from './components/creacion-plan-estudios/pagina-inicio/pagina-inicio.component';
 import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
@@ -16,7 +17,8 @@ const routes: Routes = [
   },
   {
     path: 'crear',
-    component: CreacionPlanEstudiosComponent
+    // component: CreacionPlanEstudiosComponent
+    component: PaginaInicioComponent
   },
   {
     path: 'evaluar',

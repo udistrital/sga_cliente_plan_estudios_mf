@@ -1,0 +1,293 @@
+
+<section class="seccion-listado" [@fadeInOut]>
+
+  <!-- Encabezado -->
+  <div class="seccion-encabezado">
+    <div>
+      <h2 class="titulo-seccion">
+        {{ 'plan_estudios.planes_estudio_creados' | translate }}
+      </h2>
+
+      <p class="descripcion-seccion">
+        Consulta los planes registrados y accede a su información.
+      </p>
+    </div>
+  </div>
+
+  <!-- Aviso informativo -->
+  <div class="contenedor-advertencia">
+    <mat-icon aria-hidden="true">info_outline</mat-icon>
+
+    <div class="texto-advertencia">
+      {{ 'plan_estudios.mensaje_soporte_multiple_proyecto' | translate }}
+    </div>
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="barra-herramientas">
+
+    <mat-form-field appearance="outline" class="filtro">
+
+      <mat-label>
+        Buscar por nombre del plan de estudios
+      </mat-label>
+
+      <mat-icon matPrefix>search</mat-icon>
+
+      <input
+        matInput
+        [value]="filtro()"
+        placeholder="Escribe el nombre del plan de estudios..."
+        (input)="aplicarFiltro($event)"
+      />
+
+      @if (filtro()) {
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          aria-label="Limpiar búsqueda"
+          (click)="limpiarFiltro()">
+
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+
+      <mat-hint>
+        Ingresa el nombre del plan que deseas consultar.
+      </mat-hint>
+
+    </mat-form-field>
+
+  </div>
+
+  <!-- Tabla -->
+  <div class="tabla-contenedor">
+
+    <table
+      mat-table
+      [dataSource]="dataPlanesEstudio"
+      class="tabla-planes">
+
+      <!-- Plan de estudios -->
+      <ng-container matColumnDef="plan_estudios">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'plan_estudios.plan_estudios' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          <span class="texto-principal">
+            {{ element.plan_estudio }}
+          </span>
+        </td>
+
+      </ng-container>
+
+      <!-- Proyecto curricular -->
+      <ng-container matColumnDef="proyecto_curricular">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'inscripcion.proyecto_curricular' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.proyectoCurricular }}
+        </td>
+
+      </ng-container>
+
+      <!-- Estado del proyecto -->
+      <ng-container matColumnDef="estado_proyecto">
+
+        <th mat-header-cell *matHeaderCellDef>
+          Estado Proyecto
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ obtenerEstadoProyecto(element) }}
+        </td>
+
+      </ng-container>
+
+      <!-- Resolución -->
+      <ng-container matColumnDef="resolucion">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'plan_estudios.resolucion' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.resolucion }}
+        </td>
+
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="estado">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'GLOBAL.estado' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          <span class="estado-texto">
+            {{ element.estado }}
+          </span>
+        </td>
+
+      </ng-container>
+
+      <!-- Total de créditos -->
+      <ng-container matColumnDef="total_creditos">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'plan_estudios.total_creditos' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.totalCreditos }}
+        </td>
+
+      </ng-container>
+
+      <!-- Plan por ciclos -->
+      <ng-container matColumnDef="plan_estudios_ciclos">
+
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'plan_estudios.plan_estudios_ciclos' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let element">
+          {{ element.planPorCiclos }}
+        </td>
+
+      </ng-container>
+      <!-- Ver / editar -->
+       
+    <ng-container matColumnDef="ver_editar">
+  <th mat-header-cell *matHeaderCellDef>
+    Acciones
+  </th>
+
+  <td mat-cell *matCellDef="let element">
+    <button
+      mat-icon-button
+      [disabled]="element.ver.disabled"
+      [matTooltip]="element.ver.type === 'editar' ? 'Editar' : 'Consultar'">
+
+      <mat-icon>
+        {{ element.ver.type === 'editar' ? 'edit' : 'visibility' }}
+      </mat-icon>
+    </button>
+  </td>
+</ng-container>
+
+    <!-- Observaciones -->
+    <ng-container matColumnDef="observacion">
+  <th mat-header-cell *matHeaderCellDef>
+    Observaciones
+  </th>
+
+  <td mat-cell *matCellDef="let element">
+    @if (!element.ver_ob.hidden) {
+      <button
+        mat-icon-button
+        [disabled]="element.ver_ob.disabled">
+
+        <mat-icon>visibility</mat-icon>
+      </button>
+    }
+  </td>
+</ng-container>
+
+    <!-- Enviar -->
+    <ng-container matColumnDef="enviar">
+  <th mat-header-cell *matHeaderCellDef>
+    Enviar
+  </th>
+
+  <td mat-cell *matCellDef="let element">
+    @if (!element.enviar.hidden) {
+      <button
+        mat-icon-button
+        [disabled]="element.enviar.disabled">
+
+        <mat-icon>send</mat-icon>
+      </button>
+    }
+  </td>
+</ng-container>
+
+
+      <!-- Encabezado y filas -->
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumnsPlanesEstudio">
+      </tr>
+
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnsPlanesEstudio;">
+      </tr>
+
+      <!-- Sin resultados -->
+      <tr class="mat-mdc-row" *matNoDataRow>
+
+        <td
+          class="mat-mdc-cell mensaje-sin-datos"
+          [attr.colspan]="displayedColumnsPlanesEstudio.length">
+
+          @if (cargando()) {
+            Cargando planes de estudio...
+          } @else if (errorCarga()) {
+            No fue posible cargar los planes de estudio.
+          } @else if (hayPlanes()) {
+            No se encontraron planes que coincidan con la búsqueda.
+          } @else {
+            No se encontraron planes de estudio.
+          }
+
+        </td>
+
+      </tr>
+
+    </table>
+
+  </div>
+
+  <!-- Paginación -->
+  <mat-paginator
+    class="paginacion"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    showFirstLastButtons>
+  </mat-paginator>
+  <!-- Acciones principales -->
+    <div
+        class="acciones-principales">
+        
+        <button
+            mat-raised-button
+            color="primary"
+            class="boton-principal"
+            type="button">
+
+            <mat-icon>add</mat-icon>
+
+            {{ 'plan_estudios.crear' | translate }}
+        </button>
+
+        <button
+            mat-stroked-button
+            color="primary"
+            class="boton-secundario"
+            type="button">
+
+            <mat-icon>account_tree</mat-icon>
+
+            {{ 'plan_estudios.organizar' | translate }}
+        </button>
+
+    </div>
+</section>

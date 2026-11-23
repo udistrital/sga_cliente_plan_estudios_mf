@@ -32,9 +32,11 @@ import { DinamicFormGroupComponent } from './components/dinamic-form-group/dinam
 import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios/evaluar-plan-estudios.component';
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
 import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-evaluar.component';
+import { PaginaInicioComponent } from './components/creacion-plan-estudios/pagina-inicio/pagina-inicio.component';
 
 @NgModule({ declarations: [
         AppComponent,
+        PaginaInicioComponent,
         CreacionPlanEstudiosComponent,
         DialogVerObservacionComponent,
         SummaryPlanesEstudioComponent,
