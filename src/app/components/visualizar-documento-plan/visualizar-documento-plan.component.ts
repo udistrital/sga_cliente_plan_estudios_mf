@@ -68,7 +68,7 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
               'error',
               false
             ).then(res => {
-              if (res.value) {
+              if (res.isConfirmed) {
                 this.dialogRef.close();
               }
             });
@@ -84,7 +84,7 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
           'error',
           false
         ).then(res => {
-          if (res.value) {
+          if (res.isConfirmed) {
             this.dialogRef.close();
           }
         });
@@ -110,7 +110,7 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
               'error',
               false
             ).then(res => {
-              if (res.value) {
+              if (res.isConfirmed) {
                 this.dialogRef.close();
               }
             });
@@ -127,7 +127,7 @@ export class VisualizarDocumentoPlanComponent implements OnInit {
           'error',
           false
         ).then(res => {
-          if (res.value) {
+          if (res.isConfirmed) {
             this.dialogRef.close();
           }
         });

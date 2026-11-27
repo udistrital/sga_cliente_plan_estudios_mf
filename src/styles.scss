@@ -65,3 +65,23 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.dialog-crear-plan {
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-surface {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 14px;
+  }
+}
+
+.popup-confirmation {
+  .mat-mdc-dialog-container {
+    padding: 0;
+  }
+
+  .mat-mdc-dialog-surface {
+    border-radius: 14px;
+    overflow: hidden;
+  }
+}

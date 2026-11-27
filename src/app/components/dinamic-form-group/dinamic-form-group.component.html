@@ -1,92 +1,252 @@
+
 @if (builded) {
   <form [formGroup]="formGroup">
     <div class="row">
       @for (nombre of formFields; track nombre) {
-        <div [class]="defineForm[nombre].claseGrid + ' box-field'" >
+        <div [class]="defineForm[nombre].claseGrid + ' box-field'">
+
           @switch (defineForm[nombre].tipo) {
+
             <!-- Tipo Input -->
             @case ('input') {
-              <mat-form-field floatLabel="always">
-                <mat-label>{{ defineForm[nombre].requerido ? '* '+defineForm[nombre].label : defineForm[nombre].label }}:</mat-label>
-                <input matInput [formControlName]="nombre" [type]="defineForm[nombre].tipoDato" [placeholder]="defineForm[nombre].placeholder ?? ''"
-                  [min]="(defineForm[nombre].minimo || defineForm[nombre].minimo === 0)?defineForm[nombre].minimo:undefined"
-                  [max]="defineForm[nombre].maximo?defineForm[nombre].maximo:undefined"
-                  [step]="defineForm[nombre].paso?defineForm[nombre].paso:1"
-                  [readonly]="defineForm[nombre].soloLectura ? defineForm[nombre].soloLectura : false">
-                @if (formGroup.get(nombre)!.touched && formGroup.get(nombre)!.invalid) {
-                  <mat-hint>{{ 'GLOBAL.falta_campo' | translate }}</mat-hint>
+              <mat-form-field floatLabel="always" subscriptSizing="dynamic">
+
+                <mat-label>
+                  {{ defineForm[nombre].requerido ? '* ' + defineForm[nombre].label : defineForm[nombre].label }}:
+                </mat-label>
+
+                <input
+                  matInput
+                  [formControlName]="nombre"
+                  [type]="defineForm[nombre].tipoDato ?? 'text'"
+                  [placeholder]="defineForm[nombre].placeholder ?? ''"
+                  [min]="defineForm[nombre].minimo ?? undefined"
+                  [max]="defineForm[nombre].maximo ?? undefined"
+                  [step]="defineForm[nombre].paso ?? 1"
+                  [readonly]="defineForm[nombre].soloLectura ?? false">
+
+                @if (
+                  formGroup.get(nombre)?.invalid &&
+                  (formGroup.get(nombre)?.touched || formGroup.get(nombre)?.dirty)
+                ) {
+                  @if (formGroup.get(nombre)?.hasError('required')) {
+                    <mat-error>
+                      Este campo es obligatorio.
+                    </mat-error>
+                  }
+
+                  @if (formGroup.get(nombre)?.hasError('min')) {
+                    <mat-error>
+                      El valor mínimo permitido es {{ defineForm[nombre].minimo }}.
+                    </mat-error>
+                  }
+
+                  @if (formGroup.get(nombre)?.hasError('max')) {
+                    <mat-error>
+                      El valor máximo permitido es {{ defineForm[nombre].maximo }}.
+                    </mat-error>
+                  }
                 }
-                <!-- <mat-hint *ngIf="formGroup.get(nombre)!.touched && formGroup.get(nombre)!.invalid">{{ 'GLOBAL.err_min' | translate }}{{defineForm[nombre].minimo}}</mat-hint>
-                <mat-hint *ngIf="formGroup.get(nombre)!.touched && formGroup.get(nombre)!.invalid">{{ 'GLOBAL.err_max' | translate }}</mat-hint> -->
+
               </mat-form-field>
             }
-            <!-- Tipo select -->
+
+            <!-- Tipo Select -->
             @case ('select') {
-              <mat-form-field floatLabel="always">
-                <mat-label>{{ defineForm[nombre].requerido ? '* '+defineForm[nombre].label : defineForm[nombre].label }}:</mat-label>
-                <mat-select [formControlName]="nombre" placeholder="{{ 'GLOBAL.seleccionar' | translate}}" [disabled]="defineForm[nombre].soloLectura ? defineForm[nombre].soloLectura : false">
-                  <mat-option>{{ 'GLOBAL.seleccionar' | translate}}</mat-option>
+              <mat-form-field floatLabel="always" subscriptSizing="dynamic">
+
+                <mat-label>
+                  {{ defineForm[nombre].requerido ? '* ' + defineForm[nombre].label : defineForm[nombre].label }}:
+                </mat-label>
+
+                <mat-select
+                  [formControlName]="nombre"
+                  [placeholder]="'GLOBAL.seleccionar' | translate"
+                  [disabled]="defineForm[nombre].soloLectura ?? false">
+
+                  <mat-option [value]="null" disabled>
+                    {{ 'GLOBAL.seleccionar' | translate }}
+                  </mat-option>
+
                   @if (defineForm[nombre].opciones) {
                     @for (opcion of defineForm[nombre].opciones; track opcion) {
-                      <mat-option [value]="opcion">{{ opcion.Nombre ? opcion.Nombre : opcion.nombre }}</mat-option>
+                      <mat-option [value]="opcion">
+                        {{ opcion.Nombre ? opcion.Nombre : opcion.nombre }}
+                      </mat-option>
                     }
                   }
+
                 </mat-select>
-                @if (formGroup.get(nombre)!.touched && formGroup.get(nombre)!.invalid) {
-                  <mat-hint>{{ 'GLOBAL.falta_campo' | translate }}</mat-hint>
+
+                @if (
+                  formGroup.get(nombre)?.invalid &&
+                  (formGroup.get(nombre)?.touched || formGroup.get(nombre)?.dirty)
+                ) {
+                  @if (formGroup.get(nombre)?.hasError('required')) {
+                    <mat-error>
+                      Debes seleccionar una opción.
+                    </mat-error>
+                  }
                 }
+
               </mat-form-field>
             }
-            <!-- Tipo file Multiple -->
+
+            <!-- Tipo File Multiple -->
             @case ('fileMultiple') {
-              <mat-form-field  floatLabel="always">
-                <input #documento type="file" multiple (change)="onChangeSelectFiles(nombre, $event)" style="display: none;"/>
-                <input matInput [formControlName]="nombre" [type]="'text'" style="display: none;">
-                <mat-label>{{ defineForm[nombre].requerido ? '* '+defineForm[nombre].label : defineForm[nombre].label }}: <i>({{ 'GLOBAL.agregar_varios_archivos' | translate }})</i></mat-label>
+              <mat-form-field floatLabel="always" subscriptSizing="dynamic">
+
+                <input
+                  #documento
+                  type="file"
+                  multiple
+                  accept=".pdf,application/pdf"
+                  (change)="onChangeSelectFiles(nombre, $event)"
+                  style="display: none;">
+
+                <input
+                  matInput
+                  [formControlName]="nombre"
+                  type="text"
+                  style="display: none;">
+
+                <mat-label>
+                  {{ defineForm[nombre].requerido ? '* ' + defineForm[nombre].label : defineForm[nombre].label }}:
+                  <i>({{ 'GLOBAL.agregar_varios_archivos' | translate }})</i>
+                </mat-label>
+
                 <div class="row">
                   <div class="col-12 d-flex flex-wrap">
-                    <button #selectFiles type="button" mat-raised-button (click)="documento.click()"  [disabled]="defineForm[nombre].soloLectura ? defineForm[nombre].soloLectura : false">{{'GLOBAL.seleccionar_archivo' | translate}}</button>
-                    @for (archivo of defineForm[nombre].archivosLocal; track archivo) {
-                      <span class="enlace-documento" (click)="previewFile(archivo.urlTemp)" title="{{'GLOBAL.tooltip_previsualizar_archivo' | translate}}" [ngClass]="{'archivo_invalido': archivo.err}">
-                        <!-- {{ archivo.file.name }} <i *ngIf="!selectFiles.disabled" class="fa fa-times fa-2xs" aria-hidden="true" title="{{'GLOBAL.eliminar' | translate}}" (click)="deleteSelectedFile(nombre, archivo.file.name)"></i> -->
-                        {{ archivo.file.name }} @if (!selectFiles.disabled) {
-                        <mat-icon class="icon-boton" aria-hidden="true" title="{{'GLOBAL.eliminar' | translate}}" (click)="deleteSelectedFile(nombre, archivo.file.name)">close</mat-icon>
-                      }
+
+                    <button
+                      #selectFiles
+                      type="button"
+                      mat-raised-button
+                      (click)="documento.click()"
+                      [disabled]="defineForm[nombre].soloLectura ?? false">
+
+                      {{ 'GLOBAL.seleccionar_archivo' | translate }}
+
+                    </button>
+
+                    <!-- Archivos locales -->
+                    @for (archivo of defineForm[nombre].archivosLocal ?? []; track archivo) {
+                      <span
+                        class="enlace-documento"
+                        [ngClass]="{'archivo_invalido': archivo.err}"
+                        (click)="previewFile(archivo.urlTemp)"
+                        [title]="'GLOBAL.tooltip_previsualizar_archivo' | translate">
+
+                        {{ archivo.file.name }}
+
+                        @if (!selectFiles.disabled) {
+                          <mat-icon
+                            class="icon-boton"
+                            aria-hidden="true"
+                            [title]="'GLOBAL.eliminar' | translate"
+                            (click)="deleteSelectedFile(nombre, archivo.file.name); $event.stopPropagation()">
+                            close
+                          </mat-icon>
+                        }
+
+                      </span>
+                    }
+
+                    <!-- Archivos existentes -->
+                    @for (archivoLinea of defineForm[nombre].archivosLinea ?? []; track archivoLinea) {
+                      <span
+                        class="enlace-documento"
+                        (click)="previewFile(archivoLinea.url)"
+                        [title]="'GLOBAL.tooltip_descargar_arhivo' | translate">
+
+                        <mat-icon class="icon-boton" aria-hidden="true">
+                          download
+                        </mat-icon>
+
+                        {{ archivoLinea.nombre }}{{ archivoLinea.type }}
+
+                        @if (!selectFiles.disabled) {
+                          <mat-icon
+                            class="icon-boton"
+                            aria-hidden="true"
+                            [title]="'GLOBAL.eliminar_temporalmente' | translate"
+                            (click)="deleteSelectedFileLinea(nombre, archivoLinea.Id); $event.stopPropagation()">
+                            close
+                          </mat-icon>
+                        }
+
+                      </span>
+                    }
+
+                  </div>
+                </div>
+
+                @if (
+                  formGroup.get(nombre)?.invalid &&
+                  (formGroup.get(nombre)?.touched || formGroup.get(nombre)?.dirty)
+                ) {
+                  @if (formGroup.get(nombre)?.hasError('required')) {
+                    <mat-error>
+                      Debes adjuntar al menos un archivo.
+                    </mat-error>
+                  }
+
+                  @if (formGroup.get(nombre)?.hasError('archivoInvalido')) {
+                    <mat-error>
+                      Uno o más archivos no cumplen las condiciones permitidas.
+                    </mat-error>
+                  }
+                }
+
+                @if (defineForm[nombre].validaArchivos?.errTipo) {
+                  <mat-hint>
+                    {{ 'GLOBAL.formatos_permitidos' | translate }}:
+                    {{ defineForm[nombre].tipoArchivos }}
+                  </mat-hint>
+                }
+
+                @if (defineForm[nombre].validaArchivos?.errTam) {
+                  <mat-hint>
+                    {{ 'GLOBAL.tamano_superado' | translate }}
+                    {{ defineForm[nombre].tamMBArchivos }} MB
+                  </mat-hint>
+                }
+
+              </mat-form-field>
+            }
+
+            <!-- Separador de secciones -->
+            @case ('separator') {
+              <div class="form-section-divider">
+
+                <div class="form-section-divider__indicator"></div>
+
+                <div class="form-section-divider__content">
+
+                  <span class="form-section-divider__title">
+                    {{ (defineForm[nombre].label_i18n ?? '') | translate }}
+                  </span>
+
+                  @if (defineForm[nombre].descripcion) {
+                    <span class="form-section-divider__description">
+                      {{ defineForm[nombre].descripcion }}
                     </span>
                   }
-                  @for (archivoLinea of defineForm[nombre].archivosLinea; track archivoLinea) {
-                    <span class="enlace-documento" (click)="previewFile(archivoLinea.url)" title="{{'GLOBAL.tooltip_descargar_arhivo' | translate}}">
-                      <!-- <i class="fa fa-cloud-download fa-2sx" aria-hidden="true"></i> {{ archivoLinea.nombre }}{{ archivoLinea.type }} <i *ngIf="!selectFiles.disabled" class="fa fa-times fa-2xs" aria-hidden="true" title="{{'GLOBAL.eliminar_temporalmente' | translate}}" (click)="deleteSelectedFileLinea(nombre, archivoLinea.Id)"></i> -->
-                      <mat-icon class="icon-boton" aria-hidden="true">download</mat-icon> {{ archivoLinea.nombre }}{{ archivoLinea.type }} @if (!selectFiles.disabled) {
-                      <mat-icon class="icon-boton" aria-hidden="true" title="{{'GLOBAL.eliminar_temporalmente' | translate}}" (click)="deleteSelectedFileLinea(nombre, archivoLinea.Id)">close</mat-icon>
-                    }
-                  </span>
-                }
+
+                </div>
+
               </div>
-              <div class="col-12">
-              </div>
-            </div>
-            @if (formGroup.get(nombre)!.touched && formGroup.get(nombre)!.invalid) {
-              <mat-hint>{{ 'GLOBAL.falta_campo' | translate }}</mat-hint>
             }
-            @if (defineForm[nombre].validaArchivos?.errTipo) {
-              <mat-hint align="end">&nbsp; {{ 'GLOBAL.formatos_permitidos' | translate }}: {{ defineForm[nombre].tipoArchivos }}</mat-hint>
+
+            <!-- Espacio vacío u otro tipo -->
+            @default {
+              <div></div>
             }
-            <!-- <mat-hint *ngIf="defineForm[nombre].validaArchivos?.errTam">&nbsp; {{ 'GLOBAL.tamano_superado' | translate }}{{ defineForm[nombre].tamMBArchivos }}MB</mat-hint> -->
-          </mat-form-field>
-        }
-        <!-- Yo si hago algo, soy un separador -->
-        @case ('separator') {
-          <div class="separator"></div>
-        }
-        <!-- Soy un espacio vacío -->
-        @default {
-          <div></div>
-        }
+
+          }
+
+        </div>
       }
     </div>
-  }
-</div>
-</form>
+  </form>
 }
-

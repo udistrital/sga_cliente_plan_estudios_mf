@@ -238,7 +238,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
         MODALS.INFO,
         true).then(
           (action) => {
-            if (action.value) {
+            if (action.isConfirmed) {
               if (this.modoCreacion) {
                 this.prepareCreate(stepper);
               } else {
@@ -357,7 +357,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
     this.popUpManager.showPopUpGeneric(this.translate.instant('plan_estudios.plan_estudios'),
       this.translate.instant('plan_estudios.seguro_limpiar'), MODALS.QUESTION, true).then(
         (action) => {
-          if (action.value) {
+          if (action.isConfirmed) {
             this.formGroupPlanEstudio.reset();
             let valorEsPlanPadre = this.esPlanEstudioPadre ? this.translate.instant('GLOBAL.si') : this.translate.instant('GLOBAL.no');
             this.formGroupPlanEstudio.patchValue({ planPorCiclos: valorEsPlanPadre });
@@ -500,7 +500,7 @@ export class CreacionPlanEstudiosComponent extends PlanEstudioBaseComponent impl
       this.translate.instant('plan_estudios.enviar_revision_pregunta'), MODALS.INFO, true).
       then(
         action => {
-          if (action.value) {
+          if (action.isConfirmed) {
             let planEstudioBody: PlanEstudio = this.planesEstudio.find(plan => plan.Id == id);
             // TODO recuperar plan estudio con id
             // if (this.planesEstudio) {

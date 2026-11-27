@@ -144,7 +144,7 @@ export class DialogoEvaluarComponent implements OnInit {
         this.translate.instant('plan_estudios.plan_estudios'),
         this.translate.instant('plan_estudios.enviar_evaluacion_pregunta'), MODALS.INFO, true
       ).then((action) => {
-        if (action.value) {
+        if (action.isConfirmed) {
           this.loading = true;
           this.planEstudiosService.put('plan_estudio/', this.planEstudio).subscribe(
             (resp: any) => {
@@ -183,7 +183,7 @@ export class DialogoEvaluarComponent implements OnInit {
       this.translate.instant('plan_estudios.plan_estudios'),
       this.translate.instant('plan_estudios.seguro_salir_formulario_observacion'), MODALS.INFO, true
     ).then((action) => {
-      if (action.value) {
+      if (action.isConfirmed) {
         this.dialogRef.close();
       }
     });

@@ -1,0 +1,58 @@
+.popup-container {
+  padding: 12px 8px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.popup-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 12px auto 16px;
+
+  mat-icon {
+    font-size: 58px;
+    width: 58px;
+    height: 58px;
+  }
+
+  &.icon-success {
+    color: #2e9d50;
+  }
+
+  &.icon-error {
+    color: #d93636;
+  }
+
+  &.icon-warning {
+    color: #e6a23c;
+  }
+
+  &.icon-info {
+    color: #3085d6;
+  }
+
+  &.icon-question {
+    color: #6c63a8;
+  }
+}
+
+h2[mat-dialog-title] {
+  text-align: center;
+  font-size: 21px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+mat-dialog-content {
+  text-align: center;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.5;
+  padding-bottom: 12px;
+}
+
+mat-dialog-actions {
+  gap: 12px;
+  padding: 12px 0 4px;
+}

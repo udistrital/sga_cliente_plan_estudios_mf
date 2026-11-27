@@ -1,0 +1,1103 @@
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+.crear-plan-dialog {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: #f7f9fc;
+  color: #243247;
+  overflow: hidden;
+}
+
+/* Encabezado */
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 30px;
+  background: #fff;
+  border-bottom: 1px solid #e5eaf1;
+  flex-shrink: 0;
+
+  &__info {
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+  }
+
+  h2 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+}
+
+.dialog-close {
+  flex-shrink: 0;
+  color: #64748b;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #dc2626;
+  }
+}
+
+/* Área desplazable */
+.dialog-content {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  padding: 24px 30px 30px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Stepper */
+.crear-plan-stepper {
+  background: transparent;
+}
+
+.step-section {
+  padding: 24px 4px 12px;
+}
+
+.step-heading {
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0 0 6px;
+    color: #243247;
+    font-size: 18px;
+    font-weight: 650;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+/* Mensaje informativo */
+.info-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 13px;
+  line-height: 1.5;
+
+  mat-icon {
+    flex-shrink: 0;
+    color: #2563eb;
+  }
+}
+
+/* Buscador y botón */
+.toolbar-espacios {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  .filtro-espacios {
+    flex: 1;
+    max-width: 420px;
+    margin-bottom: -1.25em;
+  }
+
+  button {
+    min-height: 48px;
+    flex-shrink: 0;
+  }
+}
+
+/* Tablas */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+
+  table {
+    width: 100%;
+    min-width: 700px;
+  }
+}
+
+.paginacion {
+  margin-top: 8px;
+  background: transparent;
+}
+
+/* Resumen */
+.summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 18px 0;
+  padding: 16px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+
+  span {
+    color: #475569;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  strong {
+    color: #1d4ed8;
+    font-size: 22px;
+  }
+}
+
+/* Acciones */
+.step-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+
+  &--end {
+    justify-content: flex-end;
+  }
+
+  &--between {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  &__group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  button {
+    min-height: 40px;
+    border-radius: 8px;
+  }
+}
+
+/* Tablas dentro de los acordeones */
+mat-accordion {
+  display: block;
+  margin-top: 24px;
+}
+
+mat-expansion-panel {
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+.custom-action-tb,
+.resumenTabla,
+.resumenTotal {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tiutlo-semestre-total {
+  margin: 18px 0 10px;
+  color: #334155;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .dialog-header {
+    padding: 18px;
+  }
+
+  .dialog-content {
+    padding: 16px;
+  }
+
+  .toolbar-espacios {
+    align-items: stretch;
+    flex-direction: column;
+
+    .filtro-espacios {
+      max-width: none;
+      width: 100%;
+    }
+  }
+
+  .step-actions--between {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .step-actions__group {
+    justify-content: flex-start;
+  }
+}
+/* =========================================
+   FORMULARIO DE PLAN DE ESTUDIOS
+   ========================================= */
+
+.formulario-plan-container {
+  width: 100%;
+  padding: 8px 4px;
+  box-sizing: border-box;
+
+  --azul-institucional: #075985;
+  --azul-hover: #0c4a6e;
+  --azul-claro: #eff6ff;
+  --borde: #d8e3ef;
+  --texto: #26384a;
+}
+
+/* Contenedor de campos */
+
+.formulario-plan-container ::ng-deep .mat-mdc-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 0 !important;
+  font-family: inherit;
+}
+
+/* Reducir espacio reservado para mensajes */
+
+.formulario-plan-container ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  min-height: 0;
+}
+
+/* Apariencia de los campos */
+
+.formulario-plan-container ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #fff !important;
+  border: 1px solid var(--borde);
+  border-radius: 9px !important;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.formulario-plan-container ::ng-deep .mdc-text-field--filled {
+  background: transparent !important;
+}
+
+.formulario-plan-container ::ng-deep .mat-mdc-form-field:hover
+.mat-mdc-text-field-wrapper {
+  border-color: #91b6d0;
+}
+
+.formulario-plan-container ::ng-deep .mat-mdc-form-field.mat-focused
+.mat-mdc-text-field-wrapper {
+  border-color: var(--azul-institucional);
+  box-shadow: 0 0 0 3px rgba(7, 89, 133, .09);
+}
+
+/* Eliminar línea inferior predeterminada */
+
+.formulario-plan-container ::ng-deep .mdc-line-ripple::before,
+.formulario-plan-container ::ng-deep .mdc-line-ripple::after {
+  display: none !important;
+}
+
+/* Etiquetas */
+
+.formulario-plan-container ::ng-deep .mdc-floating-label {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.formulario-plan-container ::ng-deep .mat-focused .mdc-floating-label {
+  color: var(--azul-institucional) !important;
+}
+
+/* Texto */
+
+.formulario-plan-container ::ng-deep .mat-mdc-input-element,
+.formulario-plan-container ::ng-deep .mat-mdc-select-value {
+  color: var(--texto);
+  font-size: 14px;
+}
+
+/* Campos de solo lectura */
+
+.formulario-plan-container ::ng-deep input[readonly] {
+  color: #64748b;
+  background: #f8fafc;
+}
+
+/* Flecha de los select */
+
+.formulario-plan-container ::ng-deep .mat-mdc-select-arrow {
+  color: var(--azul-institucional);
+}
+
+/* Validaciones */
+
+.formulario-plan-container ::ng-deep .mat-mdc-form-field-error {
+  font-size: 11px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .formulario-plan-container {
+    padding: 4px 0;
+  }
+}
+
+
+/* =========================================================
+   ESPACIOS ACADÉMICOS Y DISTRIBUCIÓN POR SEMESTRES
+   ========================================================= */
+
+.parametrizacion-section {
+  --academic-primary: #075985;
+  --academic-primary-dark: #0c4a6e;
+  --academic-primary-soft: #eaf4fb;
+  --academic-text: #243247;
+  --academic-muted: #64748b;
+  --academic-border: #e2e8f0;
+  --academic-surface: #ffffff;
+  --academic-background: #f8fafc;
+}
+
+/* Información del proyecto */
+
+.project-info-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #eff6ff, #ffffff);
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #dbeafe;
+    color: #075985;
+
+    mat-icon {
+      font-size: 25px;
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+
+    span {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    strong {
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+
+  &__badge {
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: #dbeafe;
+    color: #075985;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+}
+
+/* Tarjetas de secciones */
+
+.section-card,
+.semester-section {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid var(--academic-border);
+  border-radius: 15px;
+  background: var(--academic-surface);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
+}
+
+.section-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  h4 {
+    margin: 0 0 6px;
+    color: var(--academic-text);
+    font-size: 16px;
+    font-weight: 750;
+  }
+
+  p {
+    margin: 0;
+    color: var(--academic-muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+.section-card__counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #eff6ff;
+  white-space: nowrap;
+
+  strong {
+    color: #075985;
+    font-size: 19px;
+    font-weight: 800;
+  }
+
+  span {
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+  }
+}
+
+/* Selector de semestre */
+
+.semester-selector {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  margin-bottom: 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #f8fbff;
+
+  &__field {
+    width: 280px;
+    flex-shrink: 0;
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+
+    mat-icon {
+      color: #0284c7;
+      flex-shrink: 0;
+    }
+  }
+}
+
+/* Buscador */
+
+.toolbar-espacios {
+  margin-bottom: 14px;
+
+  .filtro-espacios {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    background: #f8fafc !important;
+    border-radius: 10px !important;
+  }
+}
+
+/* Contenedores de tablas */
+
+.table-container {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: auto;
+  background: #fff;
+
+  table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+}
+
+/* Encabezados */
+
+.academic-table {
+  .mat-mdc-header-row {
+    height: 48px;
+    background: #f1f5f9;
+  }
+
+  .mat-mdc-header-cell {
+    padding: 0 16px;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .55px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+  }
+
+  /* Filas */
+
+  .mat-mdc-row {
+    height: 58px;
+    transition: background .15s ease;
+  }
+
+  .mat-mdc-cell {
+    padding: 9px 16px;
+    color: #475569;
+    font-size: 12px;
+    border-bottom: 1px solid #edf1f5;
+  }
+
+  .mat-mdc-row:last-child .mat-mdc-cell {
+    border-bottom: none;
+  }
+
+  .mat-mdc-row:hover {
+    background: #f5faff;
+  }
+
+  /* Nombre de la materia */
+
+  .mat-mdc-cell strong {
+    display: inline-block;
+    color: #243247;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  /* Créditos */
+
+  .credit-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 27px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background: #eaf4fb;
+    color: #075985;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* Botón agregar / retirar */
+
+  button[mat-icon-button] {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    transition: background .2s ease, transform .2s ease;
+
+    &:hover:not(:disabled) {
+      background: #eaf4fb;
+      transform: scale(1.06);
+    }
+  }
+}
+
+/* Paginación */
+
+.paginacion {
+  margin-top: 10px;
+  border-radius: 10px;
+  background: #f8fafc;
+
+  ::ng-deep .mat-mdc-paginator-container {
+    min-height: 52px;
+    padding: 0 12px;
+    color: #64748b;
+    font-size: 11px;
+  }
+}
+
+/* Sin resultados */
+
+.empty-table {
+  height: 110px;
+  color: #94a3b8 !important;
+  text-align: center;
+  font-size: 13px !important;
+
+  mat-icon {
+    display: block;
+    margin: 0 auto 7px;
+    color: #94a3b8;
+  }
+}
+
+/* =========================================================
+   DISTRIBUCIÓN POR SEMESTRES
+   ========================================================= */
+
+.semester-section {
+  padding: 22px;
+  margin-top: 24px;
+  background: #f8fafc;
+}
+
+/* Acordeón */
+
+.semester-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+
+  mat-expansion-panel {
+    margin: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px !important;
+    background: #fff;
+    box-shadow: 0 2px 7px rgba(15, 23, 42, .035) !important;
+    overflow: hidden;
+    transition: border-color .2s ease, box-shadow .2s ease;
+
+    &:hover {
+      border-color: #bfdbfe;
+    }
+
+    &.mat-expanded {
+      border-color: #93c5fd;
+      box-shadow: 0 4px 14px rgba(7, 89, 133, .07) !important;
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel-header {
+    min-height: 76px;
+    padding: 0 20px;
+    background: #fff;
+  }
+
+  ::ng-deep .mat-expansion-panel-header.mat-expanded {
+    background: #f8fbff;
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0 20px 20px;
+  }
+}
+
+/* Título del semestre */
+
+.semester-title {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  &__number {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: #eaf4fb;
+    color: #075985;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      color: #243247;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    span {
+      color: #94a3b8;
+      font-size: 11px;
+    }
+  }
+}
+
+.semester-credits {
+  padding: 7px 11px;
+  border: 1px solid #dbeafe;
+  border-radius: 20px;
+  background: #eff6ff;
+  color: #075985;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Contenido */
+
+.semester-content {
+  padding-top: 14px;
+  border-top: 1px solid #edf1f5;
+}
+
+/* Semestre vacío */
+
+.empty-semester {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 190px;
+  padding: 25px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  text-align: center;
+
+  > mat-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 42px;
+    color: #94a3b8;
+  }
+
+  strong {
+    color: #475569;
+    font-size: 13px;
+  }
+
+  span {
+    max-width: 420px;
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  button {
+    margin-top: 5px;
+    border-radius: 8px;
+  }
+}
+
+/* Resumen por semestre */
+
+.semester-summary {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 14px;
+
+    mat-icon {
+      color: #075985;
+    }
+
+    strong {
+      color: #334155;
+      font-size: 12px;
+      font-weight: 750;
+    }
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+
+  span {
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+
+  strong {
+    color: #075985;
+    font-size: 20px;
+    font-weight: 800;
+  }
+}
+
+/* Acciones del semestre */
+
+.semester-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+
+  button {
+    min-height: 38px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   RESUMEN GENERAL
+   ========================================================= */
+
+.general-summary {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #dbeafe;
+  border-radius: 15px;
+  background: linear-gradient(115deg, #eff6ff, #ffffff);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 20px;
+
+    h4 {
+      margin: 0 0 5px;
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    p {
+      margin: 0;
+      color: #64748b;
+      font-size: 12px;
+    }
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: #dbeafe;
+    color: #075985;
+  }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+.general-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #fff;
+
+  span {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  strong {
+    color: #075985;
+    font-size: 24px;
+    font-weight: 800;
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .semester-summary__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .general-summary__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .section-card,
+  .semester-section {
+    padding: 14px;
+  }
+
+  .section-card__header {
+    align-items: flex-start;
+  }
+
+  .semester-selector {
+    align-items: stretch;
+    flex-direction: column;
+
+    &__field {
+      width: 100%;
+    }
+  }
+
+  .semester-summary__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .semester-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .general-summary__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .project-info-card {
+    flex-wrap: wrap;
+  }
+
+  .project-info-card__badge {
+    margin-left: 60px;
+  }
+}
+
+
+/* ==========================================
+   TABLA DE MATERIAS POR SEMESTRE
+========================================== */
+
+.semester-table {
+  width: 100%;
+}
+
+/* Nombre e indicador de arrastre */
+
+.semester-subject-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.drag-indicator {
+  color: #94a3b8;
+  cursor: grab;
+  flex-shrink: 0;
+  font-size: 21px;
+  width: 21px;
+  height: 21px;
+}
+
+.drag-indicator:active {
+  cursor: grabbing;
+}
+
+/* Fila que se está arrastrando */
+
+.semester-table tr.cdk-drag {
+  cursor: default;
+}
+
+.semester-table tr.cdk-drag:active {
+  cursor: grabbing;
+}
+
+/* Elemento mientras se mueve */
+
+.cdk-drag-preview {
+  display: table;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+  border-radius: 8px;
+}
+
+/* Espacio donde caerá la materia */
+
+.cdk-drag-placeholder {
+  opacity: 0.25;
+  background: #dbeafe;
+}
+
+/* Animación del movimiento */
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 180ms ease;
+}
+
+/* Cursor del indicador */
+
+.semester-table .drag-indicator:hover {
+  color: #075985;
+}

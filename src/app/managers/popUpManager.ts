@@ -1,18 +1,31 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import Swal from 'sweetalert2';
+import { MatDialog } from '@angular/material/dialog';
+
 import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
+
+import {
+  PopUpDialogComponent,
+  PopUpDialogResult
+} from './pop-up-dialog/pop-up-dialog.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PopUpManager {
+
   constructor(
     private snackBar: MatSnackBar,
-    private translate: TranslateService
-  ) { }
+    private translate: TranslateService,
+    private dialog: MatDialog
+  ) {}
 
-  showToast(message: string, duration: number = 3000) {
+  // =====================================================
+  // TOASTS
+  // =====================================================
+
+  showToast(message: string, duration: number = 3000): void {
     this.translate.get(message).subscribe((translatedMessage: string) => {
       this.snackBar.open(translatedMessage, 'Cerrar', {
         duration: duration,
@@ -22,105 +35,124 @@ export class PopUpManager {
     });
   }
 
-  showErrorToast(message: string) {
+  showErrorToast(message: string): void {
     this.translate.get(message).subscribe((translatedMessage: string) => {
       this.snackBar.open(translatedMessage, 'Cerrar', {
-        duration: 5000, // Ejemplo de duración
-        panelClass: ['snackbar-error'], // Clase CSS personalizada para el toast de error
+        duration: 5000,
+        panelClass: ['snackbar-error'],
       });
     });
   }
 
-  showInfoToast(message: string, duration: number = 0) {
+  showInfoToast(message: string, duration: number = 0): void {
     this.translate.get(message).subscribe((translatedMessage: string) => {
       this.snackBar.open(translatedMessage, 'Cerrar', {
         duration: duration,
-        panelClass: ['snackbar-info'], // Clase CSS personalizada para el toast de información
+        panelClass: ['snackbar-info'],
       });
     });
   }
 
-  showAlert(title: string, text: string) {
-    Swal.fire({
-      icon: 'info',
-      title: title,
-      text: text,
-      confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
-    });
+  // =====================================================
+  // ALERTAS
+  // =====================================================
+
+  showAlert(
+    title: string,
+    text: string
+  ): Promise<PopUpDialogResult> {
+    return this.showPopUpGeneric(
+      title,
+      text,
+      'info',
+      false
+    );
   }
 
-  showSuccessAlert(text: string) {
-    Swal.fire({
-      icon: 'success',
-      title: this.translate.instant('GLOBAL.operacion_exitosa'),
-      text: text,
-      confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
-    });
+  showSuccessAlert(text: string): Promise<PopUpDialogResult> {
+    return this.showPopUpGeneric(
+      this.translate.instant('GLOBAL.operacion_exitosa'),
+      text,
+      'success',
+      false
+    );
   }
 
-  showErrorAlert(text: string) {
-    Swal.fire({
-      icon: 'error',
-      title: this.translate.instant('GLOBAL.error'),
-      text: text,
-      confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
-    });
+  showErrorAlert(text: string): Promise<PopUpDialogResult> {
+    return this.showPopUpGeneric(
+      this.translate.instant('GLOBAL.error'),
+      text,
+      'error',
+      false
+    );
   }
 
-  showConfirmAlert(text: string, title: string = this.translate.instant('GLOBAL.atencion')): Promise<any> {
-    return Swal.fire({
-      title: title,
-      text: text,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
-      cancelButtonText: this.translate.instant('GLOBAL.cancelar'),
-    });
+  showConfirmAlert(
+    text: string,
+    title: string = this.translate.instant('GLOBAL.atencion')
+  ): Promise<PopUpDialogResult> {
+    return this.showPopUpGeneric(
+      title,
+      text,
+      'warning',
+      true
+    );
   }
 
-  showPopUpGeneric(title: string, text: string, type: any, cancelar: any): Promise<any> {
-    return Swal.fire({
-      title: title,
-      html: text,
-      icon: type,
-      showCancelButton: cancelar,
-      allowOutsideClick: !cancelar,
-      confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
-      cancelButtonText: this.translate.instant('GLOBAL.cancelar'),
-    });
-  }
+  // =====================================================
+  // POPUP GENERICO - ANGULAR MATERIAL
+  // =====================================================
 
-  showPopUpForm(title: string, form: { html: string; ids: any[]; }, cancelar: any): Promise<any> {
-    return Swal.fire({
-      title: title,
-      html: form.html,
-      showCancelButton: cancelar,
-      allowOutsideClick: !cancelar,
-      confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
-      cancelButtonText: this.translate.instant('GLOBAL.cancelar'),
-      preConfirm: () => {
-        const results: any = {};
-        form.ids.forEach(id => {
-          const element = <HTMLInputElement>Swal.getPopup()!.querySelector('#' + id);
-          //  results[id] = element.value;
-        });
-        return results;
-      },
-    });
-  }
+  showPopUpGeneric(
+    title: string,
+    text: string,
+    type: 'success' | 'error' | 'warning' | 'info' | 'question',
+    cancelar: boolean
+  ): Promise<PopUpDialogResult> {
 
-  /*public showManyPopUp(title: string, steps: any[], type: any) {
-    const opts = steps.map(step => {
-      return {
+    const dialogRef = this.dialog.open(PopUpDialogComponent, {
+      width: '420px',
+      maxWidth: '90vw',
+      autoFocus: false,
+      restoreFocus: true,
+      disableClose: cancelar,
+      panelClass: 'popup-confirmation',
+      data: {
         title: title,
-        html: step,
-        icon: type,
-        confirmButtonText: this.translate.instant('GLOBAL.aceptar')
-      };
+        text: text,
+        type: type,
+        cancelar: cancelar,
+        aceptarTexto: this.translate.instant('GLOBAL.aceptar'),
+        cancelarTexto: this.translate.instant('GLOBAL.cancelar')
+      }
     });
-    return Swal.queue(opts);
-  }*/
+
+    return firstValueFrom(dialogRef.afterClosed()).then(result => ({
+      isConfirmed: result?.isConfirmed ?? false,
+      isDismissed: result?.isDismissed ?? true
+    }));
+  }
+
+  // =====================================================
+  // FORMULARIO POPUP
+  // =====================================================
+
+  showPopUpForm(
+    title: string,
+    form: { html: string; ids: any[] },
+    cancelar: boolean
+  ): Promise<any> {
+
+    // Pendiente de migrar a Angular Material.
+    // Actualmente este método conserva su comportamiento original.
+    throw new Error(
+      'showPopUpForm todavía no ha sido migrado a Angular Material.'
+    );
+  }
+
 }
+
+
 // import { Injectable } from '@angular/core';
 // import { NbToastrService } from '@nebular/theme';
 // import Swal from 'sweetalert2';

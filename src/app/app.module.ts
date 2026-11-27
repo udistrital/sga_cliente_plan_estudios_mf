@@ -33,10 +33,12 @@ import { EvaluarPlanEstudiosComponent } from './components/evaluar-plan-estudios
 import { RevisarPlanesEstudioComponent } from './components/revisar-planes-estudio/revisar-planes-estudio.component';
 import { DialogoEvaluarComponent } from './components/dialogo-evaluar/dialogo-evaluar.component';
 import { PaginaInicioComponent } from './components/creacion-plan-estudios/pagina-inicio/pagina-inicio.component';
-
+import { CrearPlanesComponent } from './components/creacion-plan-estudios/crear-planes/crear-planes.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 @NgModule({ declarations: [
         AppComponent,
         PaginaInicioComponent,
+        CrearPlanesComponent,
         CreacionPlanEstudiosComponent,
         DialogVerObservacionComponent,
         SummaryPlanesEstudioComponent,
@@ -66,6 +68,7 @@ import { PaginaInicioComponent } from './components/creacion-plan-estudios/pagin
         MatSelectModule,
         MatExpansionModule,
         MatPaginatorModule,
+        DragDropModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

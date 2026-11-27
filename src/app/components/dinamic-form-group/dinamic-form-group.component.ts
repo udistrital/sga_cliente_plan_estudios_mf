@@ -1,254 +1,556 @@
-import { Component, EventEmitter, Injectable, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormParams, Param } from 'src/app/models/define-form-fields'; 
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+
+import { Subscription } from 'rxjs';
+
+import {
+  FormParams,
+  Param
+} from 'src/app/models/define-form-fields';
+
+import {
+  LangChangeEvent,
+  TranslateService
+} from '@ngx-translate/core';
 
 @Component({
-    selector: 'dinamic-form-group',
-    templateUrl: './dinamic-form-group.component.html',
-    styleUrls: ['./dinamic-form-group.component.scss'],
-    standalone: false
+  selector: 'dinamic-form-group',
+  templateUrl: './dinamic-form-group.component.html',
+  styleUrls: ['./dinamic-form-group.component.scss'],
+  standalone: false
 })
-export class DinamicFormGroupComponent implements OnInit, OnChanges, OnDestroy {
+export class DinamicFormGroupComponent
+  implements OnChanges, OnDestroy {
 
-  @Input('defineForm') defineForm!: FormParams;
-  @Output() subsChanges: EventEmitter<Object> = new EventEmitter();
-  @Output() createdForm: EventEmitter<any> = new EventEmitter();
-  @Output() updatedForm: EventEmitter<any> = new EventEmitter();
+  @Input() defineForm!: FormParams;
 
-  formFields!: string[];
+  @Output() subsChanges = new EventEmitter<Object>();
+  @Output() createdForm = new EventEmitter<FormGroup>();
+  @Output() updatedForm = new EventEmitter<FormGroup>();
+
+  formFields: string[] = [];
   formGroup!: FormGroup;
-  builded: boolean = false;
 
-  constructor (
+  builded = false;
+
+  private formSubscriptions = new Subscription();
+  private translateSubscription?: Subscription;
+
+  constructor(
     private formBuilder: FormBuilder,
     private translate: TranslateService
   ) {
-    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
-      this.traducePlease(this.defineForm);
-    })
+    this.translateSubscription =
+      this.translate.onLangChange.subscribe(
+        (_event: LangChangeEvent) => {
+          if (this.defineForm) {
+            this.traducePlease(this.defineForm);
+          }
+        }
+      );
   }
-  
-  ngOnInit(): void {
-  }
-  
-  // * ----------
-  // * Recepción de datos por trigger de cambios en Inputs 
-  //#region
+
+  // --------------------------------------------------
+  // Cambios en el formulario recibido
+  // --------------------------------------------------
+
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['defineForm']) {
+    if (changes['defineForm'] && this.defineForm) {
+      this.builded = false;
+
+      this.formSubscriptions.unsubscribe();
+      this.formSubscriptions = new Subscription();
+
       this.formFields = Object.keys(this.defineForm);
+
       this.formGroup = this.buildForm(this.defineForm);
+
       this.traducePlease(this.defineForm);
+
       this.suscribeToForm(this.defineForm, this.formGroup);
+
+      this.builded = true;
     }
   }
-  //#endregion
-  // * ----------
 
-  // * ----------
-  // * FormBuilder, check if field or spacers, manage validators, and translate
-  //#region
+  // --------------------------------------------------
+  // Identificar campos reales
+  // --------------------------------------------------
+
   isField(field: Param): boolean {
-    const notField = (field.tipo === 'empty') || (field.tipo === 'separator');
-    return !notField;
+    return field.tipo !== 'empty' &&
+           field.tipo !== 'separator';
   }
+
+  // --------------------------------------------------
+  // Construcción de validadores
+  // --------------------------------------------------
+
+  prepareValidators(campo: Param): ValidatorFn[] {
+    const validadores: ValidatorFn[] = [
+      ...(campo.validador ?? [])
+    ];
+
+    if (campo.requerido) {
+      validadores.push(Validators.required);
+    }
+
+    if (
+      campo.tipoDato === 'number' &&
+      campo.minimo !== undefined &&
+      campo.minimo !== null
+    ) {
+      validadores.push(
+        Validators.min(campo.minimo)
+      );
+    }
+
+    if (
+      campo.tipoDato === 'number' &&
+      campo.maximo !== undefined &&
+      campo.maximo !== null
+    ) {
+      validadores.push(
+        Validators.max(campo.maximo)
+      );
+    }
+
+    // Validación específica para archivos.
+    if (campo.tipo === 'fileMultiple') {
+      validadores.push(
+        this.validarArchivos(campo)
+      );
+    }
+
+    return validadores;
+  }
+
+  // --------------------------------------------------
+  // Construcción del FormGroup
+  // --------------------------------------------------
 
   buildForm(formParams: FormParams): FormGroup {
-    let form: any = {};
-    const nameFields = Object.keys(formParams);
-    nameFields.forEach((name, i) => {
-      if (this.isField(formParams[name])) {
-        const validate = this.prepareValidators(formParams[name]);
-        form[name] = new FormControl(undefined, validate);
+    const controles: Record<string, FormControl> = {};
+
+    Object.keys(formParams).forEach(nombre => {
+      const campo = formParams[nombre];
+
+      if (!this.isField(campo)) {
+        return;
       }
-      if (i+1 === nameFields.length) {
-        this.builded = true;
-      }
+
+      controles[nombre] = new FormControl(
+        campo.valor ?? null,
+        this.prepareValidators(campo)
+      );
     });
-    const buildedForm = this.formBuilder.group(form);
-    
-    this.createdForm.emit(buildedForm);
-    return buildedForm;
+
+    const formulario = this.formBuilder.group(controles);
+
+    this.createdForm.emit(formulario);
+
+    return formulario;
   }
 
-  prepareValidators(f: Param): Validators {
-    let validaciones = []
-    if (f.requerido) {
-      validaciones.push(Validators.required);
-    }
-    if (f.minimo || f.minimo === 0) {
-      validaciones.push(Validators.min(f.minimo));
-    }
-    if (f.maximo) {
-      validaciones.push(Validators.max(f.maximo));
-    }
-    if (f.validador) {
-      f.validador.push(validaciones);
-    } else {
-      f.validador = validaciones;
-    }
-    return f.validador;
-  }
+  // --------------------------------------------------
+  // Traducciones
+  // --------------------------------------------------
 
   traducePlease(formParams: FormParams): void {
-    const nameFields = Object.keys(formParams);
-    nameFields.forEach((name) => {
-      if (this.isField(formParams[name])) {
-        formParams[name].label = this.translate.instant(formParams[name].label_i18n);
-        formParams[name].placeholder = this.translate.instant(formParams[name].placeholder_i18n);
+    Object.keys(formParams).forEach(nombre => {
+      if (!this.isField(formParams[nombre])) {
+        return;
       }
+
+      const campo = formParams[nombre];
+
+      campo.label = campo.label_i18n
+        ? this.translate.instant(campo.label_i18n)
+        : '';
+
+      campo.placeholder = campo.placeholder_i18n
+        ? this.translate.instant(campo.placeholder_i18n)
+        : '';
     });
   }
-  //#endregion
-  // * ----------
 
-  // * ----------
-  // * Subscribe to changes and emit events
-  //#region
-  suscribeToForm(formParams: FormParams, form: FormGroup): void {
-    form.valueChanges.subscribe(
-      (cambios: Object) => {
-        this.emiteCambiosGeneral(cambios);
-      }
+  // --------------------------------------------------
+  // Suscripciones a cambios
+  // --------------------------------------------------
+
+  suscribeToForm(
+    formParams: FormParams,
+    form: FormGroup
+  ): void {
+
+    this.formSubscriptions.add(
+      form.valueChanges.subscribe(() => {
+        this.updatedForm.emit(form);
+      })
     );
-    const nameFields = Object.keys(formParams);
-    nameFields.forEach(name => {
-      if (this.isField(formParams[name])) {
-        if (formParams[name].notificar) {
-          form.get(name)!.valueChanges.subscribe(
-            (fcambio: Object) => {
-              let whatChanged = {[name]: fcambio};
-              this.suscribeToField(whatChanged);
+
+    Object.keys(formParams).forEach(nombre => {
+      const campo = formParams[nombre];
+
+      if (!this.isField(campo)) {
+        return;
+      }
+
+      const control = form.get(nombre);
+
+      if (!control) {
+        return;
+      }
+
+      if (campo.notificar) {
+        this.formSubscriptions.add(
+          control.valueChanges.subscribe(valor => {
+            this.subsChanges.emit({
+              [nombre]: valor
+            });
+          })
+        );
+      }
+
+      if (campo.tipo === 'fileMultiple') {
+        this.formSubscriptions.add(
+          control.valueChanges.subscribe(valor => {
+            if (valor === null) {
+              this.resetFileInput(nombre);
+              control.updateValueAndValidity({
+                emitEvent: false
+              });
             }
-          );
-        }
-        if (formParams[name].tipo === 'fileMultiple') {
-          form.get(name)!.valueChanges.subscribe((fcambio: Object) => {
-            if (fcambio === null) {
-              this.resetFileInput(name);
-            }
-          });
-        }
+          })
+        );
       }
     });
   }
 
-  suscribeToField(field: any): void {
-    this.subsChanges.emit(field);
+  // --------------------------------------------------
+  // Validación de archivos
+  // --------------------------------------------------
+
+  private validarArchivos(campo: Param): ValidatorFn {
+    return () => {
+      const archivosLocal = campo.archivosLocal ?? [];
+
+      const archivosLinea = campo.archivosLinea ?? [];
+
+      const archivosValidosEnLinea = archivosLinea.length > 0;
+
+      const archivosValidosLocales =
+        archivosLocal.some(archivo => !archivo.err);
+
+      const hayArchivos =
+        archivosValidosEnLinea || archivosValidosLocales;
+
+      const errores = {
+        tipoArchivo: archivosLocal.some(
+          archivo => archivo.errTipo
+        ),
+        tamanoArchivo: archivosLocal.some(
+          archivo => archivo.errTam
+        )
+      };
+
+      const archivosInvalidos = archivosLocal.some(
+        archivo => archivo.err
+      );
+
+      if (!hayArchivos && campo.requerido) {
+        return { required: true };
+      }
+
+      if (archivosInvalidos) {
+        return {
+          archivoInvalido: true,
+          ...errores
+        };
+      }
+
+      return null;
+    };
   }
 
-  emiteCambiosGeneral(cambiosData: any): void {
-    this.updatedForm.emit(this.formGroup);
-  }
-  //#endregion
-  // * ----------
+  private actualizarValidacionArchivo(nombre: string): void {
+    const control = this.formGroup.get(nombre);
 
-  // * ----------
-  // * Manage Files functions 
-  //#region
-  /** trigger cuando resetea formulario, para vaciar lista de archivos */
-  resetFileInput(field: string) {
-    this.defineForm[field].archivosLocal = [];
-    this.defineForm[field].archivosLinea = [];
-    this.defineForm[field].archivosDelete = [];
-    this.defineForm[field].validaArchivos = {errTipo: false, errTam: false};
-  }
+    if (!control) return;
 
-  /** trigger cuando hay cambio en selección de archivos */
-  onChangeSelectFiles(label: string, event: any): void {
-    const files = <File[]>Object.values(event.target.files);
-    const newFiles = files.map(f => {
-      return {file: f, urlTemp: URL.createObjectURL(f), err: false}
+    control.updateValueAndValidity({
+      emitEvent: false
     });
-    this.defineForm[label].archivosLocal = this.defineForm[label].archivosLocal!.concat(newFiles);
-    const nameFiles = this.passFilesToFormControl(this.defineForm[label].archivosLocal ?? [], this.defineForm[label].archivosLinea ?? []);
-    const errs = this.validateFiles(this.defineForm[label].tipoArchivos ?? '', this.defineForm[label].tamMBArchivos ?? 0, this.defineForm[label].archivosLocal ?? []);
-    this.defineForm[label].validaArchivos = errs;
-    this.formGroup.patchValue({[label]: nameFiles});
-    this.formGroup.get(label)!.markAsTouched({onlySelf: true});
-    this.putErrorIfRequired(label, errs);
+
+    control.markAsTouched();
+    control.markAsDirty();
   }
 
-  /** Quitar archivo seleccionado local */
-  deleteSelectedFile(label: string, fileName: string): void {
-    const idf = this.defineForm[label].archivosLocal!.findIndex(f => f.file.name == fileName)
-    if (idf != -1) {
-      this.defineForm[label].archivosLocal!.splice(idf, 1);
-      const nameFiles = this.passFilesToFormControl(this.defineForm[label].archivosLocal ?? [], this.defineForm[label].archivosLinea ?? []);
-      const errs = this.validateFiles(this.defineForm[label].tipoArchivos ?? '', this.defineForm[label].tamMBArchivos ?? 0, this.defineForm[label].archivosLocal ?? []);
-      this.defineForm[label].validaArchivos = errs;
-      this.formGroup.patchValue({[label]: nameFiles});
-      this.formGroup.get(label)!.markAsTouched({onlySelf: true});
-      this.putErrorIfRequired(label, errs);
-    }
+  // --------------------------------------------------
+  // Reiniciar archivos
+  // --------------------------------------------------
+
+  resetFileInput(nombre: string): void {
+    this.defineForm[nombre].archivosLocal = [];
+    this.defineForm[nombre].archivosLinea = [];
+    this.defineForm[nombre].archivosDelete = [];
+
+    this.defineForm[nombre].validaArchivos = {
+      errTipo: false,
+      errTam: false
+    };
   }
 
-  /** Quitar archivo seleccionado en linea */
-  deleteSelectedFileLinea(label: string, idFile: number): void {
-    const idf = this.defineForm[label].archivosLinea!.findIndex(f => f.Id == idFile);
-    if (idf != -1) {
-      this.defineForm[label].archivosLinea!.splice(idf, 1);
-      this.defineForm[label].archivosDelete!.push(idFile);
-      const nameFiles = this.passFilesToFormControl(this.defineForm[label].archivosLocal ?? [], this.defineForm[label].archivosLinea ?? []);
-      const errs = this.validateFiles(this.defineForm[label].tipoArchivos ?? '', this.defineForm[label].tamMBArchivos ?? 0, this.defineForm[label].archivosLocal ?? []);
-      this.defineForm[label].validaArchivos = errs;
-      this.formGroup.patchValue({[label]: nameFiles});
-      this.formGroup.get(label)!.markAsTouched({onlySelf: true});
-      this.putErrorIfRequired(label, errs);
-    }
-  }
+  // --------------------------------------------------
+  // Seleccionar archivos
+  // --------------------------------------------------
 
-  /** Pasa info a un input text porque matInput no se lleva con input file */
-  passFilesToFormControl(archivosLocal: any[], archivosLinea: any[]): string {
-    let nameFiles = '';
-    archivosLocal.forEach((f) => {
-      nameFiles += f.file.name + ', ';
+  onChangeSelectFiles(nombre: string, event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    const files = Array.from(input.files ?? []);
+
+    if (!files.length) return;
+
+    const campo = this.defineForm[nombre];
+
+    const nuevosArchivos = files.map(file => ({
+      file,
+      urlTemp: URL.createObjectURL(file),
+      err: false,
+      errTipo: false,
+      errTam: false
+    }));
+
+    campo.archivosLocal = [
+      ...(campo.archivosLocal ?? []),
+      ...nuevosArchivos
+    ];
+
+    this.validarListaArchivos(nombre);
+
+    const nombres = this.passFilesToFormControl(
+      campo.archivosLocal ?? [],
+      campo.archivosLinea ?? []
+    );
+
+    this.formGroup.patchValue({
+      [nombre]: nombres
     });
-    archivosLinea.forEach((f) => {
-      nameFiles += f.nombre + ', ';
-    });
-    return nameFiles;
+
+    this.actualizarValidacionArchivo(nombre);
+
+    // Permite volver a seleccionar el mismo archivo.
+    input.value = '';
   }
 
-  /** Añade error si no coincide extensión y tamaño */
-  putErrorIfRequired(label: string, errs: any) {
-    if (errs.errTipo || errs.errTam) {
-      this.formGroup.get(label)!.setErrors({errorArchivo: "Type or Size Invalid" });
-    }
+  // --------------------------------------------------
+  // Eliminar archivo local
+  // --------------------------------------------------
+
+  deleteSelectedFile(
+    nombre: string,
+    fileName: string
+  ): void {
+
+    const campo = this.defineForm[nombre];
+
+    const archivos = campo.archivosLocal ?? [];
+
+    const indice = archivos.findIndex(
+      archivo => archivo.file.name === fileName
+    );
+
+    if (indice === -1) return;
+
+    const archivoEliminado = archivos[indice];
+
+    URL.revokeObjectURL(archivoEliminado.urlTemp);
+
+    archivos.splice(indice, 1);
+
+    this.validarListaArchivos(nombre);
+
+    const nombres = this.passFilesToFormControl(
+      campo.archivosLocal ?? [],
+      campo.archivosLinea ?? []
+    );
+
+    this.formGroup.patchValue({
+      [nombre]: nombres
+    });
+
+    this.actualizarValidacionArchivo(nombre);
   }
-  /** Valida si el archivo cumple con extensión y tamaño */
-  validateFiles(tipoArchivos: string, tamMBArchivos: number, archivosLocal: any[]) {
+
+  // --------------------------------------------------
+  // Eliminar archivo existente
+  // --------------------------------------------------
+
+  deleteSelectedFileLinea(
+    nombre: string,
+    idFile: number
+  ): void {
+
+    const campo = this.defineForm[nombre];
+
+    const archivos = campo.archivosLinea ?? [];
+
+    const indice = archivos.findIndex(
+      archivo => archivo.Id === idFile
+    );
+
+    if (indice === -1) return;
+
+    archivos.splice(indice, 1);
+
+    campo.archivosDelete ??= [];
+    campo.archivosDelete.push(idFile);
+
+    const nombres = this.passFilesToFormControl(
+      campo.archivosLocal ?? [],
+      campo.archivosLinea ?? []
+    );
+
+    this.formGroup.patchValue({
+      [nombre]: nombres
+    });
+
+    this.actualizarValidacionArchivo(nombre);
+  }
+
+  // --------------------------------------------------
+  // Validar lista completa de archivos
+  // --------------------------------------------------
+
+  private validarListaArchivos(nombre: string): void {
+    const campo = this.defineForm[nombre];
+
+    const archivos = campo.archivosLocal ?? [];
+
+    const tipoPermitido = (
+      campo.tipoArchivos ?? ''
+    ).toLowerCase()
+      .split(',')
+      .map(tipo => tipo.trim().replace('.', ''));
+
+    const tamanoMaximo =
+      (campo.tamMBArchivos ?? 0) * 1024 * 1024;
+
     let errTipo = false;
     let errTam = false;
-    archivosLocal.forEach(f => {
-      if (tipoArchivos.indexOf(f.file.type.split('/')[1]) === -1) {
-        f.err = true;
+
+    archivos.forEach(archivo => {
+      const file = archivo.file;
+
+      const extension = file.name
+        .split('.')
+        .pop()
+        ?.toLowerCase() ?? '';
+
+      const tipoMime = file.type.toLowerCase();
+
+      const tipoValido =
+        tipoPermitido.includes(extension) &&
+        (
+          tipoMime === '' ||
+          tipoMime === 'application/pdf'
+        );
+
+      const tamanoValido =
+        file.size <= tamanoMaximo;
+
+      archivo.errTipo = !tipoValido;
+      archivo.errTam = !tamanoValido;
+
+      archivo.err = !tipoValido || !tamanoValido;
+
+      if (!tipoValido) {
         errTipo = true;
-      } else if (f.file.size > (tamMBArchivos * 1024000)) {
-        f.err = true;
+      }
+
+      if (!tamanoValido) {
         errTam = true;
-      } else {
-        f.err = false;
       }
     });
-    return {"errTipo": errTipo, "errTam": errTam}
+
+    campo.validaArchivos = {
+      errTipo,
+      errTam
+    };
   }
 
-  /** Previsualiza archivo seleccionado local */
-  previewFile(url: string): void {
-    const h = screen.height * 0.65;
-    const w = h * 3/4;
-    const left = (screen.width * 3/4) - (w / 2);
-    const top = (screen.height / 2) - (h / 2);
-    window.open(url, '', 'toolbar=no,' +
-      'location=no, directories=no, status=no, menubar=no,' +
-      'scrollbars=no, resizable=no, copyhistory=no, ' +
-      'width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+  // --------------------------------------------------
+  // Pasar archivos al control
+  // --------------------------------------------------
+
+  passFilesToFormControl(
+    archivosLocal: any[],
+    archivosLinea: any[]
+  ): string {
+
+    const nombres = [
+      ...archivosLocal.map(archivo => archivo.file.name),
+      ...archivosLinea.map(archivo => archivo.nombre)
+    ];
+
+    return nombres.join(', ');
   }
-  //#endregion
-  // * ----------
+
+  // --------------------------------------------------
+  // Previsualizar archivo
+  // --------------------------------------------------
+
+  previewFile(url: string): void {
+    const alto = screen.height * 0.65;
+    const ancho = alto * 3 / 4;
+
+    const left = (screen.width * 3 / 4) - (ancho / 2);
+    const top = (screen.height / 2) - (alto / 2);
+
+    window.open(
+      url,
+      '',
+      'toolbar=no,location=no,directories=no,status=no,' +
+      'menubar=no,scrollbars=no,resizable=no,copyhistory=no,' +
+      `width=${ancho},height=${alto},top=${top},left=${left}`
+    );
+  }
+
+  // --------------------------------------------------
+  // Destrucción
+  // --------------------------------------------------
 
   ngOnDestroy(): void {
+    this.formSubscriptions.unsubscribe();
+    this.translateSubscription?.unsubscribe();
+
+    Object.keys(this.defineForm ?? {}).forEach(nombre => {
+      const campo = this.defineForm[nombre];
+
+      if (campo.tipo === 'fileMultiple') {
+        (campo.archivosLocal ?? []).forEach(archivo => {
+          if (archivo.urlTemp) {
+            URL.revokeObjectURL(archivo.urlTemp);
+          }
+        });
+      }
+    });
   }
 }

@@ -32,6 +32,9 @@ import { ImplicitAutenticationService } from
   'src/app/services/implicit_autentication.service';
 import { decrypt } from 'src/utils/util-encrypt';
 
+import { MatDialog } from '@angular/material/dialog';
+import { CrearPlanesComponent } from '../crear-planes/crear-planes.component';
+
 interface PlanEstudioFila extends Record<string, any> {
   Id: number;
   ProyectoAcademicoId: number;
@@ -173,7 +176,8 @@ export class PaginaInicioComponent implements OnInit{
     private readonly proyectoService: ProyectoAcademicoService,
     private readonly planEstudiosService: PlanEstudiosService,
     private readonly sgaMidService: SgaMidService,
-    private readonly autenticationService: ImplicitAutenticationService
+    private readonly autenticationService: ImplicitAutenticationService,
+    private readonly dialog: MatDialog
   ) {
     effect(() => {
       this.dataPlanesEstudio.data = this.planesFiltrados();
@@ -369,7 +373,6 @@ export class PaginaInicioComponent implements OnInit{
     }
 
     // Transformar los datos para la presentación.
-    console.log(planes)
     const planesPreparados = planes.map(plan =>
       this.organizarDatosTablaPlanEstudio(plan)
     );
@@ -507,5 +510,26 @@ export class PaginaInicioComponent implements OnInit{
   limpiarFiltro(): void {
     this.filtro.set('');
     this.dataPlanesEstudio.paginator?.firstPage();
+  }
+
+  crearPlan(): void {
+    console.log(this.proyectos)
+    const dialogRef = this.dialog.open(CrearPlanesComponent, {
+      width: '95vw',
+      height: '92vh',
+      maxWidth: '1600px',
+      maxHeight: '95vh',
+      disableClose: true,
+      panelClass: 'dialog-crear-plan',
+      data: {
+        proyectos: this.proyectos()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(resultado => {
+      if (resultado === true) {
+        this.loadStudyPlanTable();
+      }
+    });
   }
 }

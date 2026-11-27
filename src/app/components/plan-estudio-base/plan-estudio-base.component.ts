@@ -303,7 +303,7 @@ export abstract class PlanEstudioBaseComponent {
       this.translate.instant('plan_estudios.seguro_salir_formulario'),
       MODALS.WARNING, true).then(
         async (action) => {
-          if (action.value) {
+          if (action.isConfirmed) {
             this.planEstudioPadreAsignado2Form = false;
             this.formGroupPlanEstudio.reset();
             this.dataSemestre = new MatTableDataSource<any>([])
@@ -333,7 +333,7 @@ export abstract class PlanEstudioBaseComponent {
     this.popUpManager.showPopUpGeneric(this.translate.instant('plan_estudios.plan_estudios'),
       message, MODALS.WARNING, true).then(
         async (action) => {
-          if (action.value) {
+          if (action.isConfirmed) {
             this.planEstudioPadreAsignado2Form = false;
             this.formGroupPlanEstudio.reset();
             this.dataSemestre = new MatTableDataSource<any>([])
@@ -961,7 +961,7 @@ export abstract class PlanEstudioBaseComponent {
     this.popUpManager.showPopUpGeneric(this.translate.instant('plan_estudios.plan_estudios'),
       this.translate.instant('plan_estudios.seguro_finalizar'), MODALS.INFO, true).then(
         (action) => {
-          if (action.value) {
+          if (action.isConfirmed) {
             this.prepareUpdateBySemester().then((res) => {
               if (res) {
                 this.enEdicionSemestreNuevo = false;
@@ -1098,7 +1098,7 @@ export abstract class PlanEstudioBaseComponent {
         true
       )
       .then(async (action) => {
-        if (action.value) {
+        if (action.isConfirmed) {
           for (const dataind of semestre.data) {
             this.dataEspaciosAcademicos.data.push(dataind);
           }
